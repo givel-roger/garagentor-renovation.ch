@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" fill="none">
+  <!-- Garage door icon -->
+  <rect x="2" y="8" width="32" height="32" rx="3" stroke="#1a1a1a" stroke-width="2.5" fill="none"/>
+  <line x1="2" y1="16" x2="34" y2="16" stroke="#1a1a1a" stroke-width="1.5"/>
+  <line x1="2" y1="24" x2="34" y2="24" stroke="#1a1a1a" stroke-width="1.5"/>
+  <line x1="2" y1="32" x2="34" y2="32" stroke="#1a1a1a" stroke-width="1.5"/>
+  <!-- Renovation arrow -->
+  <path d="M28 6 L32 2 L36 6" stroke="#E97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <line x1="32" y1="2" x2="32" y2="14" stroke="#E97316" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Text -->
+  <text x="44" y="24" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#1a1a1a">GARAGENTOR</text>
+  <text x="44" y="40" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="400" fill="#6b7280" letter-spacing="3">RENOVATION</text>
+</svg>
