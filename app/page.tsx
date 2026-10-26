@@ -121,15 +121,9 @@ export default function Home() {
       {/* ─── HEADER ─── */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-1 h-9 bg-[#E97316] rounded-full" />
-            <div className="leading-tight">
-              <div className="-mb-0.5">
-                <span className="text-[18px] font-extrabold tracking-tight text-[#2D2D2D]">Garagentor</span>
-                <span className="text-[18px] font-extrabold tracking-tight text-[#E97316]">Renovation</span>
-              </div>
-              <span className="text-[9px] text-gray-400 uppercase tracking-[0.2em] font-medium">Schweiz</span>
-            </div>
+          <div className="flex items-center gap-2.5">
+            <div className="w-3 h-3 bg-[#E97316] rounded-[3px] flex-shrink-0" />
+            <span className="text-[18px] font-semibold tracking-tight text-[#2D2D2D]">Garagentor-Renovation</span>
           </div>
           <div className="flex items-center gap-3">
             <a href="tel:+41XXXXXXXXX" className="hidden sm:flex items-center gap-2 text-sm text-gray-600 hover:text-[#2D2D2D]">
@@ -462,9 +456,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
           <div className="grid sm:grid-cols-3 gap-10">
             <div>
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-0.5 h-5 bg-[#E97316] rounded-full" />
-                <span className="font-extrabold text-[15px] tracking-tight">Garagentor<span className="text-[#E97316]">Renovation</span></span>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-2.5 h-2.5 bg-[#E97316] rounded-[2px] flex-shrink-0" />
+                <span className="font-semibold text-[15px] tracking-tight">Garagentor-Renovation</span>
               </div>
               <p className="text-white/40 text-sm leading-relaxed">
                 Professionelle Garagentor-Renovation<br />in der ganzen Schweiz.
@@ -488,7 +482,7 @@ export default function Home() {
           </div>
           <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/30">
             <p>&copy; {new Date().getFullYear()} garagentor-renovation.ch</p>
-            <p>v1.2.1</p>
+            <p>v1.2.2</p>
           </div>
         </div>
       </footer>

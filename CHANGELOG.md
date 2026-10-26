@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.2 (2026-10-26)
+
+- Logo nochmals überarbeitet: oranges Quadrat + einheitlicher Text
+- Kein Farbsplit, kein Untertitel, kein Icon — sieht nicht nach KI aus
+
 ## 1.2.1 (2026-10-26)
 
 - Logo komplett neu: rein typografisch mit orangem Akzent-Strich (kein Icon)
