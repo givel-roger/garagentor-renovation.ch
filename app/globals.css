@@ -6,6 +6,7 @@
   --color-orange-700: #B5560D;
   --color-anthracite: #2D2D2D;
   --color-anthracite-light: #404040;
+  --color-anthracite-dark: #1a1a1a;
 }
 
 html {
@@ -16,4 +17,19 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: #ffffff;
   color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hero-pattern {
+  background-image:
+    linear-gradient(135deg, rgba(233, 115, 22, 0.08) 0%, transparent 50%),
+    linear-gradient(to bottom, #1a1a1a, #2D2D2D);
+}
+
+.hero-pattern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30h60M30 0v60' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/%3E%3C/svg%3E");
+  pointer-events: none;
 }

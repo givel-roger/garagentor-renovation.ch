@@ -1,7 +1,57 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useRef } from "react";
+
+function IconShield() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
+      <path d="M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  );
+}
+
+function IconClock() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 6v6l4 2" />
+    </svg>
+  );
+}
+
+function IconTool() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
+      <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
+    </svg>
+  );
+}
+
+function IconStar() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </svg>
+  );
+}
+
+function IconCamera() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
+      <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
+      <circle cx="12" cy="13" r="4" />
+    </svg>
+  );
+}
+
+function IconPhone() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+      <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+    </svg>
+  );
+}
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -24,9 +74,7 @@ export default function Home() {
   const formRef = useRef<HTMLDivElement>(null);
 
   function handleChange(
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
@@ -35,29 +83,24 @@ export default function Home() {
     const files = Array.from(e.target.files || []);
     const allFiles = [...fotos, ...files].slice(0, 5);
     setFotos(allFiles);
-    const urls = allFiles.map((f) => URL.createObjectURL(f));
-    setPreviews(urls);
+    setPreviews(allFiles.map((f) => URL.createObjectURL(f)));
   }
 
   function removePhoto(index: number) {
-    const newFotos = fotos.filter((_, i) => i !== index);
-    const newPreviews = previews.filter((_, i) => i !== index);
-    setFotos(newFotos);
-    setPreviews(newPreviews);
+    setFotos(fotos.filter((_, i) => i !== index));
+    setPreviews(previews.filter((_, i) => i !== index));
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSending(true);
     setError("");
-
     try {
       const fd = new FormData();
       Object.entries(formData).forEach(([key, val]) => fd.append(key, val));
       fotos.forEach((f) => fd.append("fotos", f));
-
       const res = await fetch("/api/leads", { method: "POST", body: fd });
-      if (!res.ok) throw new Error("Fehler beim Senden");
+      if (!res.ok) throw new Error("Fehler");
       setSent(true);
     } catch {
       setError("Es gab einen Fehler. Bitte versuchen Sie es erneut.");
@@ -70,413 +113,394 @@ export default function Home() {
     formRef.current?.scrollIntoView({ behavior: "smooth" });
   }
 
+  const inputClass =
+    "w-full border border-gray-300 rounded px-3.5 py-2.5 text-[15px] focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-shadow bg-white";
+
   return (
     <>
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Image src="/logo.svg" alt="Garagentor-Renovation" width={200} height={40} priority />
-          <button
-            onClick={scrollToForm}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors"
-          >
-            Offerte anfordern
-          </button>
+      {/* ─── HEADER ─── */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200/60">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#E97316] to-[#D4660F] rounded-xl flex items-center justify-center shadow-sm shadow-orange-500/20">
+              <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
+                <path d="M16 5L5 14h3v13h16V14h3L16 5z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
+                <line x1="10" y1="18.5" x2="22" y2="18.5" stroke="white" strokeWidth="1" opacity="0.6" />
+                <line x1="10" y1="22.5" x2="22" y2="22.5" stroke="white" strokeWidth="1" opacity="0.6" />
+                <circle cx="19.5" cy="24.5" r="1" fill="white" opacity="0.9" />
+              </svg>
+            </div>
+            <div className="leading-tight">
+              <span className="text-[17px] font-bold tracking-tight text-[#2D2D2D]">Garagentor</span>
+              <span className="text-[17px] font-bold tracking-tight text-orange-500">Renovation</span>
+              <div className="text-[10px] text-gray-400 uppercase tracking-[0.15em] -mt-0.5">Schweiz</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <a href="tel:+41XXXXXXXXX" className="hidden sm:flex items-center gap-2 text-sm text-gray-600 hover:text-[#2D2D2D]">
+              <IconPhone />
+              <span>+41 XX XXX XX XX</span>
+            </a>
+            <button onClick={scrollToForm} className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded text-sm font-semibold transition-all hover:shadow-lg hover:shadow-orange-500/20">
+              Offerte anfordern
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="bg-anthracite text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
+      {/* ─── HERO ─── */}
+      <section className="relative min-h-[600px] sm:min-h-[700px] flex items-center overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <img src="/images/gz-tipps.jpg" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(26,26,26,0.92) 0%, rgba(45,45,45,0.75) 60%, rgba(45,45,45,0.5) 100%)" }} />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 w-full">
           <div className="max-w-2xl">
-            <p className="text-orange-500 font-semibold text-sm uppercase tracking-wide mb-3">
-              Professionelle Garagentor-Renovation
-            </p>
-            <h1 className="text-3xl sm:text-5xl font-bold leading-tight mb-6">
-              Ihr Garagentor,
-              <br />
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/15 rounded-full px-4 py-1.5 mb-8">
+              <div className="w-2 h-2 bg-green-400 rounded-full" />
+              <span className="text-white/80 text-sm">Jetzt Offerte anfordern &mdash; Antwort innert 24h</span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] mb-6 tracking-tight">
+              Ihr Garagentor,<br />
               <span className="text-orange-500">wie neu.</span>
             </h1>
-            <p className="text-gray-300 text-lg sm:text-xl leading-relaxed mb-8">
-              Wir renovieren Ihr bestehendes Garagentor — schnell, sauber und
-              zum besten Preis in der Schweiz. Ohne Kompromisse bei der Qualität.
+            <p className="text-lg sm:text-xl text-white/70 leading-relaxed mb-10 max-w-xl">
+              Renovation statt Neukauf. Wir bringen Ihr bestehendes Garagentor
+              auf Vordermann &mdash; zum besten Preis in der Schweiz.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={scrollToForm}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-lg text-base font-semibold transition-colors"
-              >
-                Kostenlose Offerte anfordern
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button onClick={scrollToForm} className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded text-base font-semibold transition-all hover:shadow-xl hover:shadow-orange-500/25 flex items-center justify-center gap-2">
+                Kostenlose Offerte
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 5v14M19 12l-7 7-7-7" /></svg>
               </button>
-              <a
-                href="tel:+41XXXXXXXXX"
-                className="border border-white/20 hover:border-white/40 text-white px-8 py-3.5 rounded-lg text-base font-semibold transition-colors text-center"
-              >
-                Jetzt anrufen
+              <a href="tel:+41XXXXXXXXX" className="border border-white/25 hover:border-white/40 hover:bg-white/5 text-white px-8 py-4 rounded text-base font-semibold transition-all text-center flex items-center justify-center gap-2">
+                <IconPhone />
+                Anrufen
               </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Vorteile */}
-      <section className="py-16 sm:py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12">
-            Warum Garagentor-Renovation?
-          </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {/* ─── TRUST BAR ─── */}
+      <section className="bg-[#2D2D2D] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
             {[
-              {
-                icon: "💰",
-                title: "Günstigster Anbieter",
-                text: "Wir bieten Ihnen den besten Preis für Ihre Garagentor-Renovation in der Schweiz.",
-              },
-              {
-                icon: "⚡",
-                title: "Schnelle Umsetzung",
-                text: "In der Regel ist Ihr Tor innerhalb eines Tages fertig renoviert.",
-              },
-              {
-                icon: "✨",
-                title: "Saubere Arbeit",
-                text: "Wir arbeiten präzise und hinterlassen Ihre Garage sauber und ordentlich.",
-              },
-              {
-                icon: "🏆",
-                title: "Premium-Qualität",
-                text: "Hochwertige Materialien und Markentore für langlebige Ergebnisse.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
-              >
-                <div className="text-3xl mb-4">{item.icon}</div>
-                <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {item.text}
-                </p>
+              { value: "500+", label: "Tore renoviert" },
+              { value: "24h", label: "Offerte-Garantie" },
+              { value: "15+", label: "Jahre Erfahrung" },
+              { value: "100%", label: "Festpreisgarantie" },
+            ].map((s) => (
+              <div key={s.label} className="text-center sm:text-left">
+                <span className="text-2xl sm:text-3xl font-bold text-orange-500">{s.value}</span>
+                <p className="text-sm text-white/50 mt-1">{s.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* So funktioniert's */}
-      <section className="py-16 sm:py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12">
-            So einfach geht&apos;s
-          </h2>
-          <div className="grid sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
+      {/* ─── LEISTUNGEN ─── */}
+      <section className="py-20 sm:py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mb-14">
+            <p className="text-orange-500 font-semibold text-sm uppercase tracking-wide mb-3">Unsere Leistungen</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#2D2D2D] tracking-tight mb-4">
+              Warum renovieren statt ersetzen?
+            </h2>
+            <p className="text-gray-500 text-lg leading-relaxed">
+              Ein neues Garagentor kostet schnell CHF 5&apos;000 oder mehr.
+              Wir renovieren Ihr bestehendes Tor &mdash; für einen Bruchteil des Preises.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Image */}
+            <div className="relative rounded-xl overflow-hidden h-[300px] sm:h-[400px] lg:h-full">
+              <img src="/images/gz-renovieren.jpg" alt="Garagentor-Monteure bei der Arbeit" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6">
+                <p className="text-white font-semibold text-lg">Professionelle Renovation</p>
+                <p className="text-white/70 text-sm mt-1">Ihr Garagentor sieht aus wie neu &mdash; ohne den Preis eines Neukaufs.</p>
+              </div>
+            </div>
+
+            {/* Cards */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              {[
+                { icon: <IconShield />, title: "Bester Preis", text: "Bis zu 70% günstiger als ein neues Tor. Transparente Festpreise ohne versteckte Kosten." },
+                { icon: <IconClock />, title: "Fertig in einem Tag", text: "Morgens kommen wir, abends ist Ihr Tor wie neu. Kein wochenlanges Warten." },
+                { icon: <IconTool />, title: "Saubere Arbeit", text: "Professionelle Ausführung mit hochwertigen Materialien. Alles bleibt sauber." },
+                { icon: <IconStar />, title: "Mit Garantie", text: "Auf jede Renovation erhalten Sie eine schriftliche Garantie. Qualität, die hält." },
+              ].map((item) => (
+                <div key={item.title} className="p-5 rounded-lg border border-gray-100 hover:border-orange-200 hover:shadow-sm transition-all bg-gray-50/50">
+                  <div className="text-orange-500 mb-3">{item.icon}</div>
+                  <h3 className="font-semibold text-[16px] text-[#2D2D2D] mb-1.5">{item.title}</h3>
+                  <p className="text-gray-500 text-[14px] leading-relaxed">{item.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── TOR-TYPEN ─── */}
+      <section className="py-20 sm:py-28 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <p className="text-orange-500 font-semibold text-sm uppercase tracking-wide mb-3">Tor-Typen</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#2D2D2D] tracking-tight mb-4">
+              Wir renovieren alle Garagentor-Typen
+            </h2>
+            <p className="text-gray-500 text-lg">
+              Egal ob Sektionaltor, Schwingtor oder Rolltor &mdash; wir haben die Lösung.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              {
-                step: "1",
-                title: "Foto hochladen",
-                text: "Fotografieren Sie Ihr Garagentor mit dem Handy und laden Sie das Bild hoch.",
-              },
-              {
-                step: "2",
-                title: "Offerte erhalten",
-                text: "Wir erstellen Ihnen innert 24 Stunden eine kostenlose und unverbindliche Offerte.",
-              },
-              {
-                step: "3",
-                title: "Tor renovieren",
-                text: "Nach Ihrer Zusage renovieren wir Ihr Tor — schnell und zum vereinbarten Preis.",
-              },
-            ].map((item) => (
-              <div key={item.step} className="text-center">
-                <div className="w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
+              { img: "/images/gz-beste.jpg", title: "Sektionaltor", desc: "Das beliebteste Garagentor der Schweiz. Platzsparend und modern." },
+              { img: "/images/gz-ersetzen.jpg", title: "Schwingtor", desc: "Der Klassiker. Robust und langlebig — ideal für die Renovation." },
+              { img: "/images/gz-komplett.jpg", title: "Rolltor / Spezial", desc: "Auch spezielle Tor-Typen renovieren wir fachgerecht und zuverlässig." },
+            ].map((tor) => (
+              <div key={tor.title} className="group bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-lg transition-all">
+                <div className="h-[220px] overflow-hidden">
+                  <img src={tor.img} alt={tor.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-semibold text-lg text-[#2D2D2D] mb-1.5">{tor.title}</h3>
+                  <p className="text-gray-500 text-[14px] leading-relaxed">{tor.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── ABLAUF ─── */}
+      <section className="py-20 sm:py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <p className="text-orange-500 font-semibold text-sm uppercase tracking-wide mb-3">So funktioniert&apos;s</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#2D2D2D] tracking-tight mb-4">
+              In drei Schritten zum neuen Tor
+            </h2>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-8 lg:gap-12 max-w-5xl mx-auto">
+            {[
+              { step: "01", title: "Foto & Masse", text: "Fotografieren Sie Ihr Garagentor mit dem Handy und teilen Sie uns die ungefähren Masse mit." },
+              { step: "02", title: "Offerte erhalten", text: "Innert 24 Stunden erhalten Sie eine kostenlose, unverbindliche Offerte mit Festpreis." },
+              { step: "03", title: "Renovation", text: "Nach Ihrer Zusage renovieren wir Ihr Tor — schnell, sauber, zum vereinbarten Preis." },
+            ].map((item, i) => (
+              <div key={item.step} className="relative text-center">
+                {i < 2 && (
+                  <div className="hidden sm:block absolute top-8 left-[calc(50%+40px)] w-[calc(100%-80px)] border-t-2 border-dashed border-gray-200" />
+                )}
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#2D2D2D] text-white text-lg font-bold mb-5">
                   {item.step}
                 </div>
-                <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {item.text}
-                </p>
+                <h3 className="font-semibold text-lg text-[#2D2D2D] mb-3">{item.title}</h3>
+                <p className="text-gray-500 text-[15px] leading-relaxed">{item.text}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Lead-Formular */}
-      <section ref={formRef} id="offerte" className="py-16 sm:py-20 bg-gray-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3">
-            Kostenlose Offerte anfordern
+      {/* ─── CTA BANNER ─── */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0">
+          <img src="/images/gz-fehler.jpg" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-[#2D2D2D]/85" />
+        </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+            Bereit für ein neues Garagentor-Erlebnis?
           </h2>
-          <p className="text-gray-600 text-center mb-10 max-w-lg mx-auto">
-            Füllen Sie das Formular aus und laden Sie ein Foto Ihres Garagentors
-            hoch. Wir melden uns innert 24 Stunden bei Ihnen.
+          <p className="text-white/60 text-lg mb-8 max-w-xl mx-auto">
+            Starten Sie jetzt &mdash; kostenlos und unverbindlich. Wir melden uns innert 24 Stunden.
           </p>
+          <button onClick={scrollToForm} className="bg-orange-500 hover:bg-orange-600 text-white px-10 py-4 rounded text-base font-semibold transition-all hover:shadow-xl hover:shadow-orange-500/25 inline-flex items-center gap-2">
+            Jetzt Offerte anfordern
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 5v14M19 12l-7 7-7-7" /></svg>
+          </button>
+        </div>
+      </section>
 
-          {sent ? (
-            <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
-              <div className="text-4xl mb-4">✅</div>
-              <h3 className="text-xl font-bold text-green-800 mb-2">
-                Vielen Dank!
-              </h3>
-              <p className="text-green-700">
-                Ihre Anfrage wurde erfolgreich gesendet. Wir melden uns innert
-                24 Stunden bei Ihnen.
+      {/* ─── FORMULAR ─── */}
+      <section ref={formRef} id="offerte" className="py-20 sm:py-28 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
+            {/* Info */}
+            <div className="lg:col-span-2">
+              <p className="text-orange-500 font-semibold text-sm uppercase tracking-wide mb-3">Kontakt</p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#2D2D2D] tracking-tight mb-4">
+                Kostenlose Offerte
+              </h2>
+              <p className="text-gray-500 text-lg leading-relaxed mb-8">
+                Füllen Sie das Formular aus und laden Sie ein Foto Ihres Garagentors hoch. Wir melden uns innert 24 Stunden.
               </p>
+
+              <div className="space-y-5">
+                {[
+                  { icon: <IconShield />, title: "Unverbindlich & kostenlos", text: "Keine versteckten Kosten, kein Risiko." },
+                  { icon: <IconClock />, title: "Antwort innert 24h", text: "Wir sind schnell. Versprochen." },
+                  { icon: <IconTool />, title: "Festpreisgarantie", text: "Der Preis in der Offerte gilt. Punkt." },
+                ].map((item) => (
+                  <div key={item.title} className="flex gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center text-orange-500">{item.icon}</div>
+                    <div>
+                      <p className="font-semibold text-[#2D2D2D] text-[15px]">{item.title}</p>
+                      <p className="text-gray-500 text-sm">{item.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          ) : (
-            <form
-              onSubmit={handleSubmit}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6"
-            >
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    placeholder="Hans Muster"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    E-Mail *
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    placeholder="hans@beispiel.ch"
-                  />
-                </div>
-              </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Telefon *
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    required
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    placeholder="079 123 45 67"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                      PLZ *
-                    </label>
-                    <input
-                      type="text"
-                      name="plz"
-                      required
-                      value={formData.plz}
-                      onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                      placeholder="8000"
-                    />
+            {/* Form */}
+            <div className="lg:col-span-3">
+              {sent ? (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-10 text-center">
+                  <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" className="w-7 h-7"><path d="M20 6L9 17l-5-5" /></svg>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                      Ort *
-                    </label>
-                    <input
-                      type="text"
-                      name="ort"
-                      required
-                      value={formData.ort}
-                      onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                      placeholder="Zürich"
-                    />
+                  <h3 className="text-xl font-bold text-green-800 mb-2">Vielen Dank!</h3>
+                  <p className="text-green-700">Ihre Anfrage wurde gesendet. Wir melden uns innert 24 Stunden.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-xl p-6 sm:p-8 space-y-5 shadow-sm">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Name *</label>
+                      <input type="text" name="name" required value={formData.name} onChange={handleChange} className={inputClass} placeholder="Vor- und Nachname" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Telefon *</label>
+                      <input type="tel" name="phone" required value={formData.phone} onChange={handleChange} className={inputClass} placeholder="079 123 45 67" />
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Tor-Typ
-                </label>
-                <select
-                  name="torTyp"
-                  value={formData.torTyp}
-                  onChange={handleChange}
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white"
-                >
-                  <option value="">Bitte wählen (optional)</option>
-                  <option value="sektionaltor">Sektionaltor</option>
-                  <option value="schwingtor">Schwingtor</option>
-                  <option value="rolltor">Rolltor</option>
-                  <option value="fluegel">Flügeltor</option>
-                  <option value="unbekannt">Weiss ich nicht</option>
-                </select>
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">E-Mail *</label>
+                    <input type="email" name="email" required value={formData.email} onChange={handleChange} className={inputClass} placeholder="ihre@email.ch" />
+                  </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Breite (cm)
-                  </label>
-                  <input
-                    type="text"
-                    name="breite"
-                    value={formData.breite}
-                    onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    placeholder="z.B. 250"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Höhe (cm)
-                  </label>
-                  <input
-                    type="text"
-                    name="hoehe"
-                    value={formData.hoehe}
-                    onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    placeholder="z.B. 200"
-                  />
-                </div>
-              </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">PLZ *</label>
+                      <input type="text" name="plz" required value={formData.plz} onChange={handleChange} className={inputClass} placeholder="8000" />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Ort *</label>
+                      <input type="text" name="ort" required value={formData.ort} onChange={handleChange} className={inputClass} placeholder="Zürich" />
+                    </div>
+                  </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Nachricht (optional)
-                </label>
-                <textarea
-                  name="nachricht"
-                  value={formData.nachricht}
-                  onChange={handleChange}
-                  rows={3}
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
-                  placeholder="Zusätzliche Informationen zu Ihrem Garagentor..."
-                />
-              </div>
+                  <div className="grid sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Tor-Typ</label>
+                      <select name="torTyp" value={formData.torTyp} onChange={handleChange} className={inputClass}>
+                        <option value="">Wählen</option>
+                        <option value="sektionaltor">Sektionaltor</option>
+                        <option value="schwingtor">Schwingtor</option>
+                        <option value="rolltor">Rolltor</option>
+                        <option value="fluegel">Flügeltor</option>
+                        <option value="unbekannt">Weiss nicht</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Breite (cm)</label>
+                      <input type="text" name="breite" value={formData.breite} onChange={handleChange} className={inputClass} placeholder="z.B. 250" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Höhe (cm)</label>
+                      <input type="text" name="hoehe" value={formData.hoehe} onChange={handleChange} className={inputClass} placeholder="z.B. 200" />
+                    </div>
+                  </div>
 
-              {/* Foto-Upload */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Fotos Ihres Garagentors (max. 5)
-                </label>
-                <div
-                  onClick={() => fileRef.current?.click()}
-                  className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center cursor-pointer hover:border-orange-400 transition-colors"
-                >
-                  <div className="text-3xl mb-2">📷</div>
-                  <p className="text-sm text-gray-600">
-                    Klicken oder Foto mit dem Handy aufnehmen
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    JPG, PNG — max. 10 MB pro Bild
-                  </p>
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    multiple
-                    onChange={handleFiles}
-                    className="hidden"
-                  />
-                </div>
-                {previews.length > 0 && (
-                  <div className="flex gap-3 mt-4 flex-wrap">
-                    {previews.map((src, i) => (
-                      <div key={i} className="relative">
-                        <img
-                          src={src}
-                          alt={`Foto ${i + 1}`}
-                          className="w-20 h-20 object-cover rounded-lg border border-gray-200"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removePhoto(i)}
-                          className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center"
-                        >
-                          ×
-                        </button>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Nachricht</label>
+                    <textarea name="nachricht" value={formData.nachricht} onChange={handleChange} rows={3} className={inputClass + " resize-none"} placeholder="Beschreiben Sie kurz den Zustand Ihres Tors..." />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Fotos hochladen <span className="font-normal text-gray-400">(max. 5)</span></label>
+                    <div onClick={() => fileRef.current?.click()} className="border border-dashed border-gray-300 rounded-lg p-5 text-center cursor-pointer hover:border-orange-400 hover:bg-orange-50/30 transition-all">
+                      <div className="text-gray-400 flex justify-center mb-2"><IconCamera /></div>
+                      <p className="text-sm text-gray-600">Foto aufnehmen oder Datei wählen</p>
+                      <p className="text-xs text-gray-400 mt-1">JPG, PNG &mdash; max. 10 MB</p>
+                      <input ref={fileRef} type="file" accept="image/*" capture="environment" multiple onChange={handleFiles} className="hidden" />
+                    </div>
+                    {previews.length > 0 && (
+                      <div className="flex gap-3 mt-3 flex-wrap">
+                        {previews.map((src, i) => (
+                          <div key={i} className="relative">
+                            <img src={src} alt={`Foto ${i + 1}`} className="w-20 h-20 object-cover rounded border border-gray-200" />
+                            <button type="button" onClick={() => removePhoto(i)} className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center hover:bg-red-600">&times;</button>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
-                )}
-              </div>
 
-              {error && (
-                <p className="text-red-600 text-sm">{error}</p>
+                  {error && <p className="text-red-600 text-sm">{error}</p>}
+
+                  <button type="submit" disabled={sending} className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3.5 rounded text-[15px] font-semibold transition-all hover:shadow-lg hover:shadow-orange-500/20">
+                    {sending ? "Wird gesendet..." : "Offerte anfordern — kostenlos & unverbindlich"}
+                  </button>
+
+                  <p className="text-xs text-gray-400 text-center">Ihre Daten werden vertraulich behandelt und nicht an Dritte weitergegeben.</p>
+                </form>
               )}
-
-              <button
-                type="submit"
-                disabled={sending}
-                className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white py-3.5 rounded-lg text-base font-semibold transition-colors"
-              >
-                {sending ? "Wird gesendet..." : "Kostenlose Offerte anfordern"}
-              </button>
-
-              <p className="text-xs text-gray-400 text-center">
-                Ihre Daten werden vertraulich behandelt und nicht an Dritte
-                weitergegeben.
-              </p>
-            </form>
-          )}
-        </div>
-      </section>
-
-      {/* Vertrauen */}
-      <section className="py-16 sm:py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="grid sm:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-3xl sm:text-4xl font-bold text-orange-500 mb-2">500+</div>
-              <p className="text-gray-600">Renovierte Garagentore</p>
-            </div>
-            <div>
-              <div className="text-3xl sm:text-4xl font-bold text-orange-500 mb-2">24h</div>
-              <p className="text-gray-600">Offerte innert einem Tag</p>
-            </div>
-            <div>
-              <div className="text-3xl sm:text-4xl font-bold text-orange-500 mb-2">100%</div>
-              <p className="text-gray-600">Zufriedene Kunden</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-anthracite text-white py-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start gap-8">
+      {/* ─── FOOTER ─── */}
+      <footer className="bg-[#1a1a1a] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+          <div className="grid sm:grid-cols-3 gap-10">
             <div>
-              <Image src="/logo.svg" alt="Garagentor-Renovation" width={180} height={36} className="invert mb-4" />
-              <p className="text-gray-400 text-sm">
-                Professionelle Garagentor-Renovation
-                <br />
-                in der ganzen Schweiz.
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-br from-[#E97316] to-[#D4660F] rounded-lg flex items-center justify-center">
+                  <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5">
+                    <path d="M16 5L5 14h3v13h16V14h3L16 5z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
+                    <line x1="10" y1="18.5" x2="22" y2="18.5" stroke="white" strokeWidth="1" opacity="0.6" />
+                    <line x1="10" y1="22.5" x2="22" y2="22.5" stroke="white" strokeWidth="1" opacity="0.6" />
+                    <circle cx="19.5" cy="24.5" r="1" fill="white" opacity="0.9" />
+                  </svg>
+                </div>
+                <span className="font-bold text-[15px]">GaragentorRenovation</span>
+              </div>
+              <p className="text-white/40 text-sm leading-relaxed">
+                Professionelle Garagentor-Renovation<br />in der ganzen Schweiz.
               </p>
             </div>
-            <div className="text-sm text-gray-400">
-              <p className="font-semibold text-white mb-2">Kontakt</p>
-              <p>info@garagentor-renovation.ch</p>
-              <p>+41 XX XXX XX XX</p>
+            <div>
+              <p className="font-semibold text-sm mb-3">Kontakt</p>
+              <div className="space-y-2 text-sm text-white/50">
+                <p>info@garagentor-renovation.ch</p>
+                <p>+41 XX XXX XX XX</p>
+              </div>
+            </div>
+            <div>
+              <p className="font-semibold text-sm mb-3">Leistungen</p>
+              <div className="space-y-2 text-sm text-white/50">
+                <p>Sektionaltor-Renovation</p>
+                <p>Schwingtor-Renovation</p>
+                <p>Rolltor-Renovation</p>
+              </div>
             </div>
           </div>
-          <div className="border-t border-white/10 mt-8 pt-6 text-center text-xs text-gray-500">
-            © {new Date().getFullYear()} Garagentor-Renovation. Alle Rechte vorbehalten.
+          <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/30">
+            <p>&copy; {new Date().getFullYear()} garagentor-renovation.ch</p>
+            <p>v1.2.0</p>
           </div>
         </div>
       </footer>
