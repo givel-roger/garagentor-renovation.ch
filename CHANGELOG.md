@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.2.0 (2026-10-26)
+
+- Alle Bilder durch echte Schweizer/europäische Garagentor-Fotos ersetzt
+- Neue Bilder: Sektionaltore, Schwingtore, Monteure bei der Arbeit
+- Logo-Redesign: orangener Gradient mit weissem Haus-Icon (Designer-Qualität)
+- Alte Test-Bilder und amerikanische Fotos entfernt
+
+## 1.1.0 (2026-10-26)
+
+- Komplettes Redesign der Landingpage
+- Echte Fotos von Garagentoren statt generischem Layout
+- Neue Sektionen: Tor-Typen, CTA-Banner mit Hintergrundbild
+- SVG-Icons statt Emojis
+- Professionelles Layout inspiriert von sisto.swiss und hoermann.ch
+- Hero mit Foto und dunklem Overlay
+- Trust-Bar mit Kennzahlen
+
 ## 1.0.0 (2026-10-25)
 
 - Initiale Version
