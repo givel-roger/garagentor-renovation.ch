@@ -1,10 +1,15 @@
 # Changelog
 
+## 1.2.1 (2026-10-26)
+
+- Logo komplett neu: rein typografisch mit orangem Akzent-Strich (kein Icon)
+- Minimalistisches Schweizer Design-Studio Branding
+
 ## 1.2.0 (2026-10-26)
 
 - Alle Bilder durch echte Schweizer/europäische Garagentor-Fotos ersetzt
 - Neue Bilder: Sektionaltore, Schwingtore, Monteure bei der Arbeit
-- Logo-Redesign: orangener Gradient mit weissem Haus-Icon (Designer-Qualität)
+- Logo-Redesign: orangener Gradient mit weissem Haus-Icon
 - Alte Test-Bilder und amerikanische Fotos entfernt
 
 ## 1.1.0 (2026-10-26)

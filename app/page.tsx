@@ -122,18 +122,13 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#E97316] to-[#D4660F] rounded-xl flex items-center justify-center shadow-sm shadow-orange-500/20">
-              <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
-                <path d="M16 5L5 14h3v13h16V14h3L16 5z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
-                <line x1="10" y1="18.5" x2="22" y2="18.5" stroke="white" strokeWidth="1" opacity="0.6" />
-                <line x1="10" y1="22.5" x2="22" y2="22.5" stroke="white" strokeWidth="1" opacity="0.6" />
-                <circle cx="19.5" cy="24.5" r="1" fill="white" opacity="0.9" />
-              </svg>
-            </div>
+            <div className="w-1 h-9 bg-[#E97316] rounded-full" />
             <div className="leading-tight">
-              <span className="text-[17px] font-bold tracking-tight text-[#2D2D2D]">Garagentor</span>
-              <span className="text-[17px] font-bold tracking-tight text-orange-500">Renovation</span>
-              <div className="text-[10px] text-gray-400 uppercase tracking-[0.15em] -mt-0.5">Schweiz</div>
+              <div className="-mb-0.5">
+                <span className="text-[18px] font-extrabold tracking-tight text-[#2D2D2D]">Garagentor</span>
+                <span className="text-[18px] font-extrabold tracking-tight text-[#E97316]">Renovation</span>
+              </div>
+              <span className="text-[9px] text-gray-400 uppercase tracking-[0.2em] font-medium">Schweiz</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -468,15 +463,8 @@ export default function Home() {
           <div className="grid sm:grid-cols-3 gap-10">
             <div>
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-[#E97316] to-[#D4660F] rounded-lg flex items-center justify-center">
-                  <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5">
-                    <path d="M16 5L5 14h3v13h16V14h3L16 5z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
-                    <line x1="10" y1="18.5" x2="22" y2="18.5" stroke="white" strokeWidth="1" opacity="0.6" />
-                    <line x1="10" y1="22.5" x2="22" y2="22.5" stroke="white" strokeWidth="1" opacity="0.6" />
-                    <circle cx="19.5" cy="24.5" r="1" fill="white" opacity="0.9" />
-                  </svg>
-                </div>
-                <span className="font-bold text-[15px]">GaragentorRenovation</span>
+                <div className="w-0.5 h-5 bg-[#E97316] rounded-full" />
+                <span className="font-extrabold text-[15px] tracking-tight">Garagentor<span className="text-[#E97316]">Renovation</span></span>
               </div>
               <p className="text-white/40 text-sm leading-relaxed">
                 Professionelle Garagentor-Renovation<br />in der ganzen Schweiz.
@@ -500,7 +488,7 @@ export default function Home() {
           </div>
           <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/30">
             <p>&copy; {new Date().getFullYear()} garagentor-renovation.ch</p>
-            <p>v1.2.0</p>
+            <p>v1.2.1</p>
           </div>
         </div>
       </footer>
