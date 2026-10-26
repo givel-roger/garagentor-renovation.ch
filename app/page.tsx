@@ -114,23 +114,23 @@ export default function Home() {
   }
 
   const inputClass =
-    "w-full border border-gray-300 rounded px-3.5 py-2.5 text-[15px] focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-shadow bg-white";
+    "w-full border border-gray-300 rounded px-3.5 py-2.5 text-[15px] focus:outline-none focus:ring-2 focus:ring-blue-700/40 focus:border-blue-700 transition-shadow bg-white";
 
   return (
     <>
       {/* ─── HEADER ─── */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-[#003A7D] shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[64px] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-3 h-3 bg-[#E97316] rounded-[3px] flex-shrink-0" />
-            <span className="text-[18px] font-semibold tracking-tight text-[#2D2D2D]">Garagentor-Renovation</span>
+            <div className="w-3 h-3 bg-[#F9AD09] rounded-[3px] flex-shrink-0" />
+            <span className="text-[18px] font-semibold tracking-tight text-white">Garagentor-Renovation</span>
           </div>
           <div className="flex items-center gap-3">
-            <a href="tel:+41XXXXXXXXX" className="hidden sm:flex items-center gap-2 text-sm text-gray-600 hover:text-[#2D2D2D]">
+            <a href="tel:+41XXXXXXXXX" className="hidden sm:flex items-center gap-2 text-sm text-white/70 hover:text-white">
               <IconPhone />
               <span>+41 XX XXX XX XX</span>
             </a>
-            <button onClick={scrollToForm} className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded text-sm font-semibold transition-all hover:shadow-lg hover:shadow-orange-500/20">
+            <button onClick={scrollToForm} className="bg-[#F9AD09] hover:bg-[#E89D06] text-[#003A7D] font-bold px-5 py-2.5 rounded text-sm transition-all hover:shadow-lg hover:shadow-gold-400/20">
               Offerte anfordern
             </button>
           </div>
@@ -142,7 +142,7 @@ export default function Home() {
         {/* Background image */}
         <div className="absolute inset-0">
           <img src="/images/gz-tipps.jpg" alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(26,26,26,0.92) 0%, rgba(45,45,45,0.75) 60%, rgba(45,45,45,0.5) 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(0,31,69,0.93) 0%, rgba(0,58,125,0.78) 60%, rgba(0,58,125,0.5) 100%)" }} />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 w-full">
@@ -153,14 +153,14 @@ export default function Home() {
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] mb-6 tracking-tight">
               Ihr Garagentor,<br />
-              <span className="text-orange-500">wie neu.</span>
+              <span className="text-gold-400">wie neu.</span>
             </h1>
             <p className="text-lg sm:text-xl text-white/70 leading-relaxed mb-10 max-w-xl">
               Renovation statt Neukauf. Wir bringen Ihr bestehendes Garagentor
               auf Vordermann &mdash; zum besten Preis in der Schweiz.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <button onClick={scrollToForm} className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded text-base font-semibold transition-all hover:shadow-xl hover:shadow-orange-500/25 flex items-center justify-center gap-2">
+              <button onClick={scrollToForm} className="bg-[#F9AD09] hover:bg-[#E89D06] text-[#003A7D] font-bold px-8 py-4 rounded text-base transition-all hover:shadow-xl hover:shadow-gold-400/25 flex items-center justify-center gap-2">
                 Kostenlose Offerte
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 5v14M19 12l-7 7-7-7" /></svg>
               </button>
@@ -174,7 +174,7 @@ export default function Home() {
       </section>
 
       {/* ─── TRUST BAR ─── */}
-      <section className="bg-[#2D2D2D] text-white">
+      <section className="bg-[#003A7D] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
             {[
@@ -184,7 +184,7 @@ export default function Home() {
               { value: "100%", label: "Festpreisgarantie" },
             ].map((s) => (
               <div key={s.label} className="text-center sm:text-left">
-                <span className="text-2xl sm:text-3xl font-bold text-orange-500">{s.value}</span>
+                <span className="text-2xl sm:text-3xl font-bold text-gold-400">{s.value}</span>
                 <p className="text-sm text-white/50 mt-1">{s.label}</p>
               </div>
             ))}
@@ -196,8 +196,8 @@ export default function Home() {
       <section className="py-20 sm:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mb-14">
-            <p className="text-orange-500 font-semibold text-sm uppercase tracking-wide mb-3">Unsere Leistungen</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#2D2D2D] tracking-tight mb-4">
+            <p className="text-gold-400 font-semibold text-sm uppercase tracking-wide mb-3">Unsere Leistungen</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#003A7D] tracking-tight mb-4">
               Warum renovieren statt ersetzen?
             </h2>
             <p className="text-gray-500 text-lg leading-relaxed">
@@ -225,9 +225,9 @@ export default function Home() {
                 { icon: <IconTool />, title: "Saubere Arbeit", text: "Professionelle Ausführung mit hochwertigen Materialien. Alles bleibt sauber." },
                 { icon: <IconStar />, title: "Mit Garantie", text: "Auf jede Renovation erhalten Sie eine schriftliche Garantie. Qualität, die hält." },
               ].map((item) => (
-                <div key={item.title} className="p-5 rounded-lg border border-gray-100 hover:border-orange-200 hover:shadow-sm transition-all bg-gray-50/50">
-                  <div className="text-orange-500 mb-3">{item.icon}</div>
-                  <h3 className="font-semibold text-[16px] text-[#2D2D2D] mb-1.5">{item.title}</h3>
+                <div key={item.title} className="p-5 rounded-lg border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all bg-gray-50/50">
+                  <div className="text-gold-400 mb-3">{item.icon}</div>
+                  <h3 className="font-semibold text-[16px] text-[#003A7D] mb-1.5">{item.title}</h3>
                   <p className="text-gray-500 text-[14px] leading-relaxed">{item.text}</p>
                 </div>
               ))}
@@ -240,8 +240,8 @@ export default function Home() {
       <section className="py-20 sm:py-28 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="text-orange-500 font-semibold text-sm uppercase tracking-wide mb-3">Tor-Typen</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#2D2D2D] tracking-tight mb-4">
+            <p className="text-gold-400 font-semibold text-sm uppercase tracking-wide mb-3">Tor-Typen</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#003A7D] tracking-tight mb-4">
               Wir renovieren alle Garagentor-Typen
             </h2>
             <p className="text-gray-500 text-lg">
@@ -260,7 +260,7 @@ export default function Home() {
                   <img src={tor.img} alt={tor.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 <div className="p-5">
-                  <h3 className="font-semibold text-lg text-[#2D2D2D] mb-1.5">{tor.title}</h3>
+                  <h3 className="font-semibold text-lg text-[#003A7D] mb-1.5">{tor.title}</h3>
                   <p className="text-gray-500 text-[14px] leading-relaxed">{tor.desc}</p>
                 </div>
               </div>
@@ -273,8 +273,8 @@ export default function Home() {
       <section className="py-20 sm:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <p className="text-orange-500 font-semibold text-sm uppercase tracking-wide mb-3">So funktioniert&apos;s</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#2D2D2D] tracking-tight mb-4">
+            <p className="text-gold-400 font-semibold text-sm uppercase tracking-wide mb-3">So funktioniert&apos;s</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#003A7D] tracking-tight mb-4">
               In drei Schritten zum neuen Tor
             </h2>
           </div>
@@ -289,10 +289,10 @@ export default function Home() {
                 {i < 2 && (
                   <div className="hidden sm:block absolute top-8 left-[calc(50%+40px)] w-[calc(100%-80px)] border-t-2 border-dashed border-gray-200" />
                 )}
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#2D2D2D] text-white text-lg font-bold mb-5">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#003A7D] text-white text-lg font-bold mb-5">
                   {item.step}
                 </div>
-                <h3 className="font-semibold text-lg text-[#2D2D2D] mb-3">{item.title}</h3>
+                <h3 className="font-semibold text-lg text-[#003A7D] mb-3">{item.title}</h3>
                 <p className="text-gray-500 text-[15px] leading-relaxed">{item.text}</p>
               </div>
             ))}
@@ -304,7 +304,7 @@ export default function Home() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <img src="/images/gz-fehler.jpg" alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-[#2D2D2D]/85" />
+          <div className="absolute inset-0 bg-[#003A7D]/90" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
@@ -313,7 +313,7 @@ export default function Home() {
           <p className="text-white/60 text-lg mb-8 max-w-xl mx-auto">
             Starten Sie jetzt &mdash; kostenlos und unverbindlich. Wir melden uns innert 24 Stunden.
           </p>
-          <button onClick={scrollToForm} className="bg-orange-500 hover:bg-orange-600 text-white px-10 py-4 rounded text-base font-semibold transition-all hover:shadow-xl hover:shadow-orange-500/25 inline-flex items-center gap-2">
+          <button onClick={scrollToForm} className="bg-[#F9AD09] hover:bg-[#E89D06] text-[#003A7D] font-bold px-10 py-4 rounded text-base transition-all hover:shadow-xl hover:shadow-gold-400/25 inline-flex items-center gap-2">
             Jetzt Offerte anfordern
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 5v14M19 12l-7 7-7-7" /></svg>
           </button>
@@ -326,8 +326,8 @@ export default function Home() {
           <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
             {/* Info */}
             <div className="lg:col-span-2">
-              <p className="text-orange-500 font-semibold text-sm uppercase tracking-wide mb-3">Kontakt</p>
-              <h2 className="text-3xl sm:text-4xl font-bold text-[#2D2D2D] tracking-tight mb-4">
+              <p className="text-gold-400 font-semibold text-sm uppercase tracking-wide mb-3">Kontakt</p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#003A7D] tracking-tight mb-4">
                 Kostenlose Offerte
               </h2>
               <p className="text-gray-500 text-lg leading-relaxed mb-8">
@@ -341,9 +341,9 @@ export default function Home() {
                   { icon: <IconTool />, title: "Festpreisgarantie", text: "Der Preis in der Offerte gilt. Punkt." },
                 ].map((item) => (
                   <div key={item.title} className="flex gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center text-orange-500">{item.icon}</div>
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-gold-400">{item.icon}</div>
                     <div>
-                      <p className="font-semibold text-[#2D2D2D] text-[15px]">{item.title}</p>
+                      <p className="font-semibold text-[#003A7D] text-[15px]">{item.title}</p>
                       <p className="text-gray-500 text-sm">{item.text}</p>
                     </div>
                   </div>
@@ -419,7 +419,7 @@ export default function Home() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">Fotos hochladen <span className="font-normal text-gray-400">(max. 5)</span></label>
-                    <div onClick={() => fileRef.current?.click()} className="border border-dashed border-gray-300 rounded-lg p-5 text-center cursor-pointer hover:border-orange-400 hover:bg-orange-50/30 transition-all">
+                    <div onClick={() => fileRef.current?.click()} className="border border-dashed border-gray-300 rounded-lg p-5 text-center cursor-pointer hover:border-gold-400 hover:bg-gold-400/5 transition-all">
                       <div className="text-gray-400 flex justify-center mb-2"><IconCamera /></div>
                       <p className="text-sm text-gray-600">Foto aufnehmen oder Datei wählen</p>
                       <p className="text-xs text-gray-400 mt-1">JPG, PNG &mdash; max. 10 MB</p>
@@ -439,7 +439,7 @@ export default function Home() {
 
                   {error && <p className="text-red-600 text-sm">{error}</p>}
 
-                  <button type="submit" disabled={sending} className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3.5 rounded text-[15px] font-semibold transition-all hover:shadow-lg hover:shadow-orange-500/20">
+                  <button type="submit" disabled={sending} className="w-full bg-[#003A7D] hover:bg-[#002D63] disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3.5 rounded text-[15px] font-semibold transition-all hover:shadow-lg hover:shadow-blue-700/20">
                     {sending ? "Wird gesendet..." : "Offerte anfordern — kostenlos & unverbindlich"}
                   </button>
 
@@ -452,12 +452,12 @@ export default function Home() {
       </section>
 
       {/* ─── FOOTER ─── */}
-      <footer className="bg-[#1a1a1a] text-white">
+      <footer className="bg-[#001F45] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
           <div className="grid sm:grid-cols-3 gap-10">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-2.5 h-2.5 bg-[#E97316] rounded-[2px] flex-shrink-0" />
+                <div className="w-2.5 h-2.5 bg-[#F9AD09] rounded-[2px] flex-shrink-0" />
                 <span className="font-semibold text-[15px] tracking-tight">Garagentor-Renovation</span>
               </div>
               <p className="text-white/40 text-sm leading-relaxed">
@@ -482,7 +482,7 @@ export default function Home() {
           </div>
           <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/30">
             <p>&copy; {new Date().getFullYear()} garagentor-renovation.ch</p>
-            <p>v1.2.2</p>
+            <p>v1.3.0</p>
           </div>
         </div>
       </footer>

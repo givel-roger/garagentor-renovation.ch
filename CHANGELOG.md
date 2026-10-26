@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0 (2026-10-26)
+
+- Komplette Umfärbung im Hörmann-Stil: Dunkelblau (#003A7D) + Gold (#F9AD09)
+- Dunkelblauer Header mit goldenem CTA-Button
+- Hero-Overlay in Dunkelblau
+- Alle Akzente und Icons in Gold statt Orange
+- Dunkelblauer Footer
+- Formular-Button in Dunkelblau
+
 ## 1.2.2 (2026-10-26)
 
 - Logo nochmals überarbeitet: oranges Quadrat + einheitlicher Text
