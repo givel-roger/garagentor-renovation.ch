@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.0 (2026-10-27)
+
+- Logo-Redesign: gestapeltes Wordmark mit Montserrat Black + goldener Trennlinie
+- Kontaktdaten eingefügt: Marktindex AG, Cheerstrasse 13b, 6014 Luzern
+- Betreiberin im Footer: Marktindex AG
+- E-Mail statt Platzhalter-Telefonnummer im Header und Hero
+
 ## 1.3.0 (2026-10-26)
 
 - Komplette Umfärbung im Hörmann-Stil: Dunkelblau (#003A7D) + Gold (#F9AD09)

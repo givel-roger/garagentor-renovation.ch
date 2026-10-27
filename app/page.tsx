@@ -121,14 +121,17 @@ export default function Home() {
       {/* ─── HEADER ─── */}
       <header className="sticky top-0 z-50 bg-[#003A7D] shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[64px] flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-3 h-3 bg-[#F9AD09] rounded-[3px] flex-shrink-0" />
-            <span className="text-[18px] font-semibold tracking-tight text-white">Garagentor-Renovation</span>
+          <div className="flex items-center gap-0">
+            <div className="flex flex-col items-start leading-none">
+              <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-[22px] font-black tracking-[-0.01em] text-white uppercase">Garagentor</span>
+              <div className="w-full h-[2px] bg-[#F9AD09] my-[3px] rounded-full" />
+              <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-[11.5px] font-extrabold tracking-[0.28em] text-[#F9AD09] uppercase">Renovation</span>
+            </div>
           </div>
           <div className="flex items-center gap-3">
-            <a href="tel:+41XXXXXXXXX" className="hidden sm:flex items-center gap-2 text-sm text-white/70 hover:text-white">
+            <a href="mailto:info@marktindex.ch" className="hidden sm:flex items-center gap-2 text-sm text-white/70 hover:text-white">
               <IconPhone />
-              <span>+41 XX XXX XX XX</span>
+              <span>info@marktindex.ch</span>
             </a>
             <button onClick={scrollToForm} className="bg-[#F9AD09] hover:bg-[#E89D06] text-[#003A7D] font-bold px-5 py-2.5 rounded text-sm transition-all hover:shadow-lg hover:shadow-gold-400/20">
               Offerte anfordern
@@ -164,9 +167,9 @@ export default function Home() {
                 Kostenlose Offerte
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 5v14M19 12l-7 7-7-7" /></svg>
               </button>
-              <a href="tel:+41XXXXXXXXX" className="border border-white/25 hover:border-white/40 hover:bg-white/5 text-white px-8 py-4 rounded text-base font-semibold transition-all text-center flex items-center justify-center gap-2">
+              <a href="mailto:info@marktindex.ch" className="border border-white/25 hover:border-white/40 hover:bg-white/5 text-white px-8 py-4 rounded text-base font-semibold transition-all text-center flex items-center justify-center gap-2">
                 <IconPhone />
-                Anrufen
+                E-Mail senden
               </a>
             </div>
           </div>
@@ -456,9 +459,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
           <div className="grid sm:grid-cols-3 gap-10">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-2.5 h-2.5 bg-[#F9AD09] rounded-[2px] flex-shrink-0" />
-                <span className="font-semibold text-[15px] tracking-tight">Garagentor-Renovation</span>
+              <div className="flex items-center gap-0 mb-4">
+                <div className="flex flex-col items-start leading-none">
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-[18px] font-black tracking-[-0.01em] text-white uppercase">Garagentor</span>
+                  <div className="w-full h-[2px] bg-[#F9AD09] my-[2.5px] rounded-full" />
+                  <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-[9.5px] font-extrabold tracking-[0.28em] text-[#F9AD09] uppercase">Renovation</span>
+                </div>
               </div>
               <p className="text-white/40 text-sm leading-relaxed">
                 Professionelle Garagentor-Renovation<br />in der ganzen Schweiz.
@@ -467,22 +473,23 @@ export default function Home() {
             <div>
               <p className="font-semibold text-sm mb-3">Kontakt</p>
               <div className="space-y-2 text-sm text-white/50">
-                <p>info@garagentor-renovation.ch</p>
-                <p>+41 XX XXX XX XX</p>
+                <p>info@marktindex.ch</p>
+                <p>Cheerstrasse 13b</p>
+                <p>6014 Luzern</p>
               </div>
             </div>
             <div>
-              <p className="font-semibold text-sm mb-3">Leistungen</p>
+              <p className="font-semibold text-sm mb-3">Betreiberin</p>
               <div className="space-y-2 text-sm text-white/50">
-                <p>Sektionaltor-Renovation</p>
-                <p>Schwingtor-Renovation</p>
-                <p>Rolltor-Renovation</p>
+                <p>Marktindex AG</p>
+                <p>Cheerstrasse 13b</p>
+                <p>6014 Luzern</p>
               </div>
             </div>
           </div>
           <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/30">
             <p>&copy; {new Date().getFullYear()} garagentor-renovation.ch</p>
-            <p>v1.3.0</p>
+            <p>v1.4.0</p>
           </div>
         </div>
       </footer>
