@@ -221,17 +221,20 @@ export default function Home() {
             </div>
 
             {/* Cards */}
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 gap-5">
               {[
-                { icon: <IconShield />, title: "Bester Preis", text: "Bis zu 70% günstiger als ein neues Tor. Transparente Festpreise ohne versteckte Kosten." },
-                { icon: <IconClock />, title: "Fertig in einem Tag", text: "Morgens kommen wir, abends ist Ihr Tor wie neu. Kein wochenlanges Warten." },
-                { icon: <IconTool />, title: "Saubere Arbeit", text: "Professionelle Ausführung mit hochwertigen Materialien. Alles bleibt sauber." },
-                { icon: <IconStar />, title: "Mit Garantie", text: "Auf jede Renovation erhalten Sie eine schriftliche Garantie. Qualität, die hält." },
+                { icon: <IconShield />, highlight: "70%", sub: "günstiger", title: "Bester Preis", text: "Transparente Festpreise — ohne versteckte Kosten." },
+                { icon: <IconClock />, highlight: "1", sub: "Tag", title: "Fertig in einem Tag", text: "Morgens kommen wir, abends ist Ihr Tor wie neu." },
+                { icon: <IconTool />, highlight: "100%", sub: "sauber", title: "Saubere Arbeit", text: "Professionelle Ausführung mit hochwertigen Materialien." },
+                { icon: <IconStar />, highlight: "5", sub: "Jahre", title: "Mit Garantie", text: "Schriftliche Garantie auf jede Renovation." },
               ].map((item) => (
-                <div key={item.title} className="p-5 rounded-lg border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all bg-gray-50/50">
-                  <div className="text-gold-400 mb-3">{item.icon}</div>
-                  <h3 className="font-semibold text-[16px] text-[#003A7D] mb-1.5">{item.title}</h3>
-                  <p className="text-gray-500 text-[14px] leading-relaxed">{item.text}</p>
+                <div key={item.title} className="p-6 rounded-xl bg-[#003A7D] text-white hover:bg-[#002D63] transition-all group">
+                  <div className="flex items-end gap-2 mb-4">
+                    <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-[42px] font-black leading-none text-[#F9AD09]">{item.highlight}</span>
+                    <span className="text-[15px] font-semibold text-white/70 pb-1">{item.sub}</span>
+                  </div>
+                  <h3 className="font-bold text-[17px] mb-2">{item.title}</h3>
+                  <p className="text-white/60 text-[14px] leading-relaxed">{item.text}</p>
                 </div>
               ))}
             </div>
@@ -489,7 +492,7 @@ export default function Home() {
           </div>
           <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/30">
             <p>&copy; {new Date().getFullYear()} garagentor-renovation.ch</p>
-            <p>v1.4.3</p>
+            <p>v1.5.0</p>
           </div>
         </div>
       </footer>

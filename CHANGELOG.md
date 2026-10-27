@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0 (2026-10-27)
+
+- Vorteile-Karten plakativ redesigned: dunkelblau mit grossen goldenen Zahlen (70%, 1 Tag, 100%, 5 Jahre)
+- Montserrat Black für die Highlight-Zahlen
+
 ## 1.4.3 (2026-10-27)
 
 - Telefonnummer 044 442 99 90 im Header, Hero und Footer eingefügt
