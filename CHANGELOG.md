@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.2 (2026-10-27)
+
+- Footer vereinfacht: nur Leadhunter GmbH + Leistungen-Spalte zurück
+
 ## 1.4.1 (2026-10-27)
 
 - Betreiberin geändert auf Leadhunter GmbH
