@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.3 (2026-10-27)
+
+- Telefonnummer 044 442 99 90 im Header, Hero und Footer eingefügt
+
 ## 1.4.2 (2026-10-27)
 
 - Footer vereinfacht: nur Leadhunter GmbH + Leistungen-Spalte zurück

@@ -129,9 +129,9 @@ export default function Home() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <a href="mailto:info@marktindex.ch" className="hidden sm:flex items-center gap-2 text-sm text-white/70 hover:text-white">
+            <a href="tel:+41444429990" className="hidden sm:flex items-center gap-2 text-sm text-white/70 hover:text-white">
               <IconPhone />
-              <span>info@marktindex.ch</span>
+              <span>044 442 99 90</span>
             </a>
             <button onClick={scrollToForm} className="bg-[#F9AD09] hover:bg-[#E89D06] text-[#003A7D] font-bold px-5 py-2.5 rounded text-sm transition-all hover:shadow-lg hover:shadow-gold-400/20">
               Offerte anfordern
@@ -167,9 +167,9 @@ export default function Home() {
                 Kostenlose Offerte
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 5v14M19 12l-7 7-7-7" /></svg>
               </button>
-              <a href="mailto:info@marktindex.ch" className="border border-white/25 hover:border-white/40 hover:bg-white/5 text-white px-8 py-4 rounded text-base font-semibold transition-all text-center flex items-center justify-center gap-2">
+              <a href="tel:+41444429990" className="border border-white/25 hover:border-white/40 hover:bg-white/5 text-white px-8 py-4 rounded text-base font-semibold transition-all text-center flex items-center justify-center gap-2">
                 <IconPhone />
-                E-Mail senden
+                Anrufen
               </a>
             </div>
           </div>
@@ -475,7 +475,7 @@ export default function Home() {
               <div className="space-y-2 text-sm text-white/50">
                 <p>Cheerstrasse 13b</p>
                 <p>6014 Luzern</p>
-                <p>info@marktindex.ch</p>
+                <p>044 442 99 90</p>
               </div>
             </div>
             <div>
@@ -489,7 +489,7 @@ export default function Home() {
           </div>
           <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/30">
             <p>&copy; {new Date().getFullYear()} garagentor-renovation.ch</p>
-            <p>v1.4.2</p>
+            <p>v1.4.3</p>
           </div>
         </div>
       </footer>
