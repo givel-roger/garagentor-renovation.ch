@@ -481,7 +481,7 @@ export default function Home() {
             <div>
               <p className="font-semibold text-sm mb-3">Betreiberin</p>
               <div className="space-y-2 text-sm text-white/50">
-                <p>Marktindex AG</p>
+                <p>Leadhunter GmbH</p>
                 <p>Cheerstrasse 13b</p>
                 <p>6014 Luzern</p>
               </div>
@@ -489,7 +489,7 @@ export default function Home() {
           </div>
           <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/30">
             <p>&copy; {new Date().getFullYear()} garagentor-renovation.ch</p>
-            <p>v1.4.0</p>
+            <p>v1.4.1</p>
           </div>
         </div>
       </footer>

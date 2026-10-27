@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1 (2026-10-27)
+
+- Betreiberin geändert auf Leadhunter GmbH
+
 ## 1.4.0 (2026-10-27)
 
 - Logo-Redesign: gestapeltes Wordmark mit Montserrat Black + goldener Trennlinie
