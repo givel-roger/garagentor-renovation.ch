@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.1 (2026-10-28)
+
+- "bis zu" vor 70% ergänzt
+
 ## 1.5.0 (2026-10-27)
 
 - Vorteile-Karten plakativ redesigned: dunkelblau mit grossen goldenen Zahlen (70%, 1 Tag, 100%, 5 Jahre)

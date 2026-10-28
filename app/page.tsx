@@ -223,12 +223,13 @@ export default function Home() {
             {/* Cards */}
             <div className="grid sm:grid-cols-2 gap-5">
               {[
-                { icon: <IconShield />, highlight: "70%", sub: "günstiger", title: "Bester Preis", text: "Transparente Festpreise — ohne versteckte Kosten." },
+                { icon: <IconShield />, highlight: "70%", sub: "günstiger", prefix: "bis zu", title: "Bester Preis", text: "Transparente Festpreise — ohne versteckte Kosten." },
                 { icon: <IconClock />, highlight: "1", sub: "Tag", title: "Fertig in einem Tag", text: "Morgens kommen wir, abends ist Ihr Tor wie neu." },
                 { icon: <IconTool />, highlight: "100%", sub: "sauber", title: "Saubere Arbeit", text: "Professionelle Ausführung mit hochwertigen Materialien." },
                 { icon: <IconStar />, highlight: "5", sub: "Jahre", title: "Mit Garantie", text: "Schriftliche Garantie auf jede Renovation." },
               ].map((item) => (
                 <div key={item.title} className="p-6 rounded-xl bg-[#003A7D] text-white hover:bg-[#002D63] transition-all group">
+                  {'prefix' in item && <span className="text-[13px] font-semibold text-white/50 uppercase tracking-wider">{(item as any).prefix}</span>}
                   <div className="flex items-end gap-2 mb-4">
                     <span style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-[42px] font-black leading-none text-[#F9AD09]">{item.highlight}</span>
                     <span className="text-[15px] font-semibold text-white/70 pb-1">{item.sub}</span>
@@ -492,7 +493,7 @@ export default function Home() {
           </div>
           <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/30">
             <p>&copy; {new Date().getFullYear()} garagentor-renovation.ch</p>
-            <p>v1.5.0</p>
+            <p>v1.5.1</p>
           </div>
         </div>
       </footer>
