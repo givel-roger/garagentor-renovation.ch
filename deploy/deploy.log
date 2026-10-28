@@ -27,3 +27,4 @@
 2026-10-28 14:45:09 Deploy gestartet
 2026-10-28 14:45:29 Deploy erfolgreich
 2026-10-28 17:09:07 Port 3007 + v2.2.1 auf GitHub, Server-Checkout abgeglichen, kein Neustart (S8)
+2026-10-28 18:15:00 v2.2.1 deployed (S8) — git pull + docker compose up -d --build, Port 3007, SSL OK
