@@ -2,7 +2,7 @@
 
 ## 2.2.1 (2026-10-28)
 
-- Port auf Server 8 von 3001 auf 3007 geändert: 3001 gehört sanitär-stellen.ch, der Container konnte nicht starten und die Adresse zeigte die Sanitär-Seite
+- Port auf Server 8 von 3001 auf 3007 geändert (3001 gehört sanitär-stellen.ch)
 - Containername garagentor-renovation.ch wie auf dem Server
 
 ## 2.2.0 (2026-10-28)

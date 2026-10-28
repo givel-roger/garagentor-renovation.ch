@@ -1,1 +1,29 @@
+2026-10-25 23:54:37 | v1.0.0 | Deploy erfolgreich | Port 3011 | HTTP 200 | Server: 65.108.4.141
+2026-10-26 16:08:09 Deploy gestartet
+2026-10-26 16:08:44 Deploy erfolgreich
+2026-10-26 16:26:28 v1.2.1 deployed - typografisches Logo, Schweizer Bilder - Health 200 OK
+2026-10-26 16:35:11 Deploy gestartet
+2026-10-26 16:35:47 Deploy erfolgreich
+2026-10-26 16:35:53 v1.3.0 deployed - Dunkelblau+Gold Farbschema - Health 200 OK
+2026-10-27 15:15:41 Deploy gestartet
+2026-10-27 15:16:17 Deploy erfolgreich
+[2026-10-27 15:19] v1.4.0 deployed — Logo-Redesign (Montserrat Black + Gold-Trennlinie) + Kontaktdaten Marktindex AG
+[2026-10-27 15:32] SSL-Zertifikat installiert — HTTPS aktiv für garagentor-renovation.ch + www
+2026-10-27 15:33:22 Deploy gestartet
+2026-10-27 15:33:57 Deploy erfolgreich
+2026-10-27 22:10:16 Deploy gestartet
+2026-10-27 22:10:52 Deploy erfolgreich
+2026-10-27 22:24:41 Deploy gestartet
+2026-10-27 22:25:16 Deploy erfolgreich
+2026-10-27 22:34:48 Deploy gestartet
+2026-10-27 22:35:28 Deploy erfolgreich
+2026-10-28 06:43:11 Deploy gestartet
+2026-10-28 06:43:46 Deploy erfolgreich
+2026-10-28 08:19:47 Deploy gestartet
+2026-10-28 08:21:25 Deploy gestartet
+2026-10-28 08:21:44 Deploy erfolgreich
+2026-10-28 10:24:51 Deploy gestartet
+2026-10-28 10:25:27 Deploy erfolgreich
+2026-10-28 14:45:09 Deploy gestartet
+2026-10-28 14:45:29 Deploy erfolgreich
 2026-10-28 17:09:07 Port 3007 + v2.2.1 auf GitHub, Server-Checkout abgeglichen, kein Neustart (S8)
