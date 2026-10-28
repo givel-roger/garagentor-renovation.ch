@@ -282,6 +282,9 @@ export default function AdminPage() {
           <button className="w-full bg-[#003A7D] hover:bg-[#002D63] text-white py-2.5 rounded-lg font-semibold transition-colors">
             Anmelden
           </button>
+          <p className="text-center mt-4 text-xs text-gray-400">
+            Passwort vergessen? Bitte den Administrator kontaktieren.
+          </p>
         </form>
       </div>
     );
