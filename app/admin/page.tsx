@@ -70,8 +70,12 @@ export default function AdminPage() {
   const [filter, setFilter] = useState("alle");
   const [selected, setSelected] = useState<Lead | null>(null);
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState<"leads" | "partners">("leads");
+  const [tab, setTab] = useState<"leads" | "partners" | "users">("leads");
   const [showPartnerForm, setShowPartnerForm] = useState(false);
+  const [users, setUsers] = useState<any[]>([]);
+  const [resetUserId, setResetUserId] = useState<number | null>(null);
+  const [resetPassword, setResetPassword] = useState("");
+  const [resetMessage, setResetMessage] = useState("");
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
@@ -94,6 +98,14 @@ export default function AdminPage() {
     if (res.ok) setPartners(await res.json());
   }, [token, user]);
 
+  const fetchUsers = useCallback(async () => {
+    if (user?.role !== "admin") return;
+    const res = await fetch("/api/users", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) setUsers(await res.json());
+  }, [token, user]);
+
   useEffect(() => {
     const saved = sessionStorage.getItem("admin_token");
     const savedUser = sessionStorage.getItem("admin_user");
@@ -108,8 +120,9 @@ export default function AdminPage() {
     if (loggedIn && token) {
       fetchLeads();
       fetchPartners();
+      fetchUsers();
     }
-  }, [loggedIn, token, filter, fetchLeads, fetchPartners]);
+  }, [loggedIn, token, filter, fetchLeads, fetchPartners, fetchUsers]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -182,6 +195,35 @@ export default function AdminPage() {
     setLoggedIn(false);
     sessionStorage.removeItem("admin_token");
     sessionStorage.removeItem("admin_user");
+  }
+
+  async function handleResetPassword(userId: number) {
+    if (!resetPassword || resetPassword.length < 4) {
+      setResetMessage("Passwort muss mindestens 4 Zeichen haben");
+      return;
+    }
+    const res = await fetch("/api/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ userId, newPassword: resetPassword }),
+    });
+    if (res.ok) {
+      setResetMessage("Passwort wurde zurückgesetzt");
+      setResetPassword("");
+      setTimeout(() => { setResetUserId(null); setResetMessage(""); }, 2000);
+    } else {
+      const data = await res.json();
+      setResetMessage(data.error || "Fehler");
+    }
+  }
+
+  async function toggleUserActive(userId: number, currentActive: number) {
+    await fetch("/api/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ userId, active: currentActive ? 0 : 1 }),
+    });
+    fetchUsers();
   }
 
   function getWhatsAppLink(lead: Lead) {
@@ -267,6 +309,12 @@ export default function AdminPage() {
                   className={`px-3 py-1 rounded text-sm font-medium transition-colors ${tab === "partners" ? "bg-white/20" : "hover:bg-white/10"}`}
                 >
                   Partner
+                </button>
+                <button
+                  onClick={() => setTab("users")}
+                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${tab === "users" ? "bg-white/20" : "hover:bg-white/10"}`}
+                >
+                  Users
                 </button>
               </div>
             )}
@@ -473,6 +521,72 @@ export default function AdminPage() {
               )}
             </div>
           </>
+        ) : tab === "users" ? (
+          // ─── USERS TAB ───
+          <div>
+            <h2 className="text-xl font-bold text-[#003A7D] mb-6">Benutzerverwaltung</h2>
+            <div className="space-y-3">
+              {users.map((u: any) => (
+                <div key={u.id} className="bg-white rounded-lg border border-gray-100 p-5">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-bold text-[#003A7D]">{u.display_name}</h3>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${u.role === "admin" ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-600"}`}>
+                          {u.role}
+                        </span>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${u.active ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                          {u.active ? "Aktiv" : "Gesperrt"}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-500 mt-1">Benutzername: <span className="font-mono text-gray-700">{u.username}</span></p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => { setResetUserId(resetUserId === u.id ? null : u.id); setResetPassword(""); setResetMessage(""); }}
+                        className="px-3 py-1.5 bg-[#F9AD09] hover:bg-[#e09d08] text-white rounded-lg text-sm font-medium transition-colors"
+                      >
+                        Passwort zurücksetzen
+                      </button>
+                      <button
+                        onClick={() => toggleUserActive(u.id, u.active)}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${u.active ? "bg-red-50 text-red-600 hover:bg-red-100" : "bg-green-50 text-green-600 hover:bg-green-100"}`}
+                      >
+                        {u.active ? "Sperren" : "Aktivieren"}
+                      </button>
+                    </div>
+                  </div>
+                  {resetUserId === u.id && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <div className="flex gap-3 items-end">
+                        <div className="flex-1">
+                          <label className="text-xs text-gray-500 mb-1 block">Neues Passwort</label>
+                          <input
+                            type="password"
+                            value={resetPassword}
+                            onChange={(e) => setResetPassword(e.target.value)}
+                            placeholder="Neues Passwort eingeben"
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#003A7D]"
+                          />
+                        </div>
+                        <button
+                          onClick={() => handleResetPassword(u.id)}
+                          className="bg-[#003A7D] hover:bg-[#002D63] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                        >
+                          Speichern
+                        </button>
+                      </div>
+                      {resetMessage && (
+                        <p className={`text-sm mt-2 ${resetMessage.includes("zurückgesetzt") ? "text-green-600" : "text-red-600"}`}>
+                          {resetMessage}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         ) : (
           // ─── PARTNER TAB ───
           <div>

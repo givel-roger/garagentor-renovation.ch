@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.3.0 (2026-10-28)
+
+- Benutzerverwaltung im Admin: neuer "Users"-Tab
+- Passwort zurücksetzen für alle User (Admin-only)
+- User sperren/aktivieren
+- API-Endpunkt /api/users für User-Verwaltung
+- Datenbank-Permissions auf Server 8 gefixt
+
 ## 2.2.1 (2026-10-28)
 
 - Port auf Server 8 von 3001 auf 3007 geändert (3001 gehört sanitär-stellen.ch)
