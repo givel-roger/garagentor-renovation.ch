@@ -10,4 +10,6 @@ services:
       - ./public/uploads:/app/public/uploads
     environment:
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-garagentor2024}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET:-garagentor-3cx-2024}
       - NODE_ENV=production
