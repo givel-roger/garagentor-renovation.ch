@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# Sicherer Deploy für garagentor-renovation.ch — Docker.
+# Sicherer Deploy für garagentor-renovation.ch — Docker auf Server 8.
 #
 # Workflow: GitHub FIRST (commit + push), DANN deployen.
 # DB (data/leads.db) und public/uploads sind Host-Volumes und bleiben
@@ -8,13 +8,13 @@
 # =============================================================================
 set -euo pipefail
 
-SERVER="${DEPLOY_SERVER:-root@65.108.4.141}"
-APP_DIR="/opt/garagentor-renovation"
+SERVER="${DEPLOY_SERVER:-root@178.104.120.91}"
+APP_DIR="/var/www/garagentor-renovation.ch"
 REPO="https://github.com/givel-roger/garagentor-renovation.ch.git"
 LOG_FILE="$(dirname "$0")/deploy.log"
 
-echo "=== Deploy garagentor-renovation.ch auf $SERVER ==="
-echo "$(date '+%Y-%m-%d %H:%M:%S') Deploy gestartet" >> "$LOG_FILE"
+echo "=== Deploy garagentor-renovation.ch auf $SERVER (Server 8) ==="
+echo "$(date '+%Y-%m-%d %H:%M:%S') Deploy gestartet (S8)" >> "$LOG_FILE"
 
 ssh "$SERVER" bash -s <<REMOTE
 set -euo pipefail
@@ -49,6 +49,5 @@ docker compose up -d --build
 echo "Deploy fertig."
 REMOTE
 
-echo "$(date '+%Y-%m-%d %H:%M:%S') Deploy erfolgreich" >> "$LOG_FILE"
+echo "$(date '+%Y-%m-%d %H:%M:%S') Deploy erfolgreich (S8)" >> "$LOG_FILE"
 echo "=== Deploy abgeschlossen ==="
-echo "Health-Check: curl -s http://65.108.4.141:3010"

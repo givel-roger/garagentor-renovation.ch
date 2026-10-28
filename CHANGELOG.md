@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.0 (2026-10-28)
+
+- Migration auf Server 8 (178.104.120.91): Docker Port 3001
+- deploy.sh für Server 8 aktualisiert
+
 ## 2.1.0 (2026-10-28)
 
 - Telefonanrufe automatisch transkribieren (OpenAI Whisper)
