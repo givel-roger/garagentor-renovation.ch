@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.1 (2026-10-28)
+
+- Port auf Server 8 von 3001 auf 3007 geändert: 3001 gehört sanitär-stellen.ch, der Container konnte nicht starten und die Adresse zeigte die Sanitär-Seite
+- Containername garagentor-renovation.ch wie auf dem Server
+
 ## 2.2.0 (2026-10-28)
 
 - Migration auf Server 8 (178.104.120.91): Docker Port 3001
