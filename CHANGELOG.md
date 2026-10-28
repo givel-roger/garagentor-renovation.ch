@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.0 (2026-10-28)
+
+- Multi-User Admin-System: Login mit Benutzername/Passwort (roger, irma als Admins)
+- Partner-Verwaltung: Firmen mit PLZ, Ort, Radius anlegen + Login erstellen
+- Regionale Lead-Zuweisung: Leads automatisch dem nächsten Partner innerhalb Radius zuweisen
+- Rollenbasierte Ansichten: Partner sehen nur ihre Leads, Admins sehen alles
+- 3CX Webhook: Telefonanrufe werden als Leads erfasst (Quelle: Telefon)
+- Lead-Quelle anzeigen (Formular vs. Telefon)
+- Manuelle Partner-Zuweisung durch Admin
+- PLZ-Koordinaten-Tabelle für Schweizer Postleitzahlen (Haversine-Distanzberechnung)
+
 ## 1.5.1 (2026-10-28)
 
 - "bis zu" vor 70% ergänzt

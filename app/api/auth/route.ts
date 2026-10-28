@@ -1,13 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/auth";
+import { login, verifyToken } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { password } = body;
+  const { username, password } = body;
 
-  if (verifyToken(password)) {
-    return NextResponse.json({ token: password });
+  if (!username || !password) {
+    return NextResponse.json({ error: "Username und Passwort erforderlich" }, { status: 400 });
   }
 
-  return NextResponse.json({ error: "Falsches Passwort" }, { status: 401 });
+  const result = login(username, password);
+  if (!result) {
+    return NextResponse.json({ error: "Falsches Login" }, { status: 401 });
+  }
+
+  return NextResponse.json({ token: result.token, user: result.user });
+}
+
+export async function GET(request: NextRequest) {
+  const token = request.headers.get("Authorization")?.replace("Bearer ", "");
+  if (!token) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const user = verifyToken(token);
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  return NextResponse.json({ user });
 }

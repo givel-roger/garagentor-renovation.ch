@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import getDb from "@/lib/db";
 import { verifyToken } from "@/lib/auth";
+import { assignLeadToPartner } from "@/lib/geo";
 import fs from "fs";
 import path from "path";
 
@@ -43,22 +44,13 @@ export async function POST(request: NextRequest) {
     }
 
     const db = getDb();
+    const partnerId = assignLeadToPartner(db, plz);
+
     const stmt = db.prepare(`
-      INSERT INTO leads (name, email, phone, plz, ort, tor_typ, breite, hoehe, nachricht, fotos)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO leads (name, email, phone, plz, ort, tor_typ, breite, hoehe, nachricht, fotos, source, partner_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'web', ?)
     `);
-    stmt.run(
-      name,
-      email,
-      phone,
-      plz,
-      ort,
-      torTyp,
-      breite,
-      hoehe,
-      nachricht,
-      JSON.stringify(fotoPaths)
-    );
+    stmt.run(name, email, phone, plz, ort, torTyp, breite, hoehe, nachricht, JSON.stringify(fotoPaths), partnerId);
 
     return NextResponse.json({ success: true });
   } catch (err) {
@@ -72,21 +64,38 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   const token = request.headers.get("Authorization")?.replace("Bearer ", "");
-  if (!token || !verifyToken(token)) {
+  if (!token) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const user = verifyToken(token);
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const db = getDb();
   const status = request.nextUrl.searchParams.get("status");
 
-  let leads;
-  if (status && status !== "alle") {
-    leads = db
-      .prepare("SELECT * FROM leads WHERE status = ? ORDER BY created_at DESC")
-      .all(status);
-  } else {
-    leads = db.prepare("SELECT * FROM leads ORDER BY created_at DESC").all();
+  let query = "SELECT * FROM leads";
+  const conditions: string[] = [];
+  const params: (string | number)[] = [];
+
+  // Partners only see their own leads
+  if (user.role === "partner" && user.partnerId) {
+    conditions.push("partner_id = ?");
+    params.push(user.partnerId);
   }
 
+  if (status && status !== "alle") {
+    conditions.push("status = ?");
+    params.push(status);
+  }
+
+  if (conditions.length > 0) {
+    query += " WHERE " + conditions.join(" AND ");
+  }
+  query += " ORDER BY created_at DESC";
+
+  const leads = db.prepare(query).all(...params);
   return NextResponse.json(leads);
 }
