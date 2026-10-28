@@ -75,6 +75,8 @@ function getDb() {
   // Add source and partner_id columns if they don't exist (migration)
   try { db.exec("ALTER TABLE leads ADD COLUMN source TEXT DEFAULT 'web'"); } catch {}
   try { db.exec("ALTER TABLE leads ADD COLUMN partner_id INTEGER"); } catch {}
+  try { db.exec("ALTER TABLE leads ADD COLUMN transkription TEXT DEFAULT ''"); } catch {}
+  try { db.exec("ALTER TABLE leads ADD COLUMN recording_url TEXT DEFAULT ''"); } catch {}
 
   // Seed admin users if none exist
   const userCount = db.prepare("SELECT COUNT(*) as cnt FROM users").get() as { cnt: number };

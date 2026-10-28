@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.0 (2026-10-28)
+
+- Telefonanrufe automatisch transkribieren (OpenAI Whisper)
+- Transkription im Admin-Lead-Detail anzeigen (goldenes Textfeld)
+- Audio-Player für Aufnahme im Admin eingebaut
+- Transkriptions-Vorschau in der Lead-Liste
+- recording_url und transkription Spalten in DB
+
 ## 2.0.0 (2026-10-28)
 
 - Multi-User Admin-System: Login mit Benutzername/Passwort (roger, irma als Admins)

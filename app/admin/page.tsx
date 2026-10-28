@@ -16,6 +16,8 @@ interface Lead {
   fotos: string;
   source: string;
   partner_id: number | null;
+  transkription: string;
+  recording_url: string;
   status: string;
   created_at: string;
   updated_at: string;
@@ -329,6 +331,9 @@ export default function AdminPage() {
                               {lead.plz} {lead.ort} · {lead.phone} {lead.email ? `· ${lead.email}` : ""}
                               {user?.role === "admin" && lead.partner_id ? ` · → ${getPartnerName(lead.partner_id)}` : ""}
                             </p>
+                            {lead.transkription && (
+                              <p className="text-xs text-amber-700 mt-1 truncate">💬 {lead.transkription.slice(0, 100)}{lead.transkription.length > 100 ? "…" : ""}</p>
+                            )}
                           </div>
                           <span className="text-xs text-gray-400 whitespace-nowrap">{formatDate(lead.created_at)}</span>
                         </div>
@@ -376,6 +381,20 @@ export default function AdminPage() {
                       <div>
                         <span className="text-gray-500">Nachricht:</span>
                         <p className="mt-1 text-gray-700 whitespace-pre-wrap">{selected.nachricht}</p>
+                      </div>
+                    )}
+                    {selected.transkription && (
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                        <span className="text-amber-700 font-medium text-xs uppercase tracking-wide">Transkription</span>
+                        <p className="mt-1.5 text-gray-800 text-sm leading-relaxed whitespace-pre-wrap">{selected.transkription}</p>
+                      </div>
+                    )}
+                    {selected.recording_url && (
+                      <div>
+                        <span className="text-gray-500">Aufnahme:</span>
+                        <audio controls className="w-full mt-1" src={selected.recording_url}>
+                          <a href={selected.recording_url} target="_blank" rel="noopener noreferrer">Aufnahme abspielen</a>
+                        </audio>
                       </div>
                     )}
                     <div><span className="text-gray-500">Erstellt:</span> {formatDate(selected.created_at)}</div>
