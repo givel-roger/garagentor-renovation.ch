@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.7.0 (2026-10-29)
+
+- 3CX CRM-Integration: Custom XML-Vorlage für automatischen Anruf-Webhook
+- Neuer API-Endpunkt /api/3cx-lookup für 3CX-Kontaktabfrage
+- Webhook erweitert: Anruftyp (eingehend/verpasst), Agent und Notizen werden gespeichert
+- Verpasste Anrufe werden separat markiert
+
 ## 2.6.0 (2026-10-29)
 
 - Dashboard-Tab mit Statistiken: Leads gesamt, Abschlussrate, Status-Übersicht, Quellen, Leads pro Partner

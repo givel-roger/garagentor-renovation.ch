@@ -50,6 +50,9 @@ export async function POST(request: NextRequest) {
     const name = body.caller_name || body.name || `Anruf ${phone}`;
     const recording_url = body.recording_url || body.recording || "";
     const duration = body.duration || "";
+    const callType = body.call_type || "";
+    const agent = body.agent || "";
+    const notes = body.notes || "";
 
     if (!phone) {
       return NextResponse.json({ error: "Keine Telefonnummer" }, { status: 400 });
@@ -57,13 +60,21 @@ export async function POST(request: NextRequest) {
 
     const db = getDb();
 
+    const messageParts = [];
+    if (callType === "Missed") messageParts.push("Verpasster Anruf");
+    else messageParts.push("Telefonanruf");
+    if (duration) messageParts.push(`(${duration})`);
+    if (agent) messageParts.push(`Agent: ${agent}`);
+    if (notes) messageParts.push(notes);
+    const nachricht = messageParts.join(" – ") || "Telefonanruf";
+
     const result = db.prepare(`
       INSERT INTO leads (name, email, phone, plz, ort, nachricht, source, status, recording_url)
       VALUES (?, '', ?, '', '', ?, 'phone', 'neu', ?)
     `).run(
       name,
       phone,
-      `Telefonanruf${duration ? ` (${duration}s)` : ""}`,
+      nachricht,
       recording_url
     );
 

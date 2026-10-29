@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Crm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Country="CH" Name="GaragentorWebhook" Version="6" SupportsEmojis="false" SupportsTranscription="false" ListPageSize="0">
+  <Number Prefix="AsIs" MaxLength="[MaxLength]" />
+  <Connection MaxConcurrentRequests="2" />
+  <Parameters>
+    <Parameter Name="Domain" Type="String" Parent="General Configuration" Editor="String" Title="Domain:" Validation="" Default="garagentor-renovation.ch" ListValues="" RequestUrl="" RequestUrlParameters="" ResponseScenario="" />
+    <Parameter Name="Secret" Type="String" Parent="General Configuration" Editor="String" Title="Webhook Secret:" Validation="" Default="garagentor-3cx-2024" ListValues="" RequestUrl="" RequestUrlParameters="" ResponseScenario="" />
+    <Parameter Name="ReportCallEnabled" Type="Boolean" Parent="" Editor="String" Title="Anrufjournal aktivieren" Validation="" Default="True" ListValues="" RequestUrl="" RequestUrlParameters="" ResponseScenario="" />
+    <Parameter Name="InboundCallText" Type="String" Parent="ReportCallEnabled" Editor="String" Title="Eingehender Anruf:" Validation="" Default="Eingehender Anruf von [Number] [Name] an [Agent] ([Duration])" ListValues="" RequestUrl="" RequestUrlParameters="" ResponseScenario="" />
+    <Parameter Name="MissedCallText" Type="String" Parent="ReportCallEnabled" Editor="String" Title="Verpasster Anruf:" Validation="" Default="Verpasster Anruf von [Number] [Name] an [Agent]" ListValues="" RequestUrl="" RequestUrlParameters="" ResponseScenario="" />
+  </Parameters>
+  <Authentication Type="No" />
+  <Scenarios>
+    <Scenario Id="" Type="REST" EntityId="Contacts" EntityOrder="">
+      <Request SkipIf="" Url="https://[Domain]/api/3cx-lookup?secret=[Secret]&amp;number=[EscapedNumber]" MessagePasses="0" Message="" RequestContentType="" RequestEncoding="UrlEncoded" RequestType="Get" ResponseType="Json" />
+      <Rules>
+        <Rule Type="Any" Ethalon="">id</Rule>
+      </Rules>
+      <Variables>
+        <Variable Name="ContactID" LookupValue="" Path="id"><Filter /></Variable>
+        <Variable Name="FirstName" LookupValue="" Path="fname"><Filter /></Variable>
+        <Variable Name="LastName" LookupValue="" Path="lname"><Filter /></Variable>
+        <Variable Name="Email" LookupValue="" Path="email"><Filter /></Variable>
+        <Variable Name="PhoneBusiness" LookupValue="" Path="worktel"><Filter /></Variable>
+        <Variable Name="PhoneMobile" LookupValue="" Path="mobtel"><Filter /></Variable>
+        <Variable Name="PhoneHome" LookupValue="" Path="hometel"><Filter /></Variable>
+      </Variables>
+      <Outputs AllowEmpty="false">
+        <Output Type="ContactUrl" Passes="0" Value="https://[Domain]/admin" />
+        <Output Type="FirstName" Passes="0" Value="[FirstName]" />
+        <Output Type="LastName" Passes="0" Value="[LastName]" />
+        <Output Type="Email" Passes="0" Value="[Email]" />
+        <Output Type="PhoneBusiness" Passes="0" Value="[PhoneBusiness]" />
+        <Output Type="PhoneMobile" Passes="0" Value="[PhoneMobile]" />
+        <Output Type="PhoneHome" Passes="0" Value="[PhoneHome]" />
+        <Output Type="EntityId" Passes="0" Value="[ContactID]" />
+        <Output Type="EntityType" Passes="0" Value="Contacts" />
+      </Outputs>
+    </Scenario>
+    <Scenario Id="ReportCall" Type="REST" EntityId="" EntityOrder="">
+      <Request SkipIf="[ReportCallEnabled]!=True" Url="https://[Domain]/api/webhook?secret=[Secret]" MessagePasses="0" Message="" RequestContentType="application/json" RequestEncoding="Json" RequestType="Post" ResponseType="Json">
+        <PostValues Key="" If="" SkipIf="">
+          <Value Key="caller_number" If="" SkipIf="" Passes="0" Type="String">[Number]</Value>
+          <Value Key="caller_name" If="" SkipIf="" Passes="0" Type="String">[Name]</Value>
+          <Value Key="duration" If="" SkipIf="" Passes="0" Type="String">[Duration]</Value>
+          <Value Key="call_type" If="" SkipIf="" Passes="0" Type="String">[CallType]</Value>
+          <Value Key="agent" If="" SkipIf="" Passes="0" Type="String">[Agent]</Value>
+          <Value Key="notes" If="[CallType]==Inbound" SkipIf="" Passes="2" Type="String">[[InboundCallText]]</Value>
+          <Value Key="notes" If="[CallType]==Missed" SkipIf="" Passes="2" Type="String">[[MissedCallText]]</Value>
+        </PostValues>
+      </Request>
+      <Variables />
+      <Outputs AllowEmpty="false" />
+    </Scenario>
+  </Scenarios>
+</Crm>
