@@ -32,12 +32,12 @@ function parseToken(token: string): number | null {
   }
 }
 
-export function login(username: string, password: string): { token: string; user: UserSession } | null {
+export function login(identifier: string, password: string): { token: string; user: UserSession } | null {
   const db = getDb();
   const hash = hashPassword(password);
   const row = db.prepare(
-    "SELECT id, username, display_name, role, partner_id FROM users WHERE username = ? AND password_hash = ? AND active = 1"
-  ).get(username, hash) as { id: number; username: string; display_name: string; role: string; partner_id: number | null } | undefined;
+    "SELECT id, username, display_name, role, partner_id FROM users WHERE (username = ? OR email = ?) AND password_hash = ? AND active = 1"
+  ).get(identifier, identifier, hash) as { id: number; username: string; display_name: string; role: string; partner_id: number | null } | undefined;
 
   if (!row) return null;
 

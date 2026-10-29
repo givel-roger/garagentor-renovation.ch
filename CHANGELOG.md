@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.10.1 (2026-10-29)
+
+- Login mit E-Mail statt Benutzername
+- Passwort-Auge (Sichtbarkeit umschalten) auf Login- und Reset-Seite
+- Login akzeptiert weiterhin auch den Benutzernamen (Abwärtskompatibel)
+
 ## 2.10.0 (2026-10-29)
 
 - Passwort-Reset komplett neu: E-Mail eingeben → Reset-Link per E-Mail → neues Passwort 2x eingeben
