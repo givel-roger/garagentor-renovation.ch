@@ -29,3 +29,4 @@
 2026-10-28 17:09:07 Port 3007 + v2.2.1 auf GitHub, Server-Checkout abgeglichen, kein Neustart (S8)
 2026-10-28 18:15:00 v2.2.1 deployed (S8) — git pull + docker compose up -d --build, Port 3007, SSL OK
 2026-10-28 20:47:00 v2.3.0 deployed (S8) — Benutzerverwaltung + Passwort-Reset, Health 200 OK
+2026-10-29 06:14:00 v2.4.0 deployed (S8) — Passwort-Reset mit E-Mail via Brevo SMTP, Health 200 OK
