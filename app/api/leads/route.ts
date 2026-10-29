@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import getDb from "@/lib/db";
 import { verifyToken } from "@/lib/auth";
 import { assignLeadToPartner } from "@/lib/geo";
+import { sendLeadNotification } from "@/lib/email";
 import fs from "fs";
 import path from "path";
 
@@ -51,6 +52,8 @@ export async function POST(request: NextRequest) {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'web', ?)
     `);
     stmt.run(name, email, phone, plz, ort, torTyp, breite, hoehe, nachricht, JSON.stringify(fotoPaths), partnerId);
+
+    sendLeadNotification({ name, phone, email, plz, ort, source: "web", nachricht });
 
     return NextResponse.json({ success: true });
   } catch (err) {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import getDb from "@/lib/db";
+import { sendLeadNotification } from "@/lib/email";
 
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || "garagentor-3cx-2024";
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
@@ -80,6 +81,8 @@ export async function POST(request: NextRequest) {
     );
 
     const leadId = result.lastInsertRowid;
+
+    sendLeadNotification({ name, phone, source: "phone", nachricht });
 
     if (recording_url) {
       transcribeAudio(recording_url).then((text) => {

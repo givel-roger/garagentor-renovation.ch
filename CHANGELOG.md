@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.9.0 (2026-10-29)
+
+- E-Mail-Benachrichtigung bei jedem neuen Lead (Formular, Telefonanruf, Voicemail)
+- Benachrichtigung enthält: Name, Telefon, Quelle, Nachricht, Transkription
+- Via Brevo SMTP an givel@marktindex.ch
+
 ## 2.8.0 (2026-10-29)
 
 - Automatischer Voicemail-Sync via 3CX XAPI: Anrufbeantworter-Nachrichten werden automatisch abgerufen

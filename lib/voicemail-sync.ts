@@ -1,4 +1,5 @@
 import getDb from "./db";
+import { sendLeadNotification } from "./email";
 import path from "path";
 import fs from "fs";
 
@@ -266,17 +267,19 @@ export async function syncVoicemails(): Promise<{ processed: number; errors: str
           const nachricht = transcription
             ? `Voicemail: ${transcription}`
             : `Voicemail vom ${new Date(callTime).toLocaleString("de-CH")}`;
+          const leadName = callerName || `Anruf ${callerNumber}`;
           db.prepare(
             `INSERT INTO leads (name, email, phone, plz, ort, nachricht, source, status, recording_url, transkription)
              VALUES (?, '', ?, '', '', ?, 'phone', 'neu', ?, ?)`
           ).run(
-            callerName || `Anruf ${callerNumber}`,
+            leadName,
             callerNumber,
             nachricht,
             recordingUrl,
             transcription
           );
           console.log(`[VoicemailSync] Created new lead for ${callerNumber}`);
+          sendLeadNotification({ name: leadName, phone: callerNumber, source: "phone", nachricht, transkription: transcription || undefined });
         }
 
         db.prepare("INSERT OR IGNORE INTO voicemail_processed (call_id) VALUES (?)").run(callId);
