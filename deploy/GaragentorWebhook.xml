@@ -47,6 +47,7 @@
           <Value Key="agent" If="" SkipIf="" Passes="0" Type="String">[Agent]</Value>
           <Value Key="notes" If="[CallType]==Inbound" SkipIf="" Passes="2" Type="String">[[InboundCallText]]</Value>
           <Value Key="notes" If="[CallType]==Missed" SkipIf="" Passes="2" Type="String">[[MissedCallText]]</Value>
+          <Value Key="recording_url" If="" SkipIf="" Passes="0" Type="String">[RecordingUrl]</Value>
         </PostValues>
       </Request>
       <Variables />
