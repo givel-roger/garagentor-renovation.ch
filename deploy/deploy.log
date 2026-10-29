@@ -30,3 +30,6 @@
 2026-10-28 18:15:00 v2.2.1 deployed (S8) — git pull + docker compose up -d --build, Port 3007, SSL OK
 2026-10-28 20:47:00 v2.3.0 deployed (S8) — Benutzerverwaltung + Passwort-Reset, Health 200 OK
 2026-10-29 06:14:00 v2.4.0 deployed (S8) — Passwort-Reset mit E-Mail via Brevo SMTP, Health 200 OK
+[2026-10-29 07:21] v2.5.0 deployed – Kanban-Board für Leads (Drag & Drop, 5 Spalten, Toggle Kanban/Liste)
+[2026-10-29 09:33] v2.6.0 deployed – Dashboard, Vorlagen, Kantonskarte, Impersonation
+2026-10-29 12:16:01 v2.7.0 deployed - 3CX CRM-Integration, 3cx-lookup Endpunkt, Webhook erweitert - Health 200 OK
