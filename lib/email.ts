@@ -14,7 +14,7 @@ export async function sendPasswordResetEmail(
       "api-key": apiKey,
     },
     body: JSON.stringify({
-      sender: { name: "Garagentor Renovation", email: "givel@marktindex.ch" },
+      sender: { name: "Marktindex", email: "givel@marktindex.ch" },
       to: [{ email: to, name: username }],
       subject: "Passwort zurückgesetzt – garagentor-renovation.ch",
       htmlContent: `

@@ -4,7 +4,7 @@ import { sendPasswordResetEmail } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { username } = body;
+  const { username, newPassword } = body;
 
   if (!username) {
     return NextResponse.json({ error: "Benutzername erforderlich" }, { status: 400 });
@@ -23,13 +23,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Dieses Konto ist gesperrt" }, { status: 403 });
   }
 
-  const defaultPassword = process.env.ADMIN_PASSWORD || "garagentor2024";
+  const passwordToSet = newPassword || process.env.ADMIN_PASSWORD || "garagentor2024";
   db.prepare("UPDATE users SET password_hash = ? WHERE id = ?")
-    .run(hashPassword(defaultPassword), user.id);
+    .run(hashPassword(passwordToSet), user.id);
 
   if (user.email) {
     try {
-      await sendPasswordResetEmail(user.email, user.display_name, defaultPassword);
+      await sendPasswordResetEmail(user.email, user.display_name, newPassword ? "dein gewähltes Passwort" : passwordToSet);
       return NextResponse.json({
         success: true,
         message: `Passwort wurde zurückgesetzt. Eine E-Mail wurde an ${user.email.replace(/(.{2})(.*)(@.*)/, "$1***$3")} gesendet.`,

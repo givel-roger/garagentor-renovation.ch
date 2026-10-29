@@ -201,6 +201,8 @@ export default function AdminPage() {
     sessionStorage.removeItem("admin_user");
   }
 
+  const [forgotPassword, setForgotPassword] = useState("");
+
   async function handleForgotPassword(e: React.FormEvent) {
     e.preventDefault();
     setForgotMessage("");
@@ -208,10 +210,14 @@ export default function AdminPage() {
       setForgotMessage("Bitte Benutzername eingeben");
       return;
     }
+    if (!forgotPassword || forgotPassword.length < 4) {
+      setForgotMessage("Passwort muss mindestens 4 Zeichen haben");
+      return;
+    }
     const res = await fetch("/api/auth/reset", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: forgotUsername }),
+      body: JSON.stringify({ username: forgotUsername, newPassword: forgotPassword }),
     });
     const data = await res.json();
     if (res.ok) {
@@ -325,6 +331,13 @@ export default function AdminPage() {
                 value={forgotUsername}
                 onChange={(e) => setForgotUsername(e.target.value)}
                 placeholder="Benutzername"
+                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-[#F9AD09]"
+              />
+              <input
+                type="password"
+                value={forgotPassword}
+                onChange={(e) => setForgotPassword(e.target.value)}
+                placeholder="Neues Passwort"
                 className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-[#F9AD09]"
               />
               {forgotMessage && (
