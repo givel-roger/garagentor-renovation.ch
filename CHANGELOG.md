@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.5.0 (2026-10-29)
+
+- Kanban-Board für Leads: Drag & Drop zwischen Spalten (Neu, Kontaktiert, Offerte, Erledigt, Abgelehnt)
+- Toggle zwischen Kanban- und Listenansicht
+- Farbcodierte Spalten-Header
+- Lead-Karten mit Name, Ort, Telefon, Partner-Zuordnung
+
 ## 2.4.0 (2026-10-29)
 
 - Passwort-Reset sendet E-Mail via Brevo SMTP

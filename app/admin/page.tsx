@@ -57,6 +57,21 @@ const SOURCE_LABELS: Record<string, string> = {
 };
 
 const STATUS_OPTIONS = ["alle", "neu", "kontaktiert", "offerte", "abgeschlossen", "abgelehnt"];
+const KANBAN_COLUMNS = ["neu", "kontaktiert", "offerte", "abgeschlossen", "abgelehnt"];
+const KANBAN_LABELS: Record<string, string> = {
+  neu: "Neu",
+  kontaktiert: "Kontaktiert",
+  offerte: "Offerte",
+  abgeschlossen: "Erledigt",
+  abgelehnt: "Abgelehnt",
+};
+const KANBAN_HEADER_COLORS: Record<string, string> = {
+  neu: "bg-blue-500",
+  kontaktiert: "bg-yellow-500",
+  offerte: "bg-purple-500",
+  abgeschlossen: "bg-green-500",
+  abgelehnt: "bg-red-400",
+};
 
 export default function AdminPage() {
   const [token, setToken] = useState("");
@@ -80,11 +95,14 @@ export default function AdminPage() {
   const [resetUserId, setResetUserId] = useState<number | null>(null);
   const [resetPassword, setResetPassword] = useState("");
   const [resetMessage, setResetMessage] = useState("");
+  const [viewMode, setViewMode] = useState<"kanban" | "list">("kanban");
+  const [draggedLead, setDraggedLead] = useState<number | null>(null);
+  const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
     try {
-      const params = filter !== "alle" ? `?status=${filter}` : "";
+      const params = viewMode === "list" && filter !== "alle" ? `?status=${filter}` : "";
       const res = await fetch(`/api/leads${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -92,7 +110,7 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-  }, [token, filter]);
+  }, [token, filter, viewMode]);
 
   const fetchPartners = useCallback(async () => {
     if (user?.role !== "admin") return;
@@ -126,7 +144,7 @@ export default function AdminPage() {
       fetchPartners();
       fetchUsers();
     }
-  }, [loggedIn, token, filter, fetchLeads, fetchPartners, fetchUsers]);
+  }, [loggedIn, token, filter, viewMode, fetchLeads, fetchPartners, fetchUsers]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -408,67 +426,144 @@ export default function AdminPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {tab === "leads" ? (
           <>
-            {/* Filter */}
-            <div className="flex gap-2 mb-6 flex-wrap">
-              {STATUS_OPTIONS.map((s) => (
+            {/* Header mit View Toggle */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-gray-400">{leads.length} Lead{leads.length !== 1 ? "s" : ""}</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg p-0.5">
                 <button
-                  key={s}
-                  onClick={() => setFilter(s)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                    filter === s ? "bg-[#003A7D] text-white" : "bg-white border border-gray-200 text-gray-600 hover:border-gray-300"
-                  }`}
+                  onClick={() => setViewMode("kanban")}
+                  className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === "kanban" ? "bg-[#003A7D] text-white" : "text-gray-500 hover:text-gray-700"}`}
                 >
-                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                  Kanban
                 </button>
-              ))}
-              <span className="ml-auto text-sm text-gray-400 self-center">{leads.length} Lead{leads.length !== 1 ? "s" : ""}</span>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${viewMode === "list" ? "bg-[#003A7D] text-white" : "text-gray-500 hover:text-gray-700"}`}
+                >
+                  Liste
+                </button>
+              </div>
             </div>
 
             <div className="flex gap-6">
-              {/* Lead-Liste */}
               <div className="flex-1 min-w-0">
-                {loading ? (
-                  <p className="text-gray-400 text-sm">Laden...</p>
-                ) : leads.length === 0 ? (
-                  <p className="text-gray-400 text-sm">Keine Leads gefunden.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {leads.map((lead) => (
-                      <div
-                        key={lead.id}
-                        onClick={() => setSelected(lead)}
-                        className={`bg-white rounded-lg border p-4 cursor-pointer transition-colors ${
-                          selected?.id === lead.id ? "border-[#003A7D] ring-1 ring-[#003A7D]" : "border-gray-100 hover:border-gray-200"
-                        }`}
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-semibold text-sm truncate">{lead.name}</span>
-                              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[lead.status] || ""}`}>
-                                {lead.status}
-                              </span>
-                              {lead.source === "phone" && (
-                                <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">📞 Anruf</span>
-                              )}
-                            </div>
-                            <p className="text-xs text-gray-500 truncate">
-                              {lead.plz} {lead.ort} · {lead.phone} {lead.email ? `· ${lead.email}` : ""}
-                              {user?.role === "admin" && lead.partner_id ? ` · → ${getPartnerName(lead.partner_id)}` : ""}
-                            </p>
-                            {lead.transkription && (
-                              <p className="text-xs text-amber-700 mt-1 truncate">💬 {lead.transkription.slice(0, 100)}{lead.transkription.length > 100 ? "…" : ""}</p>
+                {viewMode === "kanban" ? (
+                  /* ─── KANBAN BOARD ─── */
+                  <div className="flex gap-3 overflow-x-auto pb-4">
+                    {KANBAN_COLUMNS.map((status) => {
+                      const columnLeads = leads.filter((l) => l.status === status);
+                      return (
+                        <div
+                          key={status}
+                          className={`flex-shrink-0 w-56 rounded-xl bg-gray-100 flex flex-col transition-colors ${dragOverColumn === status ? "ring-2 ring-[#003A7D] bg-blue-50" : ""}`}
+                          onDragOver={(e) => { e.preventDefault(); setDragOverColumn(status); }}
+                          onDragLeave={() => setDragOverColumn(null)}
+                          onDrop={() => {
+                            if (draggedLead !== null) {
+                              updateStatus(draggedLead, status);
+                              setDraggedLead(null);
+                              setDragOverColumn(null);
+                            }
+                          }}
+                        >
+                          <div className={`${KANBAN_HEADER_COLORS[status]} text-white px-3 py-2 rounded-t-xl flex items-center justify-between`}>
+                            <span className="font-semibold text-sm">{KANBAN_LABELS[status]}</span>
+                            <span className="bg-white/20 text-xs px-2 py-0.5 rounded-full">{columnLeads.length}</span>
+                          </div>
+                          <div className="flex-1 p-2 space-y-2 overflow-y-auto" style={{ maxHeight: "calc(100vh - 16rem)" }}>
+                            {columnLeads.map((lead) => (
+                              <div
+                                key={lead.id}
+                                draggable
+                                onDragStart={() => setDraggedLead(lead.id)}
+                                onDragEnd={() => { setDraggedLead(null); setDragOverColumn(null); }}
+                                onClick={() => setSelected(lead)}
+                                className={`bg-white rounded-lg border p-3 cursor-grab active:cursor-grabbing hover:shadow-md transition-all ${
+                                  selected?.id === lead.id ? "border-[#003A7D] ring-1 ring-[#003A7D]" : "border-gray-200"
+                                } ${draggedLead === lead.id ? "opacity-50" : ""}`}
+                              >
+                                <div className="flex items-center gap-1.5 mb-1.5">
+                                  <span className="font-semibold text-sm truncate">{lead.name}</span>
+                                  {lead.source === "phone" && <span className="text-xs">📞</span>}
+                                </div>
+                                <p className="text-xs text-gray-500 truncate">{lead.plz} {lead.ort}</p>
+                                {lead.phone && <p className="text-xs text-gray-400 truncate">{lead.phone}</p>}
+                                {user?.role === "admin" && lead.partner_id && (
+                                  <p className="text-xs text-[#003A7D] mt-1 truncate">→ {getPartnerName(lead.partner_id)}</p>
+                                )}
+                                <p className="text-xs text-gray-300 mt-1.5">{formatDate(lead.created_at)}</p>
+                              </div>
+                            ))}
+                            {columnLeads.length === 0 && (
+                              <p className="text-xs text-gray-400 text-center py-8">Keine Leads</p>
                             )}
                           </div>
-                          <span className="text-xs text-gray-400 whitespace-nowrap">{formatDate(lead.created_at)}</span>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
+                ) : (
+                  /* ─── LISTENANSICHT ─── */
+                  <>
+                    <div className="flex gap-2 mb-4 flex-wrap">
+                      {STATUS_OPTIONS.map((s) => (
+                        <button
+                          key={s}
+                          onClick={() => setFilter(s)}
+                          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                            filter === s ? "bg-[#003A7D] text-white" : "bg-white border border-gray-200 text-gray-600 hover:border-gray-300"
+                          }`}
+                        >
+                          {s.charAt(0).toUpperCase() + s.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                    {loading ? (
+                      <p className="text-gray-400 text-sm">Laden...</p>
+                    ) : leads.length === 0 ? (
+                      <p className="text-gray-400 text-sm">Keine Leads gefunden.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {leads.map((lead) => (
+                          <div
+                            key={lead.id}
+                            onClick={() => setSelected(lead)}
+                            className={`bg-white rounded-lg border p-4 cursor-pointer transition-colors ${
+                              selected?.id === lead.id ? "border-[#003A7D] ring-1 ring-[#003A7D]" : "border-gray-100 hover:border-gray-200"
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-semibold text-sm truncate">{lead.name}</span>
+                                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[lead.status] || ""}`}>
+                                    {lead.status}
+                                  </span>
+                                  {lead.source === "phone" && (
+                                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">📞 Anruf</span>
+                                  )}
+                                </div>
+                                <p className="text-xs text-gray-500 truncate">
+                                  {lead.plz} {lead.ort} · {lead.phone} {lead.email ? `· ${lead.email}` : ""}
+                                  {user?.role === "admin" && lead.partner_id ? ` · → ${getPartnerName(lead.partner_id)}` : ""}
+                                </p>
+                                {lead.transkription && (
+                                  <p className="text-xs text-amber-700 mt-1 truncate">💬 {lead.transkription.slice(0, 100)}{lead.transkription.length > 100 ? "…" : ""}</p>
+                                )}
+                              </div>
+                              <span className="text-xs text-gray-400 whitespace-nowrap">{formatDate(lead.created_at)}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 
-              {/* Lead-Detail */}
+              {/* Lead-Detail Sidebar */}
               {selected && (
                 <div className="hidden lg:block w-96 bg-white rounded-lg border border-gray-100 p-6 sticky top-20 h-fit max-h-[calc(100vh-6rem)] overflow-y-auto">
                   <div className="flex items-center justify-between mb-4">
