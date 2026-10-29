@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
+    console.log("[Webhook] Received payload:", JSON.stringify(body));
 
     const phone = body.caller_number || body.phone || body.from || "";
     const name = body.caller_name || body.name || `Anruf ${phone}`;
