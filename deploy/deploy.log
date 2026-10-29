@@ -33,3 +33,4 @@
 [2026-10-29 07:21] v2.5.0 deployed – Kanban-Board für Leads (Drag & Drop, 5 Spalten, Toggle Kanban/Liste)
 [2026-10-29 09:33] v2.6.0 deployed – Dashboard, Vorlagen, Kantonskarte, Impersonation
 2026-10-29 12:16:01 v2.7.0 deployed - 3CX CRM-Integration, 3cx-lookup Endpunkt, Webhook erweitert - Health 200 OK
+[2026-10-29 18:52] v2.8.0 deployed - Voicemail-Sync via 3CX XAPI (Yorokobi-Methode), ReportCallLogData, Whisper-Transkription - Health OK, API 200
