@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.11.0 (2026-10-29)
+
+- Alle eingehenden Anrufe werden synchronisiert (nicht nur Voicemails)
+- Aufnahmen werden heruntergeladen und automatisch transkribiert (wie bei Yorokobi)
+- Transkription wird als Nachricht im Lead angezeigt
+- Benötigt "Call Control API" in 3CX für Aufnahmen-Download
+
 ## 2.10.1 (2026-10-29)
 
 - Login mit E-Mail statt Benutzername
