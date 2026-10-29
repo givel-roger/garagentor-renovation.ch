@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import getDb, { hashPassword } from "@/lib/db";
+import { sendPasswordResetEmail } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -11,8 +12,8 @@ export async function POST(request: NextRequest) {
 
   const db = getDb();
   const user = db.prepare(
-    "SELECT id, username, active FROM users WHERE username = ?"
-  ).get(username) as { id: number; username: string; active: number } | undefined;
+    "SELECT id, username, display_name, email, active FROM users WHERE username = ?"
+  ).get(username) as { id: number; username: string; display_name: string; email: string; active: number } | undefined;
 
   if (!user) {
     return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
@@ -25,6 +26,22 @@ export async function POST(request: NextRequest) {
   const defaultPassword = process.env.ADMIN_PASSWORD || "garagentor2024";
   db.prepare("UPDATE users SET password_hash = ? WHERE id = ?")
     .run(hashPassword(defaultPassword), user.id);
+
+  if (user.email) {
+    try {
+      await sendPasswordResetEmail(user.email, user.display_name, defaultPassword);
+      return NextResponse.json({
+        success: true,
+        message: `Passwort wurde zurückgesetzt. Eine E-Mail wurde an ${user.email.replace(/(.{2})(.*)(@.*)/, "$1***$3")} gesendet.`,
+      });
+    } catch (err) {
+      console.error("E-Mail-Versand fehlgeschlagen:", err);
+      return NextResponse.json({
+        success: true,
+        message: "Passwort wurde zurückgesetzt, aber die E-Mail konnte nicht gesendet werden. Bitte den Administrator kontaktieren.",
+      });
+    }
+  }
 
   return NextResponse.json({
     success: true,

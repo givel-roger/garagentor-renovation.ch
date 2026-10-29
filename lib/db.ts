@@ -49,11 +49,14 @@ function getDb() {
       display_name TEXT NOT NULL,
       role TEXT NOT NULL DEFAULT 'partner',
       partner_id INTEGER,
+      email TEXT DEFAULT '',
       active INTEGER DEFAULT 1,
       created_at TEXT DEFAULT (datetime('now')),
       FOREIGN KEY (partner_id) REFERENCES partners(id)
     )
   `);
+
+  try { db.exec("ALTER TABLE users ADD COLUMN email TEXT DEFAULT ''"); } catch {}
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS partners (
@@ -82,10 +85,10 @@ function getDb() {
   const userCount = db.prepare("SELECT COUNT(*) as cnt FROM users").get() as { cnt: number };
   if (userCount.cnt === 0) {
     const adminPw = process.env.ADMIN_PASSWORD || "garagentor2024";
-    db.prepare("INSERT INTO users (username, password_hash, display_name, role) VALUES (?, ?, ?, ?)")
-      .run("roger", hashPassword(adminPw), "Roger Givel", "admin");
-    db.prepare("INSERT INTO users (username, password_hash, display_name, role) VALUES (?, ?, ?, ?)")
-      .run("irma", hashPassword(adminPw), "Irma", "admin");
+    db.prepare("INSERT INTO users (username, password_hash, display_name, role, email) VALUES (?, ?, ?, ?, ?)")
+      .run("roger", hashPassword(adminPw), "Roger Givel", "admin", "givel@marktindex.ch");
+    db.prepare("INSERT INTO users (username, password_hash, display_name, role, email) VALUES (?, ?, ?, ?, ?)")
+      .run("irma", hashPassword(adminPw), "Irma", "admin", "");
   }
 
   return db;

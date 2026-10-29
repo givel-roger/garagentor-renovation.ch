@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.0 (2026-10-29)
+
+- Passwort-Reset sendet E-Mail via Brevo SMTP
+- E-Mail-Feld für Benutzer hinzugefügt
+- Nodemailer Integration für transaktionale E-Mails
+
 ## 2.3.0 (2026-10-28)
 
 - Benutzerverwaltung im Admin: neuer "Users"-Tab
