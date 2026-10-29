@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.12.0 (2026-10-29)
+
+- Voicemail-Empfang per E-Mail (wie Yorokobi): 3CX sendet Voicemail → Brevo Inbound → Webhook
+- Neuer Endpoint /api/inbound-voicemail empfängt WAV-Anhänge und transkribiert mit Whisper
+- Aufnahmen werden gespeichert und als Lead mit Transkription angelegt
+- Recordings API entfernt (403 bei gehosteter 3CX — funktioniert nicht)
+- Anruf-Poller synchronisiert weiterhin die Anrufliste via XAPI
+
 ## 2.11.0 (2026-10-29)
 
 - Alle eingehenden Anrufe werden synchronisiert (nicht nur Voicemails)

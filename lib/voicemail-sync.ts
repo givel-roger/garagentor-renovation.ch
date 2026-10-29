@@ -1,14 +1,9 @@
 import getDb from "./db";
 import { sendLeadNotification } from "./email";
-import path from "path";
-import fs from "fs";
 
 const TCX_URL = process.env.TCX_URL || "";
 const TCX_CLIENT_ID = process.env.TCX_CLIENT_ID || "";
 const TCX_CLIENT_SECRET = process.env.TCX_CLIENT_SECRET || "";
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
-
-const RECORDINGS_DIR = path.join(process.cwd(), "public", "uploads", "voicemails");
 
 let syncRunning = false;
 
@@ -87,59 +82,8 @@ function istVoicemail(call: any): boolean {
   return /voicemail|mailbox|combox/i.test(dest);
 }
 
-async function downloadRecording(recId: number | string): Promise<Buffer | null> {
-  const token = await get3cxToken();
-  const url = `${TCX_URL}/xapi/v1/Recordings/Pbx.DownloadRecording(recId=${recId})?access_token=${token}`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    if (res.status === 403) {
-      console.log(`[CallSync] Recording ${recId}: 403 (Call Control API nicht aktiviert)`);
-    } else {
-      console.error(`[CallSync] Recording download ${recId} failed: ${res.status}`);
-    }
-    return null;
-  }
-  return Buffer.from(await res.arrayBuffer());
-}
-
-async function getRecentRecordings(sinceMinutes: number): Promise<any[]> {
-  try {
-    const since = new Date(Date.now() - sinceMinutes * 60000).toISOString();
-    const data = await xapiFetch(
-      `/xapi/v1/Recordings?$filter=StartTime ge '${since}'&$orderby=StartTime desc&$top=50`
-    );
-    return data.value || [];
-  } catch (err: any) {
-    if (err.message?.includes("403")) {
-      console.log("[CallSync] Recordings API: 403 (Call Control API nicht aktiviert)");
-    }
-    return [];
-  }
-}
-
-async function transcribeAudio(audioBuffer: Buffer): Promise<string> {
-  if (!OPENAI_API_KEY || audioBuffer.length < 1000) return "";
-  try {
-    const formData = new FormData();
-    formData.append("file", new Blob([new Uint8Array(audioBuffer)], { type: "audio/wav" }), "recording.wav");
-    formData.append("model", "whisper-1");
-    formData.append("language", "de");
-    formData.append("response_format", "text");
-    const res = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
-      body: formData,
-    });
-    if (!res.ok) {
-      console.error("[CallSync] Whisper error:", res.status, await res.text());
-      return "";
-    }
-    return (await res.text()).trim();
-  } catch (err) {
-    console.error("[CallSync] Transcription error:", err);
-    return "";
-  }
-}
+// Aufnahmen kommen per E-Mail (Brevo Inbound → /api/inbound-voicemail),
+// nicht über die Recordings API (403 bei gehosteter 3CX).
 
 function normalizePhone(phone: string): string {
   return phone.replace(/[^0-9+]/g, "").replace(/^00/, "+");
@@ -190,13 +134,6 @@ export async function syncVoicemails(): Promise<{ processed: number; errors: str
       return { processed: 0, errors: [] };
     }
 
-    if (!fs.existsSync(RECORDINGS_DIR)) {
-      fs.mkdirSync(RECORDINGS_DIR, { recursive: true });
-    }
-
-    const recordings = await getRecentRecordings(10);
-    console.log(`[CallSync] ${recordings.length} recordings available`);
-
     const db = ensureProcessedTable();
     const gesehen = new Set<string>();
 
@@ -218,41 +155,8 @@ export async function syncVoicemails(): Promise<{ processed: number; errors: str
         const callLabel = isVoicemail ? "Voicemail" : "Anruf";
         console.log(`[CallSync] Processing ${callLabel} ${callId} from ${callerName || callerNumber}`);
 
-        let audioBuffer: Buffer | null = null;
-        let recordingUrl = "";
-        let transcription = "";
-
-        // Aufnahme über Telefonnummer + Zeitfenster zuordnen
-        if (recordings.length > 0) {
-          const callTime = Date.parse(call.StartTime || "");
-          const matched = recordings.find((r: any) => {
-            const recCaller = normalizePhone(r.CallerNumber || r.Participants || "");
-            if (phoneLastDigits(recCaller) !== phoneLastDigits(callerNumber)) return false;
-            if (callTime) {
-              const recTime = Date.parse(r.StartTime || "");
-              if (recTime && Math.abs(recTime - callTime) > 10 * 60000) return false;
-            }
-            return true;
-          });
-          if (matched) {
-            const recId = matched.Id || matched.RecId;
-            if (recId) audioBuffer = await downloadRecording(recId);
-          }
-        }
-
-        if (audioBuffer && audioBuffer.length > 0) {
-          const prefix = isVoicemail ? "vm" : "call";
-          const filename = `${prefix}_${callId}_${Date.now()}.wav`;
-          const filepath = path.join(RECORDINGS_DIR, filename);
-          fs.writeFileSync(filepath, audioBuffer);
-          recordingUrl = `/uploads/voicemails/${filename}`;
-          transcription = await transcribeAudio(audioBuffer);
-          if (transcription) {
-            console.log(`[CallSync] Transcribed: ${transcription.substring(0, 80)}...`);
-          }
-        }
-
         // Lead zuordnen oder erstellen
+        // Aufnahmen + Transkription kommen separat via /api/inbound-voicemail (Brevo Inbound)
         const digits = phoneLastDigits(callerNumber);
         const recentLead = db
           .prepare(
@@ -263,23 +167,12 @@ export async function syncVoicemails(): Promise<{ processed: number; errors: str
           .get(`%${digits}%`) as any;
 
         if (recentLead) {
-          if (recordingUrl || transcription) {
-            db.prepare(
-              `UPDATE leads SET
-                recording_url = CASE WHEN ? != '' THEN ? ELSE recording_url END,
-                transkription = CASE WHEN ? != '' THEN ? ELSE transkription END,
-                updated_at = datetime('now')
-              WHERE id = ?`
-            ).run(recordingUrl, recordingUrl, transcription, transcription, recentLead.id);
-            console.log(`[CallSync] Updated lead ${recentLead.id} with recording/transcription`);
-          }
+          console.log(`[CallSync] Lead ${recentLead.id} existiert bereits für ${callerNumber}`);
         } else {
           const callTime = call.StartTime || new Date().toISOString();
           const duration = call.TalkingDuration || call.Duration || "";
           let nachricht: string;
-          if (transcription) {
-            nachricht = transcription;
-          } else if (isVoicemail) {
+          if (isVoicemail) {
             nachricht = `Voicemail vom ${new Date(callTime).toLocaleString("de-CH")}`;
           } else {
             const parts = ["Telefonanruf"];
@@ -290,11 +183,11 @@ export async function syncVoicemails(): Promise<{ processed: number; errors: str
           }
           const leadName = callerName || `Anruf ${callerNumber}`;
           db.prepare(
-            `INSERT INTO leads (name, email, phone, plz, ort, nachricht, source, status, recording_url, transkription)
-             VALUES (?, '', ?, '', '', ?, 'phone', 'neu', ?, ?)`
-          ).run(leadName, callerNumber, nachricht, recordingUrl, transcription);
+            `INSERT INTO leads (name, email, phone, plz, ort, nachricht, source, status)
+             VALUES (?, '', ?, '', '', ?, 'phone', 'neu')`
+          ).run(leadName, callerNumber, nachricht);
           console.log(`[CallSync] Created new lead for ${callerNumber}`);
-          sendLeadNotification({ name: leadName, phone: callerNumber, source: "phone", nachricht, transkription: transcription || undefined });
+          sendLeadNotification({ name: leadName, phone: callerNumber, source: "phone", nachricht });
         }
 
         db.prepare("INSERT OR IGNORE INTO voicemail_processed (call_id) VALUES (?)").run(callId);

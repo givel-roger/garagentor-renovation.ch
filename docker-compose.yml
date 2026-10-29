@@ -15,6 +15,8 @@ services:
       - TCX_CLIENT_ID=${TCX_CLIENT_ID}
       - TCX_CLIENT_SECRET=${TCX_CLIENT_SECRET}
       - TCX_URL=${TCX_URL}
+      - INBOUND_SECRET=${INBOUND_SECRET}
+      - BREVO_API_KEY=${BREVO_API_KEY}
       - NODE_ENV=production
       - PORT=3007
       - HOSTNAME=127.0.0.1
