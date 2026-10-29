@@ -36,3 +36,4 @@
 [2026-10-29 18:52] v2.8.0 deployed - Voicemail-Sync via 3CX XAPI (Yorokobi-Methode), ReportCallLogData, Whisper-Transkription - Health OK, API 200
 [2026-10-29 22:15] v2.9.0 deployed - E-Mail-Benachrichtigung bei jedem neuen Lead (Formular, Telefon, Voicemail) via Brevo SMTP - Health 200 OK
 [2026-10-29 22:30] v2.9.1 deployed - Fix Passwort-Zurücksetzen (eigenes Formular, Enter funktioniert) - Health 200 OK
+[2026-10-29 22:45] v2.10.0 deployed - Passwort-Reset via E-Mail-Link (Token-basiert, 1h gültig) - Health 200 OK
