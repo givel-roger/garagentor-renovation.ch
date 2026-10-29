@@ -363,49 +363,49 @@ export default function AdminPage() {
               </button>
               <button
                 type="button"
-                onClick={() => { setShowForgot(true); setForgotMessage(""); setForgotSuccess(false); setForgotUsername(""); }}
+                onClick={() => { setShowForgot(true); setLoginError(""); setForgotMessage(""); setForgotSuccess(false); setForgotUsername(""); setForgotPassword(""); }}
                 className="w-full text-center mt-4 text-xs text-gray-400 hover:text-[#003A7D] transition-colors cursor-pointer"
               >
                 Passwort vergessen?
               </button>
             </>
-          ) : (
-            <div className="border-t border-gray-100 pt-4">
-              <p className="text-sm font-medium text-gray-600 mb-3">Passwort zurücksetzen</p>
-              <input
-                type="text"
-                value={forgotUsername}
-                onChange={(e) => setForgotUsername(e.target.value)}
-                placeholder="Benutzername"
-                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-[#F9AD09]"
-              />
-              <input
-                type="password"
-                value={forgotPassword}
-                onChange={(e) => setForgotPassword(e.target.value)}
-                placeholder="Neues Passwort"
-                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-[#F9AD09]"
-              />
-              {forgotMessage && (
-                <p className={`text-sm mb-3 ${forgotSuccess ? "text-green-600" : "text-red-600"}`}>{forgotMessage}</p>
-              )}
-              <button
-                type="button"
-                onClick={handleForgotPassword}
-                className="w-full bg-[#F9AD09] hover:bg-[#e09d08] text-white py-2.5 rounded-lg font-semibold transition-colors mb-2"
-              >
-                Zurücksetzen
-              </button>
-              <button
-                type="button"
-                onClick={() => { setShowForgot(false); setForgotMessage(""); }}
-                className="w-full text-center text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-              >
-                Zurück zum Login
-              </button>
-            </div>
-          )}
+          ) : null}
         </form>
+        {showForgot && (
+          <form onSubmit={handleForgotPassword} className="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm mt-4">
+            <p className="text-sm font-medium text-gray-600 mb-3">Passwort zurücksetzen</p>
+            <input
+              type="text"
+              value={forgotUsername}
+              onChange={(e) => setForgotUsername(e.target.value)}
+              placeholder="Benutzername"
+              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-[#F9AD09]"
+            />
+            <input
+              type="password"
+              value={forgotPassword}
+              onChange={(e) => setForgotPassword(e.target.value)}
+              placeholder="Neues Passwort"
+              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-[#F9AD09]"
+            />
+            {forgotMessage && (
+              <p className={`text-sm mb-3 ${forgotSuccess ? "text-green-600" : "text-red-600"}`}>{forgotMessage}</p>
+            )}
+            <button
+              type="submit"
+              className="w-full bg-[#F9AD09] hover:bg-[#e09d08] text-white py-2.5 rounded-lg font-semibold transition-colors mb-2"
+            >
+              Zurücksetzen
+            </button>
+            <button
+              type="button"
+              onClick={() => { setShowForgot(false); setForgotMessage(""); }}
+              className="w-full text-center text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+            >
+              Zurück zum Login
+            </button>
+          </form>
+        )}
       </div>
     );
   }

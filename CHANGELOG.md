@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.9.1 (2026-10-29)
+
+- Fix: Passwort-Zurücksetzen funktionierte nicht (Enter löste Login statt Reset aus)
+- Reset-Formular ist jetzt ein eigenes `<form>` — Enter und Button-Klick funktionieren korrekt
+
 ## 2.9.0 (2026-10-29)
 
 - E-Mail-Benachrichtigung bei jedem neuen Lead (Formular, Telefonanruf, Voicemail)
