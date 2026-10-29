@@ -13,4 +13,7 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - WEBHOOK_SECRET=${WEBHOOK_SECRET:-garagentor-3cx-2024}
       - BREVO_SMTP_KEY=${BREVO_SMTP_KEY}
+      - TCX_CLIENT_ID=${TCX_CLIENT_ID}
+      - TCX_CLIENT_SECRET=${TCX_CLIENT_SECRET}
+      - TCX_URL=${TCX_URL}
       - NODE_ENV=production
