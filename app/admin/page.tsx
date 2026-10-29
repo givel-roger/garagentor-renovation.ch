@@ -89,7 +89,7 @@ export default function AdminPage() {
   const [filter, setFilter] = useState("alle");
   const [selected, setSelected] = useState<Lead | null>(null);
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState<"leads" | "partners" | "users">("leads");
+  const [tab, setTab] = useState<"leads" | "partners" | "users" | "dashboard">("leads");
   const [showPartnerForm, setShowPartnerForm] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
   const [resetUserId, setResetUserId] = useState<number | null>(null);
@@ -98,6 +98,8 @@ export default function AdminPage() {
   const [viewMode, setViewMode] = useState<"kanban" | "list">("kanban");
   const [draggedLead, setDraggedLead] = useState<number | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [impersonating, setImpersonating] = useState<Partner | null>(null);
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
@@ -275,19 +277,45 @@ export default function AdminPage() {
     fetchUsers();
   }
 
-  function getWhatsAppLink(lead: Lead) {
-    const text = encodeURIComponent(
-      `Hallo ${lead.name}, vielen Dank für Ihre Anfrage zur Garagentor-Renovation. Wir haben Ihre Anfrage erhalten und melden uns in Kürze mit einer Offerte bei Ihnen. Freundliche Grüsse, Garagentor-Renovation`
-    );
+  const MESSAGE_TEMPLATES = [
+    {
+      id: "erstantwort",
+      label: "Erstantwort",
+      subject: "Ihre Anfrage bei Garagentor-Renovation",
+      text: (l: Lead) => `Hallo ${l.name},\n\nVielen Dank für Ihre Anfrage zur Garagentor-Renovation.\n\nWir haben Ihre Anfrage erhalten und werden Ihnen in Kürze eine Offerte zustellen.\n\nFreundliche Grüsse\nGaragentor-Renovation`,
+    },
+    {
+      id: "offerte",
+      label: "Offerte senden",
+      subject: "Ihre Offerte – Garagentor-Renovation",
+      text: (l: Lead) => `Hallo ${l.name},\n\nAnbei erhalten Sie unsere Offerte für Ihre Garagentor-Renovation${l.tor_typ ? ` (${l.tor_typ})` : ""}${l.breite ? `, Masse: ${l.breite}${l.hoehe ? ` × ${l.hoehe}` : ""} cm` : ""}.\n\nBei Fragen stehen wir Ihnen gerne zur Verfügung.\n\nFreundliche Grüsse\nGaragentor-Renovation`,
+    },
+    {
+      id: "nachfassen",
+      label: "Nachfassen",
+      subject: "Nachfrage zu Ihrer Anfrage – Garagentor-Renovation",
+      text: (l: Lead) => `Hallo ${l.name},\n\nWir haben Ihnen kürzlich eine Offerte für Ihre Garagentor-Renovation zugestellt. Haben Sie noch Fragen oder wünschen Sie einen Termin vor Ort?\n\nWir freuen uns auf Ihre Rückmeldung.\n\nFreundliche Grüsse\nGaragentor-Renovation`,
+    },
+    {
+      id: "termin",
+      label: "Termin",
+      subject: "Terminbestätigung – Garagentor-Renovation",
+      text: (l: Lead) => `Hallo ${l.name},\n\nGerne bestätigen wir Ihren Termin für die Besichtigung vor Ort${l.ort ? ` in ${l.plz} ${l.ort}` : ""}.\n\nBitte teilen Sie uns mit, falls sich etwas ändern sollte.\n\nFreundliche Grüsse\nGaragentor-Renovation`,
+    },
+  ];
+
+  function getWhatsAppLink(lead: Lead, templateId?: string) {
+    const template = templateId ? MESSAGE_TEMPLATES.find(t => t.id === templateId) : MESSAGE_TEMPLATES[0];
+    const text = encodeURIComponent(template ? template.text(lead) : "");
     const phone = lead.phone.replace(/\s+/g, "").replace(/^0/, "+41");
     return `https://wa.me/${phone}?text=${text}`;
   }
 
-  function getMailLink(lead: Lead) {
-    const subject = encodeURIComponent("Ihre Anfrage bei Garagentor-Renovation");
-    const body = encodeURIComponent(
-      `Hallo ${lead.name},\n\nVielen Dank für Ihre Anfrage zur Garagentor-Renovation.\n\nWir haben Ihre Anfrage erhalten und werden Ihnen in Kürze eine Offerte zustellen.\n\nFreundliche Grüsse\nGaragentor-Renovation`
-    );
+  function getMailLink(lead: Lead, templateId?: string) {
+    const template = templateId ? MESSAGE_TEMPLATES.find(t => t.id === templateId) : MESSAGE_TEMPLATES[0];
+    if (!template) return "";
+    const subject = encodeURIComponent(template.subject);
+    const body = encodeURIComponent(template.text(lead));
     return `mailto:${lead.email}?subject=${subject}&body=${body}`;
   }
 
@@ -394,6 +422,12 @@ export default function AdminPage() {
             {user?.role === "admin" && (
               <div className="flex gap-1">
                 <button
+                  onClick={() => setTab("dashboard")}
+                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${tab === "dashboard" ? "bg-white/20" : "hover:bg-white/10"}`}
+                >
+                  Dashboard
+                </button>
+                <button
                   onClick={() => setTab("leads")}
                   className={`px-3 py-1 rounded text-sm font-medium transition-colors ${tab === "leads" ? "bg-white/20" : "hover:bg-white/10"}`}
                 >
@@ -415,8 +449,23 @@ export default function AdminPage() {
             )}
           </div>
           <div className="flex items-center gap-4">
+            {user?.role === "admin" && partners.length > 0 && (
+              <select
+                value={impersonating?.id || ""}
+                onChange={(e) => {
+                  const pid = e.target.value ? Number(e.target.value) : null;
+                  setImpersonating(pid ? partners.find(p => p.id === pid) || null : null);
+                }}
+                className="bg-white/10 border border-white/20 text-white text-xs rounded px-2 py-1 focus:outline-none"
+              >
+                <option value="" className="text-gray-900">Alle Partner (Admin)</option>
+                {partners.map(p => (
+                  <option key={p.id} value={p.id} className="text-gray-900">Ansicht: {p.firma}</option>
+                ))}
+              </select>
+            )}
             <span className="text-sm text-white/60">
-              {user?.displayName} ({user?.role === "admin" ? "Admin" : "Partner"})
+              {impersonating ? `👁 ${impersonating.firma}` : `${user?.displayName} (${user?.role === "admin" ? "Admin" : "Partner"})`}
             </span>
             <button onClick={logout} className="text-sm text-white/50 hover:text-white">Abmelden</button>
           </div>
@@ -424,12 +473,145 @@ export default function AdminPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        {tab === "leads" ? (
+        {tab === "dashboard" ? (
+          /* ─── DASHBOARD TAB ─── */
+          (() => {
+            const allLeads = leads;
+            const filteredLeads = impersonating ? allLeads.filter(l => l.partner_id === impersonating.id) : allLeads;
+            const stats = {
+              total: filteredLeads.length,
+              neu: filteredLeads.filter(l => l.status === "neu").length,
+              kontaktiert: filteredLeads.filter(l => l.status === "kontaktiert").length,
+              offerte: filteredLeads.filter(l => l.status === "offerte").length,
+              abgeschlossen: filteredLeads.filter(l => l.status === "abgeschlossen").length,
+              abgelehnt: filteredLeads.filter(l => l.status === "abgelehnt").length,
+              phone: filteredLeads.filter(l => l.source === "phone").length,
+              web: filteredLeads.filter(l => l.source === "web" || !l.source).length,
+            };
+            const conversionRate = stats.total > 0 ? Math.round((stats.abgeschlossen / stats.total) * 100) : 0;
+            return (
+              <div>
+                <h2 className="text-xl font-bold text-[#003A7D] mb-6">
+                  Dashboard {impersonating ? `— ${impersonating.firma}` : ""}
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                  <div className="bg-white rounded-xl border border-gray-100 p-5">
+                    <p className="text-3xl font-bold text-[#003A7D]">{stats.total}</p>
+                    <p className="text-sm text-gray-500 mt-1">Leads gesamt</p>
+                  </div>
+                  <div className="bg-white rounded-xl border border-gray-100 p-5">
+                    <p className="text-3xl font-bold text-green-600">{conversionRate}%</p>
+                    <p className="text-sm text-gray-500 mt-1">Abschlussrate</p>
+                  </div>
+                  <div className="bg-white rounded-xl border border-gray-100 p-5">
+                    <p className="text-3xl font-bold text-blue-600">{stats.neu}</p>
+                    <p className="text-sm text-gray-500 mt-1">Neue Leads</p>
+                  </div>
+                  <div className="bg-white rounded-xl border border-gray-100 p-5">
+                    <p className="text-3xl font-bold text-purple-600">{stats.offerte}</p>
+                    <p className="text-sm text-gray-500 mt-1">Offene Offerten</p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6 mb-8">
+                  {/* Status-Übersicht */}
+                  <div className="bg-white rounded-xl border border-gray-100 p-6">
+                    <h3 className="font-bold text-[#003A7D] mb-4">Status-Übersicht</h3>
+                    <div className="space-y-3">
+                      {KANBAN_COLUMNS.map(status => {
+                        const count = filteredLeads.filter(l => l.status === status).length;
+                        const pct = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
+                        return (
+                          <div key={status} className="flex items-center gap-3">
+                            <span className="text-sm w-24 text-gray-600">{KANBAN_LABELS[status]}</span>
+                            <div className="flex-1 bg-gray-100 rounded-full h-6 overflow-hidden">
+                              <div className={`${KANBAN_HEADER_COLORS[status]} h-full rounded-full transition-all flex items-center justify-end pr-2`} style={{ width: `${Math.max(pct, 8)}%` }}>
+                                <span className="text-xs text-white font-medium">{count}</span>
+                              </div>
+                            </div>
+                            <span className="text-xs text-gray-400 w-10 text-right">{pct}%</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Quellen */}
+                  <div className="bg-white rounded-xl border border-gray-100 p-6">
+                    <h3 className="font-bold text-[#003A7D] mb-4">Lead-Quellen</h3>
+                    <div className="flex gap-6 items-center justify-center py-4">
+                      <div className="text-center">
+                        <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mb-2 mx-auto">
+                          <span className="text-2xl font-bold text-blue-600">{stats.web}</span>
+                        </div>
+                        <p className="text-sm text-gray-600">Formular</p>
+                      </div>
+                      <div className="text-center">
+                        <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center mb-2 mx-auto">
+                          <span className="text-2xl font-bold text-orange-600">{stats.phone}</span>
+                        </div>
+                        <p className="text-sm text-gray-600">Telefon</p>
+                      </div>
+                    </div>
+                    {!impersonating && partners.length > 0 && (
+                      <>
+                        <h3 className="font-bold text-[#003A7D] mt-6 mb-4">Leads pro Partner</h3>
+                        <div className="space-y-2">
+                          {partners.map(p => {
+                            const pLeads = allLeads.filter(l => l.partner_id === p.id).length;
+                            return (
+                              <div key={p.id} className="flex items-center justify-between text-sm">
+                                <span className="text-gray-700">{p.firma}</span>
+                                <span className="font-semibold text-[#003A7D]">{pLeads}</span>
+                              </div>
+                            );
+                          })}
+                          <div className="flex items-center justify-between text-sm border-t pt-2 mt-2">
+                            <span className="text-gray-500">Nicht zugewiesen</span>
+                            <span className="font-semibold text-gray-400">{allLeads.filter(l => !l.partner_id).length}</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Letzte Leads */}
+                <div className="bg-white rounded-xl border border-gray-100 p-6">
+                  <h3 className="font-bold text-[#003A7D] mb-4">Letzte 5 Leads</h3>
+                  <div className="space-y-2">
+                    {filteredLeads.slice(0, 5).map(lead => (
+                      <div key={lead.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                        <div className="flex items-center gap-3">
+                          <span className={`w-2 h-2 rounded-full ${KANBAN_HEADER_COLORS[lead.status]}`} />
+                          <span className="text-sm font-medium">{lead.name}</span>
+                          <span className="text-xs text-gray-400">{lead.plz} {lead.ort}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[lead.status]}`}>{lead.status}</span>
+                          <span className="text-xs text-gray-400">{formatDate(lead.created_at)}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })()
+        ) : tab === "leads" ? (
           <>
             {/* Header mit View Toggle */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-400">{leads.length} Lead{leads.length !== 1 ? "s" : ""}</span>
+                {impersonating && (
+                  <span className="text-sm font-medium text-[#003A7D] bg-[#003A7D]/10 px-3 py-1 rounded-full">
+                    👁 {impersonating.firma}
+                    <button onClick={() => setImpersonating(null)} className="ml-2 text-gray-400 hover:text-red-500">✕</button>
+                  </span>
+                )}
+                <span className="text-sm text-gray-400">
+                  {(impersonating ? leads.filter(l => l.partner_id === impersonating.id) : leads).length} Lead{(impersonating ? leads.filter(l => l.partner_id === impersonating.id) : leads).length !== 1 ? "s" : ""}
+                </span>
               </div>
               <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg p-0.5">
                 <button
@@ -449,11 +631,13 @@ export default function AdminPage() {
 
             <div className="flex gap-6">
               <div className="flex-1 min-w-0">
-                {viewMode === "kanban" ? (
+                {(() => {
+                  const displayLeads = impersonating ? leads.filter(l => l.partner_id === impersonating.id) : leads;
+                  return viewMode === "kanban" ? (
                   /* ─── KANBAN BOARD ─── */
                   <div className="flex gap-3 overflow-x-auto pb-4">
                     {KANBAN_COLUMNS.map((status) => {
-                      const columnLeads = leads.filter((l) => l.status === status);
+                      const columnLeads = displayLeads.filter((l) => l.status === status);
                       return (
                         <div
                           key={status}
@@ -522,11 +706,11 @@ export default function AdminPage() {
                     </div>
                     {loading ? (
                       <p className="text-gray-400 text-sm">Laden...</p>
-                    ) : leads.length === 0 ? (
+                    ) : displayLeads.length === 0 ? (
                       <p className="text-gray-400 text-sm">Keine Leads gefunden.</p>
                     ) : (
                       <div className="space-y-2">
-                        {leads.map((lead) => (
+                        {displayLeads.map((lead) => (
                           <div
                             key={lead.id}
                             onClick={() => setSelected(lead)}
@@ -560,7 +744,8 @@ export default function AdminPage() {
                       </div>
                     )}
                   </>
-                )}
+                );
+                })()}
               </div>
 
               {/* Lead-Detail Sidebar */}
@@ -668,18 +853,58 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  {/* Aktionen */}
+                  {/* Vorlagen & Aktionen */}
                   <div className="space-y-2">
-                    {selected.phone && (
-                      <a href={getWhatsAppLink(selected)} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors">
-                        WhatsApp senden
-                      </a>
+                    <button
+                      onClick={() => setShowTemplates(!showTemplates)}
+                      className="w-full flex items-center justify-between bg-gray-50 hover:bg-gray-100 px-4 py-2.5 rounded-lg text-sm font-semibold text-gray-700 transition-colors border border-gray-200"
+                    >
+                      <span>Vorlagen & Nachrichten</span>
+                      <span className="text-xs">{showTemplates ? "▲" : "▼"}</span>
+                    </button>
+                    {showTemplates && (
+                      <div className="bg-gray-50 rounded-lg border border-gray-200 p-3 space-y-2">
+                        {MESSAGE_TEMPLATES.map((tpl) => (
+                          <div key={tpl.id} className="flex gap-1.5">
+                            <span className="text-xs text-gray-500 w-20 pt-1.5 flex-shrink-0">{tpl.label}</span>
+                            <div className="flex gap-1.5 flex-1">
+                              {selected.phone && (
+                                <a href={getWhatsAppLink(selected, tpl.id)} target="_blank" rel="noopener noreferrer"
+                                  className="flex-1 flex items-center justify-center gap-1 bg-green-600 hover:bg-green-700 text-white py-1.5 rounded text-xs font-medium transition-colors">
+                                  WhatsApp
+                                </a>
+                              )}
+                              {selected.email && (
+                                <a href={getMailLink(selected, tpl.id)}
+                                  className="flex-1 flex items-center justify-center gap-1 bg-blue-600 hover:bg-blue-700 text-white py-1.5 rounded text-xs font-medium transition-colors">
+                                  E-Mail
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     )}
-                    {selected.email && (
-                      <a href={getMailLink(selected)}
-                        className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors">
-                        E-Mail senden
+                    {!showTemplates && (
+                      <div className="flex gap-2">
+                        {selected.phone && (
+                          <a href={getWhatsAppLink(selected)} target="_blank" rel="noopener noreferrer"
+                            className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors">
+                            WhatsApp
+                          </a>
+                        )}
+                        {selected.email && (
+                          <a href={getMailLink(selected)}
+                            className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors">
+                            E-Mail
+                          </a>
+                        )}
+                      </div>
+                    )}
+                    {selected.phone && (
+                      <a href={`tel:${selected.phone}`}
+                        className="flex items-center justify-center gap-2 w-full bg-gray-700 hover:bg-gray-800 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors">
+                        Anrufen
                       </a>
                     )}
                     {user?.role === "admin" && (
@@ -774,30 +999,145 @@ export default function AdminPage() {
 
             {showPartnerForm && <PartnerForm onSubmit={createPartner} />}
 
+            {/* Schweizer Kantonskarte */}
+            <div className="bg-white rounded-xl border border-gray-100 p-6 mb-6">
+              <h3 className="font-bold text-[#003A7D] mb-4">Abdeckung Schweiz</h3>
+              <SwissCantonMap partners={partners} leads={leads} />
+            </div>
+
             <div className="space-y-3">
               {partners.length === 0 ? (
                 <p className="text-gray-400 text-sm">Noch keine Partner angelegt.</p>
               ) : (
-                partners.map((p) => (
-                  <div key={p.id} className="bg-white rounded-lg border border-gray-100 p-5">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-bold text-[#003A7D]">{p.firma}</h3>
-                        <p className="text-sm text-gray-600">{p.kontakt_name}</p>
-                        <p className="text-sm text-gray-400 mt-1">{p.plz} {p.ort} · Radius {p.radius_km} km</p>
-                        {p.phone && <p className="text-sm text-gray-400">{p.phone}</p>}
-                        {p.email && <p className="text-sm text-gray-400">{p.email}</p>}
+                partners.map((p) => {
+                  const partnerLeads = leads.filter(l => l.partner_id === p.id);
+                  return (
+                    <div key={p.id} className="bg-white rounded-lg border border-gray-100 p-5">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <div className="flex items-center gap-3">
+                            <h3 className="font-bold text-[#003A7D]">{p.firma}</h3>
+                            <span className="bg-[#003A7D]/10 text-[#003A7D] text-xs px-2 py-0.5 rounded-full font-medium">
+                              {partnerLeads.length} Leads
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600">{p.kontakt_name}</p>
+                          <p className="text-sm text-gray-400 mt-1">{p.plz} {p.ort} · Radius {p.radius_km} km</p>
+                          {p.phone && <p className="text-sm text-gray-400">{p.phone}</p>}
+                          {p.email && <p className="text-sm text-gray-400">{p.email}</p>}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => { setImpersonating(p); setTab("leads"); }}
+                            className="px-3 py-1.5 bg-[#003A7D]/10 hover:bg-[#003A7D]/20 text-[#003A7D] rounded-lg text-xs font-medium transition-colors"
+                          >
+                            Als Partner ansehen
+                          </button>
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${p.active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-500"}`}>
+                            {p.active ? "Aktiv" : "Inaktiv"}
+                          </span>
+                        </div>
                       </div>
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${p.active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-500"}`}>
-                        {p.active ? "Aktiv" : "Inaktiv"}
-                      </span>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+const SWISS_CANTONS: { id: string; name: string; x: number; y: number }[] = [
+  { id: "ZH", name: "Zürich", x: 345, y: 120 },
+  { id: "BE", name: "Bern", x: 220, y: 200 },
+  { id: "LU", name: "Luzern", x: 295, y: 175 },
+  { id: "UR", name: "Uri", x: 330, y: 210 },
+  { id: "SZ", name: "Schwyz", x: 350, y: 175 },
+  { id: "OW", name: "Obwalden", x: 295, y: 210 },
+  { id: "NW", name: "Nidwalden", x: 310, y: 195 },
+  { id: "GL", name: "Glarus", x: 385, y: 170 },
+  { id: "ZG", name: "Zug", x: 330, y: 155 },
+  { id: "FR", name: "Fribourg", x: 185, y: 210 },
+  { id: "SO", name: "Solothurn", x: 250, y: 120 },
+  { id: "BS", name: "Basel-Stadt", x: 230, y: 70 },
+  { id: "BL", name: "Basel-Land", x: 240, y: 85 },
+  { id: "SH", name: "Schaffhausen", x: 335, y: 55 },
+  { id: "AR", name: "Appenzell A.Rh.", x: 420, y: 115 },
+  { id: "AI", name: "Appenzell I.Rh.", x: 415, y: 130 },
+  { id: "SG", name: "St. Gallen", x: 400, y: 130 },
+  { id: "GR", name: "Graubünden", x: 430, y: 210 },
+  { id: "AG", name: "Aargau", x: 290, y: 105 },
+  { id: "TG", name: "Thurgau", x: 375, y: 85 },
+  { id: "TI", name: "Tessin", x: 350, y: 300 },
+  { id: "VD", name: "Waadt", x: 130, y: 260 },
+  { id: "VS", name: "Wallis", x: 230, y: 300 },
+  { id: "NE", name: "Neuenburg", x: 165, y: 175 },
+  { id: "GE", name: "Genf", x: 95, y: 290 },
+  { id: "JU", name: "Jura", x: 185, y: 115 },
+];
+
+function SwissCantonMap({ partners, leads }: { partners: Partner[]; leads: Lead[] }) {
+  const [hovered, setHovered] = useState<string | null>(null);
+  const hoveredCanton = SWISS_CANTONS.find(c => c.id === hovered);
+
+  function getCantonColor(cantonId: string) {
+    const cantonLeads = leads.filter(l => {
+      const cantonPLZs: Record<string, [number, number][]> = {
+        ZH: [[8000, 8499]], BE: [[3000, 3999]], LU: [[6000, 6099]], UR: [[6400, 6499]],
+        SZ: [[6400, 6449], [8840, 8849]], OW: [[6060, 6079]], NW: [[6360, 6399]],
+        GL: [[8750, 8799]], ZG: [[6300, 6349]], FR: [[1700, 1799]], SO: [[4500, 4599]],
+        BS: [[4000, 4059]], BL: [[4100, 4199]], SH: [[8200, 8249]], AR: [[9050, 9099]],
+        AI: [[9050, 9058]], SG: [[9000, 9499]], GR: [[7000, 7599]], AG: [[5000, 5499]],
+        TG: [[8500, 8599]], TI: [[6500, 6999]], VD: [[1000, 1399]], VS: [[1900, 1999], [3900, 3999]],
+        NE: [[2000, 2099]], GE: [[1200, 1299]], JU: [[2800, 2899]],
+      };
+      const plz = parseInt(l.plz);
+      const ranges = cantonPLZs[cantonId] || [];
+      return ranges.some(([min, max]) => plz >= min && plz <= max);
+    });
+    if (cantonLeads.length === 0) return "#e5e7eb";
+    if (cantonLeads.length <= 2) return "#93c5fd";
+    if (cantonLeads.length <= 5) return "#3b82f6";
+    return "#003A7D";
+  }
+
+  return (
+    <div className="relative">
+      <svg viewBox="50 30 430 310" className="w-full max-w-2xl mx-auto">
+        {SWISS_CANTONS.map(canton => (
+          <g key={canton.id} onMouseEnter={() => setHovered(canton.id)} onMouseLeave={() => setHovered(null)} className="cursor-pointer">
+            <circle cx={canton.x} cy={canton.y} r={18} fill={getCantonColor(canton.id)} stroke={hovered === canton.id ? "#003A7D" : "#fff"} strokeWidth={hovered === canton.id ? 3 : 1.5} className="transition-all" />
+            <text x={canton.x} y={canton.y + 1} textAnchor="middle" dominantBaseline="middle" className="text-[9px] font-bold fill-white pointer-events-none" style={{ fontSize: "9px" }}>
+              {canton.id}
+            </text>
+          </g>
+        ))}
+      </svg>
+      {hoveredCanton && (
+        <div className="absolute top-2 right-2 bg-white shadow-lg rounded-lg px-4 py-3 border border-gray-200">
+          <p className="font-bold text-[#003A7D] text-sm">{hoveredCanton.name}</p>
+          <p className="text-xs text-gray-500">
+            {leads.filter(l => {
+              const plz = parseInt(l.plz);
+              const ranges: Record<string, [number, number][]> = {
+                ZH: [[8000, 8499]], BE: [[3000, 3999]], LU: [[6000, 6099]], SG: [[9000, 9499]],
+                AG: [[5000, 5499]], TG: [[8500, 8599]], GR: [[7000, 7599]], TI: [[6500, 6999]],
+                VD: [[1000, 1399]], GE: [[1200, 1299]], VS: [[1900, 1999], [3900, 3999]],
+              };
+              const r = ranges[hoveredCanton.id] || [];
+              return r.some(([min, max]) => plz >= min && plz <= max);
+            }).length} Leads
+          </p>
+        </div>
+      )}
+      <div className="flex gap-4 justify-center mt-3 text-xs text-gray-500">
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-gray-200 inline-block" /> 0 Leads</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-blue-300 inline-block" /> 1-2</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-blue-500 inline-block" /> 3-5</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#003A7D] inline-block" /> 6+</span>
       </div>
     </div>
   );

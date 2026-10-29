@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.6.0 (2026-10-29)
+
+- Dashboard-Tab mit Statistiken: Leads gesamt, Abschlussrate, Status-Übersicht, Quellen, Leads pro Partner
+- E-Mail & WhatsApp Vorlagen: 4 Templates (Erstantwort, Offerte, Nachfassen, Termin)
+- Schweizer Kantonskarte: Interaktive Karte mit Lead-Heatmap pro Kanton
+- Partner-Impersonation: Admin kann Ansicht eines Partners simulieren
+- Anrufen-Button in Lead-Detail
+- Partner-Karten zeigen Lead-Anzahl und "Als Partner ansehen" Button
+
 ## 2.5.0 (2026-10-29)
 
 - Kanban-Board für Leads: Drag & Drop zwischen Spalten (Neu, Kontaktiert, Offerte, Erledigt, Abgelehnt)
