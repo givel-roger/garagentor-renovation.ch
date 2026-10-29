@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.8.0 (2026-10-29)
+
+- Automatischer Voicemail-Sync via 3CX XAPI: Anrufbeantworter-Nachrichten werden automatisch abgerufen
+- Hintergrund-Poller alle 2 Minuten (läuft 24/7 im Docker-Container)
+- Voicemail-Aufnahmen werden heruntergeladen und lokal gespeichert
+- Automatische Transkription via OpenAI Whisper (Deutsch)
+- Zuordnung zu bestehenden Leads anhand Telefonnummer
+- Manueller Sync-Trigger über /api/voicemail-sync
+
 ## 2.7.0 (2026-10-29)
 
 - 3CX CRM-Integration: Custom XML-Vorlage für automatischen Anruf-Webhook
