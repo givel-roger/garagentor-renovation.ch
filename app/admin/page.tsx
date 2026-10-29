@@ -81,7 +81,6 @@ export default function AdminPage() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [showForgot, setShowForgot] = useState(false);
-  const [forgotUsername, setForgotUsername] = useState("");
   const [forgotMessage, setForgotMessage] = useState("");
   const [forgotSuccess, setForgotSuccess] = useState(false);
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -221,30 +220,34 @@ export default function AdminPage() {
     sessionStorage.removeItem("admin_user");
   }
 
-  const [forgotPassword, setForgotPassword] = useState("");
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
 
   async function handleForgotPassword(e: React.FormEvent) {
     e.preventDefault();
     setForgotMessage("");
-    if (!forgotUsername.trim()) {
-      setForgotMessage("Bitte Benutzername eingeben");
+    if (!forgotEmail.trim()) {
+      setForgotMessage("Bitte E-Mail-Adresse eingeben");
       return;
     }
-    if (!forgotPassword || forgotPassword.length < 4) {
-      setForgotMessage("Passwort muss mindestens 4 Zeichen haben");
-      return;
-    }
-    const res = await fetch("/api/auth/reset", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: forgotUsername, newPassword: forgotPassword }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      setForgotSuccess(true);
-      setForgotMessage(data.message);
-    } else {
-      setForgotMessage(data.error || "Fehler beim Zurücksetzen");
+    setForgotLoading(true);
+    try {
+      const res = await fetch("/api/auth/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotEmail.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setForgotSuccess(true);
+        setForgotMessage(data.message);
+      } else {
+        setForgotMessage(data.error || "Fehler beim Zurücksetzen");
+      }
+    } catch {
+      setForgotMessage("Netzwerkfehler");
+    } finally {
+      setForgotLoading(false);
     }
   }
 
@@ -334,7 +337,7 @@ export default function AdminPage() {
   // ─── LOGIN ───
   if (!loggedIn) {
     return (
-      <div className="min-h-screen bg-[#001F45] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#001F45] flex flex-col items-center justify-center p-4">
         <form onSubmit={handleLogin} className="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm">
           <div className="mb-6 text-center">
             <h1 style={{ fontFamily: "'Montserrat', sans-serif" }} className="text-xl font-black text-[#003A7D] uppercase">Garagentor</h1>
@@ -363,7 +366,7 @@ export default function AdminPage() {
               </button>
               <button
                 type="button"
-                onClick={() => { setShowForgot(true); setLoginError(""); setForgotMessage(""); setForgotSuccess(false); setForgotUsername(""); setForgotPassword(""); }}
+                onClick={() => { setShowForgot(true); setLoginError(""); setForgotMessage(""); setForgotSuccess(false); setForgotEmail(""); }}
                 className="w-full text-center mt-4 text-xs text-gray-400 hover:text-[#003A7D] transition-colors cursor-pointer"
               >
                 Passwort vergessen?
@@ -374,29 +377,28 @@ export default function AdminPage() {
         {showForgot && (
           <form onSubmit={handleForgotPassword} className="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm mt-4">
             <p className="text-sm font-medium text-gray-600 mb-3">Passwort zurücksetzen</p>
-            <input
-              type="text"
-              value={forgotUsername}
-              onChange={(e) => setForgotUsername(e.target.value)}
-              placeholder="Benutzername"
-              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-[#F9AD09]"
-            />
-            <input
-              type="password"
-              value={forgotPassword}
-              onChange={(e) => setForgotPassword(e.target.value)}
-              placeholder="Neues Passwort"
-              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-[#F9AD09]"
-            />
+            {!forgotSuccess && (
+              <input
+                type="email"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                placeholder="Deine E-Mail-Adresse"
+                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-[#F9AD09]"
+                autoFocus
+              />
+            )}
             {forgotMessage && (
               <p className={`text-sm mb-3 ${forgotSuccess ? "text-green-600" : "text-red-600"}`}>{forgotMessage}</p>
             )}
-            <button
-              type="submit"
-              className="w-full bg-[#F9AD09] hover:bg-[#e09d08] text-white py-2.5 rounded-lg font-semibold transition-colors mb-2"
-            >
-              Zurücksetzen
-            </button>
+            {!forgotSuccess && (
+              <button
+                type="submit"
+                disabled={forgotLoading}
+                className="w-full bg-[#F9AD09] hover:bg-[#e09d08] text-white py-2.5 rounded-lg font-semibold transition-colors mb-2 disabled:opacity-50"
+              >
+                {forgotLoading ? "Wird gesendet..." : "Reset-Link senden"}
+              </button>
+            )}
             <button
               type="button"
               onClick={() => { setShowForgot(false); setForgotMessage(""); }}

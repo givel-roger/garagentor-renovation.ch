@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.10.0 (2026-10-29)
+
+- Passwort-Reset komplett neu: E-Mail eingeben → Reset-Link per E-Mail → neues Passwort 2x eingeben
+- Token-basierter Reset (1 Stunde gültig, einmalig verwendbar)
+- Eigene Reset-Seite unter /admin/reset-password
+- Sicherer als vorher (kein Passwort im Login-Formular)
+
 ## 2.9.1 (2026-10-29)
 
 - Fix: Passwort-Zurücksetzen funktionierte nicht (Enter löste Login statt Reset aus)

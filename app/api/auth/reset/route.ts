@@ -1,50 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
-import getDb, { hashPassword } from "@/lib/db";
-import { sendPasswordResetEmail } from "@/lib/email";
+import getDb from "@/lib/db";
+import { sendPasswordResetLink } from "@/lib/email";
+import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { username, newPassword } = body;
+  const { email } = body;
 
-  if (!username) {
-    return NextResponse.json({ error: "Benutzername erforderlich" }, { status: 400 });
+  if (!email || !email.trim()) {
+    return NextResponse.json({ error: "E-Mail-Adresse erforderlich" }, { status: 400 });
   }
 
   const db = getDb();
   const user = db.prepare(
-    "SELECT id, username, display_name, email, active FROM users WHERE username = ?"
-  ).get(username) as { id: number; username: string; display_name: string; email: string; active: number } | undefined;
+    "SELECT id, username, display_name, email, active FROM users WHERE email = ?"
+  ).get(email.trim().toLowerCase()) as { id: number; username: string; display_name: string; email: string; active: number } | undefined;
 
-  if (!user) {
-    return NextResponse.json({ error: "Benutzer nicht gefunden" }, { status: 404 });
+  if (!user || !user.active) {
+    return NextResponse.json({
+      success: true,
+      message: "Falls ein Konto mit dieser E-Mail existiert, wurde ein Link zum Zurücksetzen gesendet.",
+    });
   }
 
-  if (!user.active) {
-    return NextResponse.json({ error: "Dieses Konto ist gesperrt" }, { status: 403 });
-  }
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
 
-  const passwordToSet = newPassword || process.env.ADMIN_PASSWORD || "garagentor2024";
-  db.prepare("UPDATE users SET password_hash = ? WHERE id = ?")
-    .run(hashPassword(passwordToSet), user.id);
+  db.prepare("INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)")
+    .run(user.id, token, expiresAt);
 
-  if (user.email) {
-    try {
-      await sendPasswordResetEmail(user.email, user.display_name, newPassword ? "dein gewähltes Passwort" : passwordToSet);
-      return NextResponse.json({
-        success: true,
-        message: `Passwort wurde zurückgesetzt. Eine E-Mail wurde an ${user.email.replace(/(.{2})(.*)(@.*)/, "$1***$3")} gesendet.`,
-      });
-    } catch (err) {
-      console.error("E-Mail-Versand fehlgeschlagen:", err);
-      return NextResponse.json({
-        success: true,
-        message: "Passwort wurde zurückgesetzt, aber die E-Mail konnte nicht gesendet werden. Bitte den Administrator kontaktieren.",
-      });
-    }
+  try {
+    await sendPasswordResetLink(user.email, user.display_name, token);
+  } catch (err) {
+    console.error("[Reset] E-Mail-Versand fehlgeschlagen:", err);
+    return NextResponse.json({ error: "E-Mail konnte nicht gesendet werden" }, { status: 500 });
   }
 
   return NextResponse.json({
     success: true,
-    message: "Passwort wurde zurückgesetzt. Du kannst dich jetzt mit dem Standard-Passwort anmelden.",
+    message: "Falls ein Konto mit dieser E-Mail existiert, wurde ein Link zum Zurücksetzen gesendet.",
   });
 }

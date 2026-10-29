@@ -81,6 +81,18 @@ function getDb() {
   try { db.exec("ALTER TABLE leads ADD COLUMN transkription TEXT DEFAULT ''"); } catch {}
   try { db.exec("ALTER TABLE leads ADD COLUMN recording_url TEXT DEFAULT ''"); } catch {}
 
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS password_reset_tokens (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      token TEXT NOT NULL UNIQUE,
+      expires_at TEXT NOT NULL,
+      used INTEGER DEFAULT 0,
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+  `);
+
   // Seed admin users if none exist
   const userCount = db.prepare("SELECT COUNT(*) as cnt FROM users").get() as { cnt: number };
   if (userCount.cnt === 0) {

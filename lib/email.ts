@@ -59,13 +59,16 @@ export async function sendLeadNotification(lead: {
   }
 }
 
-export async function sendPasswordResetEmail(
+export async function sendPasswordResetLink(
   to: string,
-  username: string,
-  newPassword: string
+  displayName: string,
+  token: string
 ) {
   const apiKey = process.env.BREVO_SMTP_KEY;
   if (!apiKey) throw new Error("BREVO_SMTP_KEY nicht konfiguriert");
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://garagentor-renovation.ch";
+  const resetUrl = `${baseUrl}/admin/reset-password?token=${token}`;
 
   const res = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
@@ -75,20 +78,20 @@ export async function sendPasswordResetEmail(
       "api-key": apiKey,
     },
     body: JSON.stringify({
-      sender: { name: "Marktindex", email: "givel@marktindex.ch" },
-      to: [{ email: to, name: username }],
-      subject: "Passwort zurückgesetzt – garagentor-renovation.ch",
+      sender: { name: "Garagentor Renovation", email: "givel@marktindex.ch" },
+      to: [{ email: to, name: displayName }],
+      subject: "Passwort zurücksetzen – garagentor-renovation.ch",
       htmlContent: `
         <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
-          <h2 style="color: #003A7D;">Passwort zurückgesetzt</h2>
-          <p>Hallo <strong>${username}</strong>,</p>
-          <p>Dein Passwort für das Admin-Panel von <strong>garagentor-renovation.ch</strong> wurde zurückgesetzt.</p>
-          <p>Du kannst dich jetzt mit folgendem Passwort anmelden:</p>
-          <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0;">
-            <code style="font-size: 18px; color: #003A7D;">${newPassword}</code>
-          </div>
-          <p>Bitte ändere dein Passwort nach dem Login.</p>
-          <p style="color: #888; font-size: 12px; margin-top: 30px;">
+          <h2 style="color: #003A7D;">Passwort zurücksetzen</h2>
+          <p>Hallo <strong>${displayName}</strong>,</p>
+          <p>Du hast eine Passwort-Zurücksetzung für dein Konto auf <strong>garagentor-renovation.ch</strong> angefordert.</p>
+          <p>Klicke auf den folgenden Button, um ein neues Passwort zu setzen:</p>
+          <p style="text-align:center;margin:24px 0;">
+            <a href="${resetUrl}" style="background:#003A7D;color:#fff;padding:12px 28px;text-decoration:none;border-radius:6px;font-weight:bold;">Neues Passwort setzen</a>
+          </p>
+          <p style="color:#888;font-size:13px;">Dieser Link ist 1 Stunde gültig. Falls du kein Zurücksetzen angefordert hast, kannst du diese E-Mail ignorieren.</p>
+          <p style="color: #aaa; font-size: 11px; margin-top: 30px;">
             Diese E-Mail wurde automatisch versendet. Bitte antworte nicht darauf.
           </p>
         </div>
