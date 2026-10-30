@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { trackEvent } from "@/lib/tracking";
 
 function IconShield() {
   return (
@@ -102,6 +103,7 @@ export default function Home() {
       const res = await fetch("/api/leads", { method: "POST", body: fd });
       if (!res.ok) throw new Error("Fehler");
       setSent(true);
+      trackEvent("lead_form_submit", { tor_typ: formData.torTyp || "", plz: formData.plz || "" });
     } catch {
       setError("Es gab einen Fehler. Bitte versuchen Sie es erneut.");
     } finally {
@@ -129,7 +131,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <a href="tel:+41444429990" className="hidden sm:flex items-center gap-2 text-sm text-white/70 hover:text-white">
+            <a href="tel:+41444429990" onClick={() => trackEvent("phone_click")} className="hidden sm:flex items-center gap-2 text-sm text-white/70 hover:text-white">
               <IconPhone />
               <span>044 442 99 90</span>
             </a>
@@ -167,7 +169,7 @@ export default function Home() {
                 Kostenlose Offerte
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 5v14M19 12l-7 7-7-7" /></svg>
               </button>
-              <a href="tel:+41444429990" className="border border-white/25 hover:border-white/40 hover:bg-white/5 text-white px-8 py-4 rounded text-base font-semibold transition-all text-center flex items-center justify-center gap-2">
+              <a href="tel:+41444429990" onClick={() => trackEvent("phone_click")} className="border border-white/25 hover:border-white/40 hover:bg-white/5 text-white px-8 py-4 rounded text-base font-semibold transition-all text-center flex items-center justify-center gap-2">
                 <IconPhone />
                 Anrufen
               </a>
@@ -493,7 +495,7 @@ export default function Home() {
           </div>
           <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/30">
             <p>&copy; {new Date().getFullYear()} garagentor-renovation.ch</p>
-            <p>v2.13.2</p>
+            <p>v2.14.0</p>
           </div>
         </div>
       </footer>

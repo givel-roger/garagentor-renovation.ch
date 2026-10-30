@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.14.0 (2026-10-30)
+
+- Google Tag Manager eingebunden (Container GTM-WMW6P2L4, überschreibbar via NEXT_PUBLIC_GTM_ID)
+- Conversion-Events im dataLayer: lead_form_submit (mit Tor-Typ und PLZ) und phone_click
+- Grundlage für Google-Ads-Conversion-Tracking
+
 ## 2.13.2 (2026-10-30)
 
 - Fix: Zeitangabe bei Voicemail-Leads war UTC (eine Stunde zu früh) — jetzt Europe/Zurich
