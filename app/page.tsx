@@ -493,7 +493,7 @@ export default function Home() {
           </div>
           <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/30">
             <p>&copy; {new Date().getFullYear()} garagentor-renovation.ch</p>
-            <p>v2.13.0</p>
+            <p>v2.13.1</p>
           </div>
         </div>
       </footer>

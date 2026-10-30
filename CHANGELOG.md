@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.13.1 (2026-10-30)
+
+- Fix: 3CX meldete die Weiterleitung aufs eigene Handy als eingehenden Anruf → Phantom-Lead „Anrufer 5171212"
+- Webhook ignoriert jetzt eigene Nummern (OWN_NUMBERS, Standard 0795171212); Voicemails von eigenen Nummern kommen weiterhin an
+
 ## 2.13.0 (2026-10-30)
 
 - Fix: Ein Anruf erzeugte mehrere Leads (3CX-Webhook, Anruf-Poller und Voicemail-Mail legten je einen an)

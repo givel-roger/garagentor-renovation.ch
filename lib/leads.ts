@@ -28,3 +28,15 @@ export function findRecentLeadByPhone<T = { id: number }>(
     )
     .get(`%${digits}%`, `-${minutes} minutes`) as T | undefined;
 }
+
+// Eigene Nummern (z.B. das Handy des Inhabers): 3CX meldet Weiterleitungen dorthin
+// als eingehende Anrufe und wuerde daraus Phantom-Leads machen.
+const OWN_NUMBERS = (process.env.OWN_NUMBERS || "0795171212")
+  .split(",")
+  .map((n) => phoneLastDigits(n))
+  .filter((n) => n.length >= 5);
+
+export function isOwnNumber(phone: string): boolean {
+  const digits = phoneLastDigits(phone);
+  return digits.length >= 5 && OWN_NUMBERS.includes(digits);
+}

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import getDb from "@/lib/db";
 import { sendLeadNotification } from "@/lib/email";
-import { findRecentLeadByPhone } from "@/lib/leads";
+import { findRecentLeadByPhone, isOwnNumber } from "@/lib/leads";
 
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || "garagentor-3cx-2024";
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
@@ -59,6 +59,11 @@ export async function POST(request: NextRequest) {
 
     if (!phone) {
       return NextResponse.json({ error: "Keine Telefonnummer" }, { status: 400 });
+    }
+
+    if (isOwnNumber(phone)) {
+      console.log(`[Webhook] Eigene Nummer ${phone} ignoriert (${callType})`);
+      return NextResponse.json({ success: true, ignored: true });
     }
 
     const db = getDb();
