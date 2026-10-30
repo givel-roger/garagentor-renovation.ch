@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.13.2 (2026-10-30)
+
+- Fix: Zeitangabe bei Voicemail-Leads war UTC (eine Stunde zu früh) — jetzt Europe/Zurich
+- Container läuft mit TZ=Europe/Zurich
+
 ## 2.13.1 (2026-10-30)
 
 - Fix: 3CX meldete die Weiterleitung aufs eigene Handy als eingehenden Anruf → Phantom-Lead „Anrufer 5171212"

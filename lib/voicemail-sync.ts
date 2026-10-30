@@ -159,7 +159,7 @@ export async function syncVoicemails(): Promise<{ processed: number; errors: str
           const duration = call.TalkingDuration || call.Duration || "";
           let nachricht: string;
           if (isVoicemail) {
-            nachricht = `Voicemail vom ${new Date(callTime).toLocaleString("de-CH")}`;
+            nachricht = `Voicemail vom ${new Date(callTime).toLocaleString("de-CH", { timeZone: "Europe/Zurich" })}`;
           } else {
             const parts = ["Telefonanruf"];
             if (duration) parts.push(`(${duration})`);
