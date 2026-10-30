@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.12.1 (2026-10-30)
+
+- Fix: Voicemail-Aufnahmen und Formular-Fotos waren im Admin nicht abrufbar (404) — Dateien, die nach dem Build in public/uploads landen, werden jetzt über /uploads/... ausgeliefert
+- Voicemail-Empfang läuft direkt über eigene Inbound-Domain eingang.garagentor-renovation.ch (MX → Brevo → Webhook), kein Umweg mehr über Yorokobi
+- 3CX Mailbox 110 sendet an voicemail@eingang.garagentor-renovation.ch
+
 ## 2.12.0 (2026-10-29)
 
 - Voicemail-Empfang per E-Mail (wie Yorokobi): 3CX sendet Voicemail → Brevo Inbound → Webhook
