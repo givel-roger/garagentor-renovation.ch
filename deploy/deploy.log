@@ -45,3 +45,4 @@
 [2026-10-30 07:49] v2.13.1 deployed - Webhook ignoriert eigene Nummern (OWN_NUMBERS), kein Phantom-Lead vom Handy mehr - Health 200 OK, DB-Backup pre-v2.13.1
 [2026-10-30 08:53] v2.13.2 deployed - Zeitangaben Europe/Zurich (Voicemail-Lead, TZ im Container) - Health 200 OK, DB-Backup pre-v2.13.2
 [2026-10-30 18:51] v2.14.0 deployed - Google Tag Manager GTM-WMW6P2L4 + dataLayer-Events (lead_form_submit, phone_click) - Health 200 OK, DB-Backup pre-v2.14.0
+[2026-10-30 20:33] nginx CSP erweitert (googletagmanager, googleadservices, doubleclick, google.com, fonts.googleapis) - Backup der Config auf Server, nginx -t OK, reload OK
