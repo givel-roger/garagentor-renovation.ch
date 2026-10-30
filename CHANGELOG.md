@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.13.0 (2026-10-30)
+
+- Fix: Ein Anruf erzeugte mehrere Leads (3CX-Webhook, Anruf-Poller und Voicemail-Mail legten je einen an)
+- Gemeinsame Zuordnung: gleiche Nummer innerhalb von 2 Stunden = derselbe Lead, unabhängig vom Nummernformat (079… / +4179…)
+- 3CX-Webhook ergänzt bestehenden Lead statt neu anzulegen (keine doppelte Benachrichtigung)
+- Trifft die Transkription zu einem bestehenden Lead ein, wird sie per E-Mail nachgereicht
+- Admin: Lead-Liste lädt alle 30 Sekunden still nach, geöffneter Lead aktualisiert sich mit (Transkription, Aufnahme)
+
 ## 2.12.1 (2026-10-30)
 
 - Fix: Voicemail-Aufnahmen und Formular-Fotos waren im Admin nicht abrufbar (404) — Dateien, die nach dem Build in public/uploads landen, werden jetzt über /uploads/... ausgeliefert

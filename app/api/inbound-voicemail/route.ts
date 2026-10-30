@@ -4,6 +4,7 @@ import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import getDb from "@/lib/db";
 import { sendLeadNotification } from "@/lib/email";
+import { findRecentLeadByPhone } from "@/lib/leads";
 
 const VOICEMAIL_DIR = path.join(process.cwd(), "public", "uploads", "voicemails");
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
@@ -37,14 +38,6 @@ async function transcribeAudio(buf: Buffer, dateiName: string): Promise<string> 
   } catch {
     return "";
   }
-}
-
-function normalizePhone(phone: string): string {
-  return phone.replace(/[^0-9+]/g, "").replace(/^00/, "+");
-}
-
-function phoneLastDigits(phone: string): string {
-  return normalizePhone(phone).replace(/\D/g, "").slice(-9);
 }
 
 function extractCallerNumber(subject: string, body: string): string | null {
@@ -134,12 +127,7 @@ export async function POST(request: NextRequest) {
       }
 
       const db = getDb();
-      const digits = phoneLastDigits(callerNumber);
-      const recentLead = db
-        .prepare(
-          `SELECT id FROM leads WHERE phone LIKE ? AND created_at >= datetime('now', '-30 minutes') ORDER BY created_at DESC LIMIT 1`
-        )
-        .get(`%${digits}%`) as any;
+      const recentLead = findRecentLeadByPhone<{ id: number; name: string }>(db, callerNumber, "id, name");
 
       if (recentLead) {
         db.prepare(
@@ -150,6 +138,15 @@ export async function POST(request: NextRequest) {
           WHERE id = ?`
         ).run(recordingUrl, recordingUrl, transcription, transcription, recentLead.id);
         console.log(`[Inbound] Lead ${recentLead.id} aktualisiert mit Voicemail`);
+        if (transcription) {
+          sendLeadNotification({
+            name: recentLead.name,
+            phone: callerNumber,
+            source: "phone",
+            nachricht: "Sprachnachricht zum Anruf",
+            transkription: transcription,
+          });
+        }
       } else {
         const nachricht = transcription || `Sprachnachricht von ${callerNumber}`;
         const leadName = `Anruf ${callerNumber}`;

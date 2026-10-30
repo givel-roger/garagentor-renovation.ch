@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import getDb from "@/lib/db";
 import { sendLeadNotification } from "@/lib/email";
+import { findRecentLeadByPhone } from "@/lib/leads";
 
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || "garagentor-3cx-2024";
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
@@ -69,6 +70,17 @@ export async function POST(request: NextRequest) {
     if (agent) messageParts.push(`Agent: ${agent}`);
     if (notes) messageParts.push(notes);
     const nachricht = messageParts.join(" – ") || "Telefonanruf";
+
+    const recentLead = findRecentLeadByPhone<{ id: number; nachricht: string }>(db, phone, "id, nachricht");
+    if (recentLead) {
+      const merged = recentLead.nachricht?.includes(nachricht)
+        ? recentLead.nachricht
+        : [recentLead.nachricht, nachricht].filter(Boolean).join(" | ");
+      db.prepare("UPDATE leads SET nachricht = ?, updated_at = datetime('now') WHERE id = ?")
+        .run(merged, recentLead.id);
+      console.log(`[Webhook] Lead ${recentLead.id} existiert bereits für ${phone}, zusammengeführt`);
+      return NextResponse.json({ success: true, id: recentLead.id, merged: true });
+    }
 
     const result = db.prepare(`
       INSERT INTO leads (name, email, phone, plz, ort, nachricht, source, status, recording_url)

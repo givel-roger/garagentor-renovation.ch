@@ -1,5 +1,6 @@
 import getDb from "./db";
 import { sendLeadNotification } from "./email";
+import { findRecentLeadByPhone, normalizePhone } from "./leads";
 
 const TCX_URL = process.env.TCX_URL || "";
 const TCX_CLIENT_ID = process.env.TCX_CLIENT_ID || "";
@@ -85,14 +86,6 @@ function istVoicemail(call: any): boolean {
 // Aufnahmen kommen per E-Mail (Brevo Inbound → /api/inbound-voicemail),
 // nicht über die Recordings API (403 bei gehosteter 3CX).
 
-function normalizePhone(phone: string): string {
-  return phone.replace(/[^0-9+]/g, "").replace(/^00/, "+");
-}
-
-function phoneLastDigits(phone: string): string {
-  return normalizePhone(phone).replace(/\D/g, "").slice(-9);
-}
-
 function ensureProcessedTable() {
   const db = getDb();
   db.exec(`
@@ -157,14 +150,7 @@ export async function syncVoicemails(): Promise<{ processed: number; errors: str
 
         // Lead zuordnen oder erstellen
         // Aufnahmen + Transkription kommen separat via /api/inbound-voicemail (Brevo Inbound)
-        const digits = phoneLastDigits(callerNumber);
-        const recentLead = db
-          .prepare(
-            `SELECT id, recording_url, transkription FROM leads
-             WHERE phone LIKE ? AND created_at >= datetime('now', '-15 minutes')
-             ORDER BY created_at DESC LIMIT 1`
-          )
-          .get(`%${digits}%`) as any;
+        const recentLead = findRecentLeadByPhone(db, callerNumber);
 
         if (recentLead) {
           console.log(`[CallSync] Lead ${recentLead.id} existiert bereits für ${callerNumber}`);

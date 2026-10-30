@@ -101,8 +101,8 @@ export default function AdminPage() {
   const [showTemplates, setShowTemplates] = useState(false);
   const [impersonating, setImpersonating] = useState<Partner | null>(null);
 
-  const fetchLeads = useCallback(async () => {
-    setLoading(true);
+  const fetchLeads = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const params = viewMode === "list" && filter !== "alle" ? `?status=${filter}` : "";
       const res = await fetch(`/api/leads${params}`, {
@@ -110,9 +110,24 @@ export default function AdminPage() {
       });
       if (res.ok) setLeads(await res.json());
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [token, filter, viewMode]);
+
+  // Voicemail-Transkription trifft ~1 Minute nach dem Anruf ein: Liste still nachladen
+  useEffect(() => {
+    if (!loggedIn || !token) return;
+    const id = setInterval(() => {
+      if (document.visibilityState === "visible") fetchLeads(true);
+    }, 30_000);
+    return () => clearInterval(id);
+  }, [loggedIn, token, fetchLeads]);
+
+  useEffect(() => {
+    if (!selected) return;
+    const fresh = leads.find((l) => l.id === selected.id);
+    if (fresh && JSON.stringify(fresh) !== JSON.stringify(selected)) setSelected(fresh);
+  }, [leads]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchPartners = useCallback(async () => {
     if (user?.role !== "admin") return;
