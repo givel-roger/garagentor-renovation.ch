@@ -1,0 +1,79 @@
+{
+  "exportFormatVersion": 2,
+  "containerVersion": {
+    "accountId": "6401325987",
+    "containerId": "284447407",
+    "tag": [
+      {
+        "accountId": "6401325987", "containerId": "284447407", "tagId": "1",
+        "name": "Google Ads - Conversion-Verknüpfung",
+        "type": "gclidw",
+        "parameter": [
+          {"type": "BOOLEAN", "key": "enableCrossDomain", "value": "false"},
+          {"type": "BOOLEAN", "key": "enableUrlPassthrough", "value": "false"},
+          {"type": "BOOLEAN", "key": "enableCookieOverrides", "value": "false"}
+        ],
+        "firingTriggerId": ["2147479553"],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "accountId": "6401325987", "containerId": "284447407", "tagId": "2",
+        "name": "Google Ads - Conversion Lead-Formular",
+        "type": "awct",
+        "parameter": [
+          {"type": "BOOLEAN", "key": "enableConversionLinker", "value": "true"},
+          {"type": "TEMPLATE", "key": "conversionId", "value": "973556555"},
+          {"type": "TEMPLATE", "key": "conversionLabel", "value": "uY81CKDHia8dEMuWndAD"},
+          {"type": "BOOLEAN", "key": "rdp", "value": "false"},
+          {"type": "BOOLEAN", "key": "enableProductReporting", "value": "false"},
+          {"type": "BOOLEAN", "key": "enableNewCustomerReporting", "value": "false"}
+        ],
+        "firingTriggerId": ["10"],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "accountId": "6401325987", "containerId": "284447407", "tagId": "3",
+        "name": "Google Ads - Conversion Anruf-Klick",
+        "type": "awct",
+        "parameter": [
+          {"type": "BOOLEAN", "key": "enableConversionLinker", "value": "true"},
+          {"type": "TEMPLATE", "key": "conversionId", "value": "973556555"},
+          {"type": "TEMPLATE", "key": "conversionLabel", "value": "qXEOCKPHia8dEMuWndAD"},
+          {"type": "BOOLEAN", "key": "rdp", "value": "false"},
+          {"type": "BOOLEAN", "key": "enableProductReporting", "value": "false"},
+          {"type": "BOOLEAN", "key": "enableNewCustomerReporting", "value": "false"}
+        ],
+        "firingTriggerId": ["11"],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "6401325987", "containerId": "284447407", "triggerId": "10",
+        "name": "Event - lead_form_submit",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {"type": "EQUALS", "parameter": [
+            {"type": "TEMPLATE", "key": "arg0", "value": "{{_event}}"},
+            {"type": "TEMPLATE", "key": "arg1", "value": "lead_form_submit"}
+          ]}
+        ]
+      },
+      {
+        "accountId": "6401325987", "containerId": "284447407", "triggerId": "11",
+        "name": "Event - phone_click",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {"type": "EQUALS", "parameter": [
+            {"type": "TEMPLATE", "key": "arg0", "value": "{{_event}}"},
+            {"type": "TEMPLATE", "key": "arg1", "value": "phone_click"}
+          ]}
+        ]
+      }
+    ],
+    "variable": [],
+    "builtInVariable": [
+      {"accountId": "6401325987", "containerId": "284447407", "type": "EVENT", "name": "Event"}
+    ]
+  }
+}
