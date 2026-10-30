@@ -42,3 +42,4 @@
 [2026-10-30 00:15] v2.12.0 deployed - Voicemail per E-Mail (Brevo Inbound-Webhook, Yorokobi-Methode) - Health 200 OK
 [2026-10-30 07:15] v2.12.1 deployed - Uploads-Route (Voicemail/Fotos abspielbar), eigene Inbound-Domain eingang.garagentor-renovation.ch (MX+Brevo-Webhook 2650343), 3CX 110 umgestellt - Health 200 OK, WAV 200
 [2026-10-30 07:29] v2.13.0 deployed - Ein Lead pro Anruf (gemeinsame Zuordnung 2h, Webhook merged), Transkription per Mail nachgereicht, Admin Auto-Refresh 30s - Health 200 OK, DB-Backup pre-v2.13.0
+[2026-10-30 07:49] v2.13.1 deployed - Webhook ignoriert eigene Nummern (OWN_NUMBERS), kein Phantom-Lead vom Handy mehr - Health 200 OK, DB-Backup pre-v2.13.1
