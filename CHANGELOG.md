@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.0.0
+- Komplettes Redesign: von Sushi-Catering zu Lozärner Wiehnachtsmärt
+- Vollbild-Hero mit Playfair Display Typografie
+- Schneefall-Animation (Canvas)
+- Bilder-Slider mit Auto-Play, Pfeilen und Dots
+- Adventskalender mit 24 Türchen (durchmischte Nummern)
+- Scroll-Animationen (FadeIn bei Sichtbarkeit)
+- Fotos von Scrappbook-Album integriert
+- Programm, Öffnungszeiten, Anreise mit Google Maps
+- Farbschema: Weinrot, Gold, Tannengrün, Cream
+- Responsive Layout (Mobile + Desktop)
+- SEO: Schema.org Event, Open Graph, Meta-Tags
+- Projekt umbenannt: weihnachtsmarkt-luzern.com
+
 ## v1.4.2
 - Überall "Yorokobi AG" korrekt geschrieben (Impressum, Datenschutz, Footer)
 - Datenschutz-Seite: Adresse und E-Mail aktualisiert

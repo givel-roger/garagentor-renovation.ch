@@ -9,38 +9,36 @@ const geistSans = Geist({
 
 export const metadata: Metadata = {
   title: {
-    default: "Sushi Catering Schweiz — Frisch gerollt, direkt zu Ihnen",
-    template: "%s | Sushi Catering Schweiz",
+    default: "Lozärner Wiehnachtsmärt 2026 – Franziskanerplatz Luzern",
+    template: "%s | Lozärner Wiehnachtsmärt",
   },
   description:
-    "Premium Sushi Catering für Events, Firmenanlässe und private Feiern in der ganzen Schweiz. Mit oder ohne Koch. Frisch zubereitet von Kaiten Sushi.",
+    "Der Lozärner Wiehnachtsmärt auf dem Franziskanerplatz – vom 3. bis 21. Dezember 2026. Rund 70 Marktstände, Glühwein, Handwerkskunst und festliche Stimmung im Herzen von Luzern.",
   keywords: [
-    "sushi catering",
-    "sushi catering schweiz",
-    "sushi event",
-    "sushi party",
-    "sushi koch mieten",
-    "sushi platte bestellen",
-    "catering luzern",
-    "sushi workshop",
-    "firmen catering schweiz",
+    "weihnachtsmarkt luzern",
+    "lozärner wiehnachtsmärt",
+    "franziskanerplatz",
+    "weihnachtsmarkt 2026",
+    "adventsmarkt luzern",
+    "christkindlmarkt luzern",
+    "glühwein luzern",
   ],
-  authors: [{ name: "Kaiten by Yorokobi" }],
-  metadataBase: new URL("https://www.sushi-catering.ch"),
+  authors: [{ name: "IG Luzerner Herbstmesse und Märkte" }],
+  metadataBase: new URL("https://www.weihnachtsmarkt-luzern.com"),
   openGraph: {
     type: "website",
     locale: "de_CH",
-    url: "https://www.sushi-catering.ch",
-    siteName: "Sushi Catering Schweiz",
-    title: "Sushi Catering Schweiz — Frisch gerollt, direkt zu Ihnen",
+    url: "https://www.weihnachtsmarkt-luzern.com",
+    siteName: "Lozärner Wiehnachtsmärt",
+    title: "Lozärner Wiehnachtsmärt 2026 – Franziskanerplatz Luzern",
     description:
-      "Premium Sushi Catering für Events, Firmenanlässe und private Feiern. Live-Koch, Sushi Platten oder Workshop. Ab 8 Personen.",
+      "Vom 3. bis 21. Dezember 2026 auf dem Franziskanerplatz. 70 Marktstände, Glühwein, Handwerkskunst und festliche Stimmung.",
     images: [
       {
-        url: "/images/hero-sushi.jpg",
+        url: "/images/galerie-6.jpg",
         width: 1200,
         height: 630,
-        alt: "Sushi Catering Platte von Kaiten",
+        alt: "Lozärner Wiehnachtsmärt bei Nacht",
       },
     ],
   },
@@ -63,24 +61,31 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "FoodService",
-              name: "Sushi Catering Schweiz by Kaiten",
+              "@type": "Event",
+              name: "Lozärner Wiehnachtsmärt 2026",
               description:
-                "Premium Sushi Catering für Events, Firmenanlässe und private Feiern in der ganzen Schweiz.",
-              url: "https://www.sushi-catering.ch",
-              telephone: "+41412449999",
-              email: "info@yorokobi.ch",
-              address: {
-                "@type": "PostalAddress",
-                addressLocality: "Luzern",
-                addressCountry: "CH",
+                "Weihnachtsmarkt auf dem Franziskanerplatz in Luzern mit rund 70 Marktständen, Glühwein, Handwerkskunst und festlicher Stimmung.",
+              url: "https://www.weihnachtsmarkt-luzern.com",
+              startDate: "2026-12-03",
+              endDate: "2026-12-21",
+              eventAttendanceMode:
+                "https://schema.org/OfflineEventAttendanceMode",
+              eventStatus: "https://schema.org/EventScheduled",
+              location: {
+                "@type": "Place",
+                name: "Franziskanerplatz",
+                address: {
+                  "@type": "PostalAddress",
+                  streetAddress: "Franziskanerplatz",
+                  addressLocality: "Luzern",
+                  postalCode: "6003",
+                  addressCountry: "CH",
+                },
               },
-              areaServed: {
-                "@type": "Country",
-                name: "Schweiz",
+              organizer: {
+                "@type": "Organization",
+                name: "IG Luzerner Herbstmesse und Märkte",
               },
-              priceRange: "ab CHF 12 pro Person",
-              sameAs: ["https://www.kaiten.ch"],
             }),
           }}
         />

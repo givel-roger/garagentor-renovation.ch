@@ -1,22 +1,31 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #ffffff;
-  --color-foreground: #111111;
-  --color-accent: #c41e2a;
-  --color-accent-hover: #a8171f;
-  --color-warm: #faf7f4;
-  --color-muted: #666;
-  --color-surface: #f7f5f2;
-  --color-border: #e8e5e0;
+  --color-cream: #f5f0e8;
+  --color-cream-dark: #ebe4d8;
+  --color-wine: #7a1a28;
+  --color-wine-dark: #5c1220;
+  --color-wine-light: #9e2a3c;
+  --color-gold: #b8942e;
+  --color-gold-dark: #9a7a22;
+  --color-gold-light: #d4b04a;
+  --color-tannen: #1e4a28;
+  --color-tannen-dark: #143318;
+  --color-holz: #2e1e14;
+  --color-nacht: #141428;
+  --color-foreground: #1e1a16;
+  --color-muted: #5c5248;
+  --color-border: #ccc4b4;
   --font-sans: var(--font-geist-sans);
 }
 
 html { scroll-behavior: smooth; }
 
 body {
-  background: #ffffff;
-  color: #1a1a1a;
+  background: #f5f0e8;
+  color: #1e1a16;
+  hyphens: none;
+  -webkit-hyphens: none;
 }
 
 @font-face {
@@ -39,7 +48,7 @@ body {
   font-family: 'Playfair Display', Georgia, serif;
 }
 
-.text-outline {
-  -webkit-text-stroke: 1.5px #1a1a1a;
-  color: transparent;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }

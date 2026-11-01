@@ -1,431 +1,442 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-function useInView() {
+/* ── Adventskalender-Inhalte ── */
+const ADVENT_CONTENT: Record<number, { title: string; text: string }> = {
+  1: { title: "Willkommen!", text: "Der Lozärner Wiehnachtsmärt öffnet seine Türen. Rund 70 Stände erwarten Sie." },
+  2: { title: "Glühwein", text: "Unser Glühwein wird nach einem traditionellen Rezept zubereitet – mit feinem Gewürztraminer und Zimt." },
+  3: { title: "Adventskranz", text: "Der über drei Meter grosse Adventskranz auf dem Franziskanerbrunnen ist der grösste der Zentralschweiz." },
+  4: { title: "Eröffnung", text: "Die feierliche Eröffnung in der Franziskanerkirche – ein stimmungsvoller Auftakt." },
+  5: { title: "Handwerkskunst", text: "Holzschnitzereien, Keramik und einzigartige Geschenke von lokalen Kunsthandwerkern." },
+  6: { title: "Samichlaus!", text: "Der Samichlaus besucht die Franziskanerkirche. Leuchtende Kinderaugen garantiert." },
+  7: { title: "Nidlezältli", text: "Die Luzerner Nidlezältli gehören zum Wiehnachtsmärt wie der Schnee zum Winter." },
+  8: { title: "Lichterglanz", text: "Hunderte von Lichtern und Kerzen verwandeln den Platz in eine Winterwelt." },
+  9: { title: "Musik", text: "Chöre und Bläsergruppen aus der Region sorgen für festliche Klänge." },
+  10: { title: "Sammeltasse", text: "Jedes Jahr ein neues Design. Sammler kommen von weit her." },
+  11: { title: "Holzofenbrot", text: "Frisch gebackenes Holzofenbrot – der Duft allein ist schon ein Erlebnis." },
+  12: { title: "Punsch & Kakao", text: "Wärmende Getränke für Gross und Klein." },
+  13: { title: "Tubas de Noël", text: "Les Tubas de Noël – ein ganz spezielles Klangerlebnis mit Tuba und Sousaphon." },
+  14: { title: "Franziskanerkirche", text: "Die Kirche aus dem Jahr 1270 bietet Adventsandachten und Konzerte." },
+  15: { title: "Kerzenziehen", text: "Eigene Kerzen ziehen – besonders beliebt bei Familien." },
+  16: { title: "Geschenkideen", text: "Handgemachte Unikate für jeden Geschmack." },
+  17: { title: "Sternennacht", text: "Der Blick von der Kapellbrücke auf den beleuchteten Wiehnachtsmärt – unvergesslich." },
+  18: { title: "Fondue & Raclette", text: "Käsespezialitäten mit Blick auf den geschmückten Franziskanerplatz." },
+  19: { title: "Adventsandacht", text: "Momente der Ruhe in der festlich geschmückten Franziskanerkirche." },
+  20: { title: "Kinderkarussell", text: "Das nostalgische Karussell dreht sich auf dem Franziskanergärtli." },
+  21: { title: "Letzter Tag", text: "Nochmals die besondere Atmosphäre geniessen – bis 19 Uhr." },
+  22: { title: "Rückblick", text: "Danke an alle Besucher und Aussteller!" },
+  23: { title: "Vorfreude", text: "Wir sehen uns 2027!" },
+  24: { title: "Frohe Weihnachten!", text: "Schöne Festtage und es guets Nöis wünscht der Lozärner Wiehnachtsmärt!" },
+};
+
+/* ── Schneefall ── */
+function Snowfall() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let w = (canvas.width = window.innerWidth);
+    let h = (canvas.height = window.innerHeight);
+    const flakes: { x: number; y: number; r: number; speed: number; wind: number }[] = [];
+    const count = Math.floor(w / 12);
+
+    for (let i = 0; i < count; i++) {
+      flakes.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 2.5 + 1,
+        speed: Math.random() * 0.8 + 0.3,
+        wind: Math.random() * 0.4 - 0.2,
+      });
+    }
+
+    let raf: number;
+    function draw() {
+      ctx!.clearRect(0, 0, w, h);
+      ctx!.fillStyle = "rgba(255,255,255,0.7)";
+      for (const f of flakes) {
+        ctx!.beginPath();
+        ctx!.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx!.fill();
+        f.y += f.speed;
+        f.x += f.wind + Math.sin(f.y * 0.01) * 0.3;
+        if (f.y > h) { f.y = -5; f.x = Math.random() * w; }
+        if (f.x > w) f.x = 0;
+        if (f.x < 0) f.x = w;
+      }
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+
+    const onResize = () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; };
+    window.addEventListener("resize", onResize);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); };
+  }, []);
+
+  return <canvas ref={canvasRef} className="fixed inset-0 z-30 pointer-events-none" />;
+}
+
+/* ── Bilder-Slider ── */
+const GALLERY_IMAGES = [
+  { src: "/images/galerie-1.jpg", alt: "Besucher am Markt" },
+  { src: "/images/galerie-3.jpg", alt: "Lichterglanz" },
+  { src: "/images/galerie-4.jpg", alt: "Engelfigur" },
+  { src: "/images/galerie-7.jpg", alt: "Marktstände" },
+  { src: "/images/galerie-8.jpg", alt: "Abendstimmung" },
+  { src: "/images/galerie-9.jpg", alt: "Winterabend" },
+  { src: "/images/galerie-10.jpg", alt: "Weihnachtsstimmung" },
+  { src: "/images/galerie-11.jpg", alt: "Stände bei Nacht" },
+  { src: "/images/galerie-12.jpg", alt: "Marktszene" },
+];
+
+function ImageSlider() {
+  const [current, setCurrent] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const total = GALLERY_IMAGES.length;
+
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+    const timer = setInterval(() => setCurrent((c) => (c + 1) % total), 4000);
+    return () => clearInterval(timer);
+  }, [isAutoPlaying, total]);
+
+  const goTo = useCallback((i: number) => {
+    setCurrent(i);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 10000);
+  }, []);
+
+  return (
+    <div className="relative overflow-hidden bg-holz">
+      <div className="relative h-[60vh] sm:h-[75vh]">
+        {GALLERY_IMAGES.map((img, i) => (
+          <div key={img.src} className="absolute inset-0 transition-opacity duration-1000"
+            style={{ opacity: i === current ? 1 : 0 }}>
+            <Image src={img.src} alt={img.alt} fill className="object-cover" priority={i === 0} />
+          </div>
+        ))}
+      </div>
+
+      {/* Pfeile */}
+      <button onClick={() => goTo((current - 1 + total) % total)}
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center text-2xl cursor-pointer backdrop-blur-sm"
+        aria-label="Vorheriges Bild">&lsaquo;</button>
+      <button onClick={() => goTo((current + 1) % total)}
+        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center text-2xl cursor-pointer backdrop-blur-sm"
+        aria-label="Nächstes Bild">&rsaquo;</button>
+
+      {/* Dots */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        {GALLERY_IMAGES.map((_, i) => (
+          <button key={i} onClick={() => goTo(i)}
+            className={`w-2 h-2 rounded-full cursor-pointer transition-all ${i === current ? "bg-white w-6" : "bg-white/40"}`}
+            aria-label={`Bild ${i + 1}`} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Adventskalender ── */
+function AdventCalendar() {
+  const [openDoor, setOpenDoor] = useState<number | null>(null);
+  const today = new Date();
+  const currentDay = today.getMonth() === 11 ? today.getDate() : 0;
+  const shuffled = [18,3,21,7,14,1,24,10,5,16,11,22,8,2,19,13,6,23,9,17,4,15,20,12];
+
+  return (
+    <div>
+      <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 sm:gap-4 max-w-xl">
+        {shuffled.map((day) => {
+          const isOpen = day <= currentDay;
+          const isToday = day === currentDay;
+          return (
+            <button key={day}
+              onClick={() => isOpen ? setOpenDoor(openDoor === day ? null : day) : undefined}
+              className={`aspect-square rounded-sm flex items-center justify-center text-2xl sm:text-3xl font-display cursor-pointer select-none transition-all duration-300 hover:scale-105 ${
+                isToday ? "bg-gold text-holz shadow-lg scale-105"
+                : isOpen ? "bg-cream-dark text-foreground border border-border hover:bg-cream hover:shadow"
+                : "bg-wine/90 text-white/60 hover:bg-wine"
+              }`}>
+              {day}
+            </button>
+          );
+        })}
+      </div>
+      {openDoor && ADVENT_CONTENT[openDoor] && (
+        <div className="mt-6 bg-cream-dark p-6 border-l-4 border-gold max-w-xl animate-[fadeIn_0.3s_ease]">
+          <span className="text-gold text-sm">{openDoor}. Dezember</span>
+          <h3 className="font-display text-2xl text-foreground mt-1">{ADVENT_CONTENT[openDoor].title}</h3>
+          <p className="text-muted mt-3 leading-relaxed">{ADVENT_CONTENT[openDoor].text}</p>
+          <button onClick={() => setOpenDoor(null)} className="text-muted text-sm mt-4 hover:text-foreground cursor-pointer">Schliessen</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Scroll-Animation ── */
+function FadeIn({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold: 0.15 }
-    );
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold: 0.15 });
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
-  return { ref, visible };
-}
 
-function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const { ref, visible } = useInView();
   return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(30px)",
-        transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`,
-      }}
-    >
+    <div ref={ref} className={`transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}>
       {children}
     </div>
   );
 }
 
+/* ── Hauptseite ── */
 export default function Home() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    date: "",
-    guests: "",
-    typ: "live",
-    message: "",
-  });
-  const [sent, setSent] = useState(false);
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSending(true);
-    setError("");
-    try {
-      const res = await fetch("/api/anfrage", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      if (!res.ok) throw new Error("Fehler beim Senden");
-      setSent(true);
-    } catch {
-      setError("Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut oder rufen Sie uns an.");
-    } finally {
-      setSending(false);
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-cream text-foreground">
+      <Snowfall />
 
-      {/* ── NAV ── */}
-      <nav className="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-md border-b border-border">
-        <div className="max-w-[1400px] mx-auto px-5 sm:px-10 h-20 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-3">
-            <Image src="/images/logo-black.png" alt="Kaiten by Yorokobi" width={280} height={62} className="h-12 w-auto" />
-          </a>
-          <div className="hidden sm:flex items-center gap-10 text-base text-muted">
-            <a href="#angebot" className="hover:text-foreground transition-colors">Angebot</a>
-            <a href="#ablauf" className="hover:text-foreground transition-colors">Ablauf</a>
-            <a href="#referenzen" className="hover:text-foreground transition-colors">Referenzen</a>
+      {/* Nav */}
+      <nav className="fixed top-0 inset-x-0 z-50 bg-cream/95 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-5 h-12 flex items-center justify-between text-sm">
+          <a href="#" className="text-foreground font-medium">Wiehnachtsmärt Luzern</a>
+          <div className="hidden md:flex gap-6 text-muted">
+            <a href="#programm" className="hover:text-foreground transition-colors">Programm</a>
+            <a href="#kalender" className="hover:text-foreground transition-colors">Adventskalender</a>
+            <a href="#galerie" className="hover:text-foreground transition-colors">Bilder</a>
+            <a href="#anreise" className="hover:text-foreground transition-colors">Anreise</a>
           </div>
-          <div className="flex items-center gap-4">
-            <a href="#anfrage" className="hidden sm:inline-block bg-accent hover:bg-accent-hover text-white px-7 py-3 text-sm tracking-[0.12em] uppercase transition-colors rounded-sm">
-              Anfrage
-            </a>
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="sm:hidden flex flex-col gap-[5px] p-2 cursor-pointer"
-              aria-label="Menü"
-            >
-              <span className={`block w-6 h-[2px] bg-foreground transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
-              <span className={`block w-6 h-[2px] bg-foreground transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
-              <span className={`block w-6 h-[2px] bg-foreground transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
-            </button>
-          </div>
+          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden cursor-pointer" aria-label="Menü">
+            <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <line x1="0" y1="1" x2="20" y2="1" />
+              <line x1="0" y1="7" x2="20" y2="7" />
+              <line x1="0" y1="13" x2="20" y2="13" />
+            </svg>
+          </button>
         </div>
       </nav>
 
-      {/* ── MOBILE MENU ── */}
       {menuOpen && (
-        <div className="fixed inset-0 z-40 bg-white pt-24 px-8 flex flex-col gap-8 sm:hidden">
-          <a href="#angebot" onClick={() => setMenuOpen(false)} className="text-2xl font-display text-foreground">Angebot</a>
-          <a href="#ablauf" onClick={() => setMenuOpen(false)} className="text-2xl font-display text-foreground">Ablauf</a>
-          <a href="#referenzen" onClick={() => setMenuOpen(false)} className="text-2xl font-display text-foreground">Referenzen</a>
-          <a href="#anfrage" onClick={() => setMenuOpen(false)} className="mt-4 bg-accent text-white px-8 py-4 text-sm tracking-[0.15em] uppercase text-center rounded-sm">
-            Anfrage senden
-          </a>
-          <div className="mt-auto pb-10 text-sm text-muted">
-            <p><a href="tel:+41412449999">041 244 99 99</a></p>
-            <p>info@yorokobi.ch</p>
-          </div>
+        <div className="fixed inset-0 z-40 bg-cream pt-14 px-6 flex flex-col gap-6 md:hidden">
+          {[["Programm","programm"],["Adventskalender","kalender"],["Bilder","galerie"],["Anreise","anreise"]].map(([label, id]) => (
+            <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)}
+              className="text-2xl font-display text-foreground">{label}</a>
+          ))}
         </div>
       )}
 
-      {/* ── HERO ── */}
-      <section className="relative min-h-screen flex flex-col justify-end pb-20 sm:pb-28 overflow-hidden pt-20">
+      {/* Hero */}
+      <section className="relative h-screen flex items-end overflow-hidden">
         <div className="absolute inset-0">
-          <Image
-            src="/images/hero-sushi.jpg"
-            alt="Sushi Catering Platte"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30" />
+          <Image src="/images/galerie-6.jpg" alt="Wiehnachtsmärt bei Nacht" fill className="object-cover" priority />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10" />
         </div>
-
-        <div className="relative max-w-[1400px] mx-auto px-5 sm:px-10 w-full">
-          <p className="text-white/80 text-sm tracking-[0.35em] uppercase mb-8">
-            Kaiten Sushi · Luzern · Kriens · Sursee
-          </p>
-
-          <h1 className="font-display leading-[0.88] mb-10">
-            <span className="block text-[clamp(3.5rem,11vw,10rem)] text-white">
-              Frisch
-            </span>
-            <span className="block text-[clamp(3.5rem,11vw,10rem)] text-white/30" style={{ WebkitTextStroke: '2.5px white' }}>
-              gerollt,
-            </span>
-            <span className="block text-[clamp(2.2rem,5.5vw,4.5rem)] text-white/80 font-sans font-light mt-3">
-              direkt zu Ihnen.
-            </span>
+        <div className="relative w-full max-w-6xl mx-auto px-5 pb-12 sm:pb-20">
+          <h1 className="font-display text-4xl sm:text-7xl md:text-8xl lg:text-9xl text-white leading-[0.95] tracking-tight">
+            Lozärner Wiehnachtsmärt
           </h1>
-
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-10 mt-14">
-            <p className="max-w-lg text-base text-white/85 leading-relaxed">
-              Sushi Catering für die Schweiz — Firmenevents, Hochzeiten, Privatanlässe.
-              Mit Live-Koch oder als fertige Platten. Ab 8 Personen.
-            </p>
-            <a
-              href="#anfrage"
-              className="shrink-0 border-2 border-white/40 hover:bg-white hover:text-foreground text-white px-10 py-5 text-sm tracking-[0.18em] uppercase transition-all"
-            >
-              Jetzt anfragen
-            </a>
-          </div>
+          <p className="text-white/50 text-lg sm:text-xl mt-6 max-w-md">
+            3.–21. Dezember 2026<br/>Franziskanerplatz, Luzern
+          </p>
         </div>
       </section>
 
-      {/* ── ANGEBOTE ── */}
-      <section id="angebot" className="border-t border-border">
-        <div className="max-w-[1400px] mx-auto">
+      {/* Band */}
+      <div className="bg-wine text-white py-4 text-center text-sm tracking-wide">
+        Täglich ab 11 Uhr&ensp;·&ensp;Warenstände bis 20 Uhr&ensp;·&ensp;Foodstände bis 21 Uhr
+      </div>
 
-          {/* Live Catering */}
-          <div className="grid md:grid-cols-2 border-b border-border">
-            <FadeIn className="p-10 sm:p-20 flex flex-col justify-center">
-              <span className="text-accent text-sm tracking-[0.3em] uppercase mb-5 block font-medium">01</span>
-              <h2 className="font-display text-5xl sm:text-6xl text-foreground mb-5 leading-tight">
-                Live Catering
-              </h2>
-              <p className="text-base text-muted leading-relaxed mb-8 max-w-md">
-                Unser Sushi-Koch kommt zu Ihnen und rollt frisches Sushi direkt
-                vor Ihren Gästen. Ein Show-Element, das jeden Event aufwertet.
-              </p>
-              <ul className="space-y-3 text-sm text-muted">
-                <li>— Sushikoch vor Ort: CHF 80/Std.</li>
-                <li>— Plus pro Person nach Paket</li>
-                <li>— Apéro ab CHF 12 · Lunch ab CHF 32 · Dinner ab CHF 48</li>
-              </ul>
-            </FadeIn>
-            <div className="relative min-h-[350px] md:min-h-[500px]">
-              <Image src="/images/live-catering.jpg" alt="Frisch gerolltes Sushi auf dem Teller" fill className="object-cover" />
-            </div>
-          </div>
-
-          {/* Sushi Platten */}
-          <div className="grid md:grid-cols-2 border-b border-border">
-            <div className="relative min-h-[350px] md:min-h-[500px] order-2 md:order-1">
-              <Image src="/images/sushi-platten.jpg" alt="Grosse Sushi Catering Platten" fill className="object-cover" />
-            </div>
-            <FadeIn className="p-10 sm:p-20 flex flex-col justify-center order-1 md:order-2">
-              <span className="text-accent text-sm tracking-[0.3em] uppercase mb-5 block font-medium">02</span>
-              <h2 className="font-display text-5xl sm:text-6xl text-foreground mb-5 leading-tight">
-                Sushi Platten
-              </h2>
-              <p className="text-base text-muted leading-relaxed mb-8 max-w-md">
-                Wunderschön angerichtete Platten, fertig geliefert. Maki, Nigiri,
-                Inside-Out und Spezialitäten — kein Koch nötig, einfach geniessen.
-              </p>
-              <ul className="space-y-3 text-sm text-muted">
-                <li>— Apéro (4 Stk.) ab CHF 12 · Apéro Riche (8 Stk.) ab CHF 23</li>
-                <li>— Lunch (12 Stk.) ab CHF 32 · Dinner (18 Stk.) ab CHF 48</li>
-                <li>— Anfahrt: CHF 1.20/km</li>
-              </ul>
-            </FadeIn>
-          </div>
-
-          {/* Workshop */}
-          <div className="grid md:grid-cols-2 border-b border-border">
-            <FadeIn className="p-10 sm:p-20 flex flex-col justify-center">
-              <span className="text-accent text-sm tracking-[0.3em] uppercase mb-5 block font-medium">03</span>
-              <h2 className="font-display text-5xl sm:text-6xl text-foreground mb-5 leading-tight">
-                Sushi Workshop
-              </h2>
-              <p className="text-base text-muted leading-relaxed mb-8 max-w-md">
-                Teambuilding der besonderen Art. Ihre Gruppe lernt unter Anleitung
-                unseres Sushi-Meisters, selbst zu rollen — und isst das Ergebnis.
-              </p>
-              <ul className="space-y-3 text-sm text-muted">
-                <li>— CHF 125 pro Person · ab 17 Personen</li>
-                <li>— Alle Zutaten & Utensilien gestellt</li>
-                <li>— Getränke nicht inbegriffen</li>
-              </ul>
-            </FadeIn>
-            <div className="relative min-h-[350px] md:min-h-[500px]">
-              <Image src="/images/workshop-sushi.jpg" alt="Sushi Spezialitäten Workshop" fill className="object-cover" />
-            </div>
-          </div>
-
-          {/* Personal & Anfahrt */}
-          <div className="grid md:grid-cols-2 border-b border-border">
-            <div className="relative min-h-[350px] md:min-h-[500px] order-2 md:order-1">
-              <Image src="/images/restaurant.jpg" alt="Kaiten Sushi Team" fill className="object-cover" />
-            </div>
-            <FadeIn className="p-10 sm:p-20 flex flex-col justify-center order-1 md:order-2">
-              <span className="text-accent text-sm tracking-[0.3em] uppercase mb-5 block font-medium">04</span>
-              <h2 className="font-display text-5xl sm:text-6xl text-foreground mb-5 leading-tight">
-                Personal & Anfahrt
-              </h2>
-              <p className="text-base text-muted leading-relaxed mb-8 max-w-md">
-                Transparente Kosten für Ihr Catering — Koch, Servicepersonal und Anfahrt
-                werden separat nach Aufwand berechnet.
-              </p>
-              <ul className="space-y-3 text-sm text-muted">
-                <li>— Sushikoch: CHF 80/Std.</li>
-                <li>— Servicepersonal: CHF 60/Std.</li>
-                <li>— Kurier / Lieferung: CHF 60/Std.</li>
-                <li>— Anfahrt: CHF 1.20/km</li>
-                <li>— Geschirrpauschale: ab CHF 50</li>
-              </ul>
-            </FadeIn>
-          </div>
-        </div>
-      </section>
-
-      {/* ── ABLAUF ── */}
-      <section id="ablauf" className="py-28 sm:py-36">
-        <div className="max-w-[1100px] mx-auto px-5 sm:px-10">
-          <FadeIn>
-            <p className="text-accent text-sm tracking-[0.3em] uppercase mb-5 font-medium">So gehts</p>
-            <h2 className="font-display text-5xl sm:text-6xl text-foreground mb-20 leading-tight">
-              In vier Schritten<br />zum Sushi-Erlebnis.
-            </h2>
-          </FadeIn>
-
-          <div className="grid sm:grid-cols-2 gap-x-20 gap-y-16">
-            {[
-              { n: "01", t: "Anfrage senden", d: "Erzählen Sie uns von Ihrem Event — Datum, Gästeanzahl und Ihre Wünsche." },
-              { n: "02", t: "Offerte erhalten", d: "Innerhalb von 24 Stunden erhalten Sie ein massgeschneidertes Angebot." },
-              { n: "03", t: "Details klären", d: "Wir besprechen Menü, Allergien, Aufbau und alle Details persönlich." },
-              { n: "04", t: "Geniessen", d: "Wir liefern, bauen auf und sorgen für ein unvergessliches Erlebnis." },
-            ].map((s, i) => (
-              <FadeIn key={s.n} delay={i * 0.1}>
-                <div className="flex gap-7">
-                  <span className="font-display text-5xl text-accent/15 shrink-0">{s.n}</span>
-                  <div>
-                    <h3 className="text-foreground text-xl font-semibold mb-3">{s.t}</h3>
-                    <p className="text-muted text-base leading-relaxed">{s.d}</p>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── STATEMENT with Kaiten Box ── */}
-      <section className="relative py-24 sm:py-36 overflow-hidden">
-        <div className="absolute inset-0">
-          <Image src="/images/kaiten-box.jpg" alt="Kaiten Sushi Box" fill className="object-cover" />
-          <div className="absolute inset-0 bg-black/55" />
-        </div>
-        <FadeIn className="relative max-w-[1400px] mx-auto px-5 sm:px-10">
-          <h2 className="font-display text-4xl sm:text-6xl md:text-7xl text-white leading-tight text-center">
-            Über <span className="text-accent">500 Events.</span><br />
-            Drei Standorte.<br />
-            <span className="italic text-white/50">Zwanzig Jahre Erfahrung.</span>
+      {/* Intro */}
+      <section className="max-w-3xl mx-auto px-5 py-20 sm:py-32">
+        <FadeIn>
+          <h2 className="font-display text-4xl sm:text-6xl text-foreground leading-tight mb-10">
+            Seit 2009 auf dem Franziskanerplatz
           </h2>
+        </FadeIn>
+        <FadeIn>
+          <div className="text-muted text-lg sm:text-xl leading-relaxed space-y-6">
+            <p>
+              70 Marktstände rund um die Franziskanerkirche.
+              Glühwein, Nidlezältli, Holzofenbrot und Handwerkskunst
+              aus der Region. Jeden Advent, mitten in der Luzerner Altstadt.
+            </p>
+            <p>
+              <em>Time Out</em> zählt den Wiehnachtsmärt zu den
+              zehn schönsten Weihnachtsmärkten Europas.
+            </p>
+          </div>
         </FadeIn>
       </section>
 
-      {/* ── REFERENZEN ── */}
-      <section id="referenzen" className="py-24 sm:py-32">
-        <div className="max-w-[1100px] mx-auto px-5 sm:px-10">
-          <p className="text-accent text-sm tracking-[0.3em] uppercase mb-14 font-medium">Stimmen</p>
+      {/* Grosses Bild */}
+      <div className="relative h-[50vh] sm:h-[60vh]">
+        <Image src="/images/galerie-5.jpg" alt="Besucher am Wiehnachtsmärt" fill className="object-cover" />
+      </div>
 
-          <div className="space-y-20">
-            {[
-              { q: "Das Live-Catering war der Höhepunkt unserer Firmenfeier. Jeder Gast war begeistert.", who: "Sandra M., Eventmanagerin" },
-              { q: "Wir buchen seit drei Jahren für unsere Weihnachtsfeier. Jedes Mal perfekt.", who: "Thomas K., CEO TechStart Zürich" },
-              { q: "Der Workshop war das beste Teambuilding, das wir je organisiert haben.", who: "Lisa W., HR Lead" },
-            ].map((t, i) => (
-              <FadeIn key={t.who} delay={i * 0.1}>
-                <blockquote className="border-l-[3px] border-accent/30 pl-10">
-                  <p className="font-display text-2xl sm:text-3xl text-foreground/80 italic leading-relaxed mb-4">
-                    {t.q}
-                  </p>
-                  <cite className="text-muted text-sm not-italic tracking-wide">{t.who}</cite>
-                </blockquote>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
+      {/* Adventskranz Statement */}
+      <section className="max-w-3xl mx-auto px-5 py-20 sm:py-28">
+        <FadeIn>
+          <p className="font-display text-3xl sm:text-5xl text-foreground leading-snug">
+            Der Adventskranz auf dem Franziskanerbrunnen
+            ist über drei Meter gross und der grösste
+            der Zentralschweiz.
+          </p>
+        </FadeIn>
       </section>
 
-      {/* ── ANFRAGE ── */}
-      <section id="anfrage" className="border-t border-border bg-surface py-24 sm:py-32">
-        <div className="max-w-[900px] mx-auto px-5 sm:px-10">
-          <FadeIn>
-            <div className="mb-14">
-              <p className="text-accent text-sm tracking-[0.3em] uppercase mb-5 font-medium">Anfrage</p>
-              <h2 className="font-display text-5xl sm:text-6xl text-foreground mb-4 leading-tight">
-                Ihr Event, unser Sushi.
-              </h2>
-              <p className="text-muted text-lg">
-                Unverbindlich — wir melden uns innert 24 Stunden.
-              </p>
-            </div>
-          </FadeIn>
+      {/* Bild */}
+      <div className="relative h-[40vh] sm:h-[50vh]">
+        <Image src="/images/hero-markt.jpg" alt="Samichlaus und Stände" fill className="object-cover" />
+      </div>
 
-          {sent ? (
-            <FadeIn>
-              <div className="py-24 text-center">
-                <p className="font-display text-4xl text-foreground mb-4">Merci!</p>
-                <p className="text-muted text-lg">Wir melden uns bei Ihnen.</p>
+      {/* Programm */}
+      <section id="programm" className="max-w-3xl mx-auto px-5 py-20 sm:py-28">
+        <FadeIn>
+          <h2 className="font-display text-4xl sm:text-6xl text-foreground mb-12">Programm 2026</h2>
+        </FadeIn>
+        <div className="space-y-8">
+          {[
+            { date: "Donnerstag, 3. Dezember", text: "Feierliche Eröffnung in der Franziskanerkirche, 10.30 Uhr" },
+            { date: "Samstag, 5. Dezember", text: "Der Samichlaus besucht die Franziskanerkirche, 16 Uhr" },
+            { date: "Samstag, 12. Dezember", text: "Les Tubas de Noël – Tuba, Euphonium, Sousaphon, ab 11 Uhr" },
+            { date: "Täglich", text: "Chöre und Bläsergruppen aus der Region" },
+            { date: "Regelmässig", text: "Musikalische Adventsandachten in der Franziskanerkirche" },
+          ].map((ev, i) => (
+            <FadeIn key={ev.date}>
+              <div>
+                <p className="text-wine font-display text-xl">{ev.date}</p>
+                <p className="text-foreground text-lg mt-1">{ev.text}</p>
               </div>
             </FadeIn>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="grid sm:grid-cols-2 gap-8">
-                <input required type="text" placeholder="Name *"
-                  value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="bg-white border-b-2 border-border px-0 py-4 text-foreground text-base focus:outline-none focus:border-accent transition-colors placeholder:text-muted/50 w-full" />
-                <input required type="email" placeholder="E-Mail *"
-                  value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="bg-white border-b-2 border-border px-0 py-4 text-foreground text-base focus:outline-none focus:border-accent transition-colors placeholder:text-muted/50 w-full" />
-                <input type="tel" placeholder="Telefon"
-                  value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="bg-white border-b-2 border-border px-0 py-4 text-foreground text-base focus:outline-none focus:border-accent transition-colors placeholder:text-muted/50 w-full" />
-                <input type="text" placeholder="Datum (z.B. 15. März 2025)"
-                  value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="bg-white border-b-2 border-border px-0 py-4 text-foreground text-base focus:outline-none focus:border-accent transition-colors placeholder:text-muted/50 w-full" />
-                <input type="text" placeholder="Anzahl Gäste"
-                  value={formData.guests} onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
-                  className="bg-white border-b-2 border-border px-0 py-4 text-foreground text-base focus:outline-none focus:border-accent transition-colors placeholder:text-muted/50 w-full" />
-                <div className="relative">
-                <select value={formData.typ} onChange={(e) => setFormData({ ...formData, typ: e.target.value })}
-                  className="bg-white border-b-2 border-border px-0 py-4 pr-8 text-foreground text-base focus:outline-none focus:border-accent transition-colors w-full appearance-none cursor-pointer">
-                  <option value="live">Live Catering (mit Koch)</option>
-                  <option value="catering">Catering (ohne Koch)</option>
-                  <option value="platte">Sushi Platten (ohne Koch)</option>
-                  <option value="workshop">Sushi Workshop</option>
-                  <option value="beratung">Weiss noch nicht — beraten Sie mich</option>
-                </select>
-                <svg className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                </div>
-              </div>
-              <textarea rows={4} placeholder="Was dürfen wir wissen?"
-                value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="bg-white border-b-2 border-border px-0 py-4 text-foreground text-base focus:outline-none focus:border-accent transition-colors placeholder:text-muted/50 w-full resize-none" />
-              {error && <p className="text-accent text-sm">{error}</p>}
-              <button type="submit" disabled={sending}
-                className="mt-6 bg-accent hover:bg-accent-hover text-white px-12 py-5 text-sm tracking-[0.18em] uppercase transition-colors cursor-pointer rounded-sm disabled:opacity-60">
-                {sending ? "Wird gesendet..." : "Anfrage senden"}
-              </button>
-            </form>
-          )}
+          ))}
+        </div>
+        <FadeIn>
+          <p className="text-muted mt-12 text-lg">
+            Schlusstag: Sonntag, 21. Dezember – geöffnet bis 19 Uhr
+          </p>
+        </FadeIn>
+      </section>
+
+      {/* Öffnungszeiten */}
+      <section className="bg-tannen text-white py-16 sm:py-24">
+        <div className="max-w-3xl mx-auto px-5">
+          <h2 className="font-display text-4xl sm:text-5xl mb-10">Öffnungszeiten</h2>
+          <div className="space-y-4 text-xl sm:text-2xl">
+            <p>Täglich ab <strong>11 Uhr</strong></p>
+            <p>Warenstände bis <strong>20 Uhr</strong></p>
+            <p>Foodstände bis <strong>21 Uhr</strong></p>
+            <p className="text-white/50">Letzter Tag: bis 19 Uhr</p>
+          </div>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer className="border-t border-border py-16">
-        <div className="max-w-[1400px] mx-auto px-5 sm:px-10">
-          <div className="flex flex-col sm:flex-row justify-between items-start gap-10 mb-10">
+      {/* Adventskalender */}
+      <section id="kalender" className="max-w-3xl mx-auto px-5 py-20 sm:py-28">
+        <FadeIn>
+          <h2 className="font-display text-4xl sm:text-6xl text-foreground mb-4">Adventskalender</h2>
+          <p className="text-muted text-lg mb-10">
+            Im Dezember öffnet sich jeden Tag ein Türchen.
+          </p>
+        </FadeIn>
+        <AdventCalendar />
+      </section>
+
+      {/* Galerie – Slider */}
+      <section id="galerie">
+        <div className="max-w-3xl mx-auto px-5 pb-6">
+          <FadeIn>
+            <h2 className="font-display text-4xl sm:text-6xl text-foreground mb-2">Stimmungsbilder</h2>
+          </FadeIn>
+        </div>
+        <ImageSlider />
+      </section>
+
+      {/* Anreise */}
+      <section id="anreise" className="bg-cream-dark">
+        <div className="max-w-3xl mx-auto px-5 py-20 sm:py-28">
+          <FadeIn>
+            <h2 className="font-display text-4xl sm:text-6xl text-foreground mb-10">Anreise</h2>
+          </FadeIn>
+          <div className="space-y-8 text-lg text-muted leading-relaxed">
+            <FadeIn>
+              <div>
+                <p className="text-foreground font-display text-xl mb-2">Mit dem Zug</p>
+                <p>Ab Bahnhof Richtung Kapellbrücke, linkes Reussufer,
+                Bahnhofstrasse entlang, nach 200 Metern links.</p>
+              </div>
+            </FadeIn>
+            <FadeIn>
+              <div>
+                <p className="text-foreground font-display text-xl mb-2">Mit dem Auto</p>
+                <p>Autobahnausfahrt A2 Luzern Zentrum. Parkhaus Altstadt
+                (456 Plätze), Parkhaus Kesselturm, Bahnhofparking.</p>
+              </div>
+            </FadeIn>
+            <FadeIn>
+              <div>
+                <p className="text-foreground font-display text-xl mb-2">Mit dem Bus</p>
+                <p>Haltestelle Pilatusplatz, 100 Meter Richtung Hirschengraben.</p>
+              </div>
+            </FadeIn>
+          </div>
+
+          <div className="mt-12 relative aspect-video rounded overflow-hidden">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1356.5!2d8.3065!3d47.0502!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x478ffba0b6574d0d%3A0x0!2sFranziskanerplatz%2C+Luzern!5e0!3m2!1sde!2sch!4v1"
+              width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade" title="Franziskanerplatz Luzern"
+              className="absolute inset-0"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Nächste Durchführungen */}
+      <div className="max-w-3xl mx-auto px-5 py-16 text-center">
+        <p className="text-muted text-sm mb-2">Nächste Durchführungen</p>
+        <p className="font-display text-2xl text-foreground">
+          2027 &ensp;·&ensp; 2028
+        </p>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-holz text-white/60 py-12">
+        <div className="max-w-3xl mx-auto px-5">
+          <p className="font-display text-2xl text-white/90 mb-1">Lozärner Wiehnachtsmärt</p>
+          <p className="mb-8">Franziskanerplatz · Luzern</p>
+          <div className="flex flex-col sm:flex-row justify-between gap-4 text-sm">
             <div>
-              <Image src="/images/logo-black.png" alt="Kaiten by Yorokobi" width={240} height={53} className="h-10 w-auto mb-4" />
-              <p className="text-sm text-muted">
-                Sushi Catering von{" "}
-                <a href="https://www.kaiten.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">
-                  kaiten.ch
-                </a>
-              </p>
+              <p>IG Luzerner Herbstmesse und Märkte</p>
+              <p>Partner: ewl · Stadt Luzern · IGS</p>
             </div>
-            <div className="text-sm text-muted space-y-2 sm:text-right">
-              <p>info@yorokobi.ch · <a href="tel:+41412449999" className="hover:text-foreground transition-colors">041 244 99 99</a></p>
-              <p>Luzern · Kriens · Sursee</p>
+            <div className="sm:text-right">
+              <p><a href="https://www.weihnachtsmarkt-luzern.com" className="hover:text-white">weihnachtsmarkt-luzern.com</a></p>
             </div>
           </div>
-          <div className="border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-muted/50">
-            <p>© {new Date().getFullYear()} Yorokobi AG · <span className="text-muted/30">v1.4.2</span></p>
-            <div className="flex gap-6">
-              <Link href="/impressum" className="hover:text-foreground transition-colors">Impressum</Link>
-              <Link href="/datenschutz" className="hover:text-foreground transition-colors">Datenschutz</Link>
+          <div className="border-t border-white/10 mt-8 pt-4 flex flex-col sm:flex-row justify-between text-xs text-white/30">
+            <p>&copy; {new Date().getFullYear()} Lozärner Wiehnachtsmärt · v2.0.0</p>
+            <div className="flex gap-4">
+              <Link href="/impressum" className="hover:text-white/50">Impressum</Link>
+              <Link href="/datenschutz" className="hover:text-white/50">Datenschutz</Link>
             </div>
           </div>
         </div>
