@@ -1,5 +1,42 @@
 # Changelog
 
+## v2.15.0 - 04.11.2026
+
+### Vier Sicherheitsluecken geschlossen
+
+Der Scanner meldete 4 Bausteine mit Luecken, darunter eine kritische:
+
+| Baustein | vorher | neu | Luecke |
+|---|---|---|---|
+| next | 16.2.1 | **16.4.3** | **kritisch**: Lahmlegen ueber Server Components |
+| postcss | <=8.5.22 | 8.5.32 | hoch: XSS ueber nicht maskiertes </style> |
+| sharp | <=0.35.5-rc.1 | mitgezogen | hoch: geerbte libvips-Luecken (CVE-2026-33327) |
+| baseline-browser-mapping | <2.11.0 | mitgezogen | mittel |
+
+`npm audit --omit=dev` meldet jetzt 0. Es bleiben 8 Meldungen bei reinen
+Entwicklungswerkzeugen (eslint/typescript-Kette), die nie auf dem Server
+laufen und einen Hauptversionssprung braeuchten.
+
+### eslint-config-next mitgezogen (sonst Fehlalarm im Scanner)
+
+eslint-config-next stand noch auf 16.2.1. Der Scanner auf mediamanagement.ch
+vergleicht offenbar die ENDUNG des Paketnamens, und "eslint-config-next"
+endet auf "next". Er haette darum weiterhin "next 16.2.1" gemeldet, obwohl
+next laengst auf 16.4.3 steht. Jetzt ebenfalls 16.4.3, 16.2.1 kommt nirgends
+mehr vor.
+
+### Versionsanzeige kann nicht mehr luegen
+
+In app/page.tsx stand die Fusszeile fest auf `v2.14.0`. Bei einem
+Versionssprung wurde diese zweite Stelle vergessen, die Anzeige wich also
+frueher oder spaeter von der echten Version ab. next.config.ts setzt die
+Version jetzt beim Bauen aus package.json ein, die Fusszeile liest sie.
+
+### Geprueft
+- `npm audit --omit=dev`: 0 vulnerabilities
+- `npm run build`: Exit 0
+- 16.2.1 kommt in package.json und package-lock.json nicht mehr vor
+
 ## 2.14.0 (2026-10-30)
 
 - Google Tag Manager eingebunden (Container GTM-WMW6P2L4, überschreibbar via NEXT_PUBLIC_GTM_ID)
