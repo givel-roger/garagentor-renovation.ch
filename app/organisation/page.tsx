@@ -53,7 +53,7 @@ export default function Organisation() {
               <li><strong className="text-foreground/80">Präsident:</strong> Pius Suter</li>
               <li><strong className="text-foreground/80">Finanzen:</strong> Andreas Krause</li>
               <li><strong className="text-foreground/80">Werbung &amp; Kommunikation:</strong> Roger Givel</li>
-              <li><strong className="text-foreground/80">Kulturprogramm:</strong> Rico de Bona</li>
+              <li><strong className="text-foreground/80">Kulturprogramm:</strong> Rico De Bona</li>
               <li><strong className="text-foreground/80">Sekretariat:</strong> Alexi Dubach</li>
               <li><strong className="text-foreground/80">Platzmeister / Infrastruktur / Auf- &amp; Abbau:</strong> Roger Dreyer</li>
               <li><strong className="text-foreground/80">Platzmeister Stv:</strong> Tommy Suter</li>
