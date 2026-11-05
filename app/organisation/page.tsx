@@ -66,8 +66,8 @@ export default function Organisation() {
             <h2 className="text-lg font-semibold text-foreground mb-3">Kontakt</h2>
             <p>
               IG Luzerner Herbstmesse und Märkte (IG LHMM)<br />
-              Franziskanerplatz<br />
-              6003 Luzern
+              Schachenstrasse 10<br />
+              6020 Emmenbrücke
             </p>
             <p className="mt-3">
               E-Mail:{" "}

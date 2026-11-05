@@ -84,7 +84,7 @@ export default function DatumUndZeit() {
             </p>
             <p className="mt-3">
               Die Pfarrei St. Maria zu Franziskanern wartet in der historischen Franziskanerkirche mit
-              einer ganzen Palette von Anlässen zum Advent auf, von der täglichen Eucharistiefeier über
+              einer ganzen Palette von Anlässen zum Advent auf, von der Eucharistiefeier über
               Adventskonzerte bis zum byzantinischen Gottesdienst am 4. Adventssonntag. Neu finden auch
               jeweils am Samstag und Sonntag um 13.15 bis 13.45 Orgelkonzerte in der Kirche statt.
             </p>

@@ -21,28 +21,36 @@ export default function Anmeldung() {
     bemerkungen: "",
   });
 
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm({ ...form, [k]: e.target.value });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const body = [
-      `Firmenname: ${form.firmenname}`,
-      `Name: ${form.name}`,
-      `Vorname: ${form.vorname}`,
-      `Strasse: ${form.strasse}`,
-      form.postfach ? `Postfach: ${form.postfach}` : "",
-      `PLZ/Ort: ${form.plzOrt}`,
-      form.telefon ? `Telefon: ${form.telefon}` : "",
-      `Mobile: ${form.mobile}`,
-      `E-Mail: ${form.email}`,
-      form.webseite ? `Webseite: ${form.webseite}` : "",
-      `Sortiment: ${form.sortiment}`,
-      `Angebot: ${form.angebot}`,
-      form.bemerkungen ? `Bemerkungen: ${form.bemerkungen}` : "",
-    ].filter(Boolean).join("\n");
+    setStatus("sending");
+    setErrorMsg("");
 
-    window.location.href = `mailto:sekretariat@weihnachtsmarktluzern.com?subject=${encodeURIComponent("Anmeldung Wiehnachtsmärt 2026 – " + form.firmenname)}&body=${encodeURIComponent(body)}`;
+    try {
+      const res = await fetch("/api/anmeldung", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Fehler beim Senden");
+      }
+
+      setStatus("success");
+      setStep(1);
+      setForm({ firmenname: "", name: "", vorname: "", strasse: "", postfach: "", plzOrt: "", telefon: "", mobile: "", email: "", webseite: "", sortiment: "", angebot: "", bemerkungen: "" });
+    } catch (err) {
+      setStatus("error");
+      setErrorMsg(err instanceof Error ? err.message : "Unbekannter Fehler");
+    }
   };
 
   const inputClass = "w-full bg-white/5 border border-foreground/15 rounded-lg px-4 py-3 text-foreground/80 text-sm placeholder:text-foreground/25 focus:outline-none focus:border-burgundy/50 focus:ring-1 focus:ring-burgundy/30 transition-colors";
@@ -201,6 +209,18 @@ export default function Anmeldung() {
                 />
               </div>
 
+              {status === "success" && (
+                <div className="bg-green-900/30 border border-green-500/30 rounded-lg p-4 text-green-300 text-sm">
+                  Vielen Dank! Ihre Anmeldung wurde erfolgreich gesendet. Wir melden uns bei Ihnen.
+                </div>
+              )}
+
+              {status === "error" && (
+                <div className="bg-red-900/30 border border-red-500/30 rounded-lg p-4 text-red-300 text-sm">
+                  {errorMsg || "Fehler beim Senden. Bitte versuchen Sie es erneut."}
+                </div>
+              )}
+
               <div className="flex gap-3">
                 <button
                   type="button"
@@ -211,9 +231,10 @@ export default function Anmeldung() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-burgundy text-white px-8 py-3 rounded-lg font-medium text-sm hover:bg-ruby transition-colors"
+                  disabled={status === "sending"}
+                  className="bg-burgundy text-white px-8 py-3 rounded-lg font-medium text-sm hover:bg-ruby transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Anmeldung absenden
+                  {status === "sending" ? "Wird gesendet..." : "Anmeldung absenden"}
                 </button>
               </div>
             </div>

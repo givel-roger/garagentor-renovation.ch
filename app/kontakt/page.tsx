@@ -13,23 +13,35 @@ export default function Kontakt() {
     telefon: "",
     bemerkungen: "",
   });
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [k]: e.target.value });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const body = [
-      form.firma ? `Firma: ${form.firma}` : "",
-      `Name und Vorname: ${form.nameVorname}`,
-      `Adresse: ${form.adresse}`,
-      `PLZ / Ort: ${form.plzOrt}`,
-      `E-Mail: ${form.email}`,
-      `Telefon: ${form.telefon}`,
-      form.bemerkungen ? `\nBemerkungen/Wünsche:\n${form.bemerkungen}` : "",
-    ].filter(Boolean).join("\n");
+    setStatus("sending");
+    setErrorMsg("");
 
-    window.location.href = `mailto:sekretariat@weihnachtsmarktluzern.com?subject=${encodeURIComponent("Kontaktanfrage Wiehnachtsmärt")}&body=${encodeURIComponent(body)}`;
+    try {
+      const res = await fetch("/api/kontakt", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Fehler beim Senden");
+      }
+
+      setStatus("success");
+      setForm({ firma: "", nameVorname: "", adresse: "", plzOrt: "", email: "", telefon: "", bemerkungen: "" });
+    } catch (err) {
+      setStatus("error");
+      setErrorMsg(err instanceof Error ? err.message : "Unbekannter Fehler");
+    }
   };
 
   const inputClass = "w-full bg-white/5 border border-foreground/15 rounded-lg px-4 py-3 text-foreground/80 text-sm placeholder:text-foreground/25 focus:outline-none focus:border-burgundy/50 focus:ring-1 focus:ring-burgundy/30 transition-colors";
@@ -106,11 +118,24 @@ export default function Kontakt() {
                 />
               </div>
 
+              {status === "success" && (
+                <div className="bg-green-900/30 border border-green-500/30 rounded-lg p-4 text-green-300 text-sm">
+                  Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet.
+                </div>
+              )}
+
+              {status === "error" && (
+                <div className="bg-red-900/30 border border-red-500/30 rounded-lg p-4 text-red-300 text-sm">
+                  {errorMsg || "Fehler beim Senden. Bitte versuchen Sie es erneut."}
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="bg-burgundy text-white px-8 py-3 rounded-lg font-medium text-sm hover:bg-ruby transition-colors"
+                disabled={status === "sending"}
+                className="bg-burgundy text-white px-8 py-3 rounded-lg font-medium text-sm hover:bg-ruby transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Nachricht senden
+                {status === "sending" ? "Wird gesendet..." : "Nachricht senden"}
               </button>
             </form>
           </section>
@@ -119,8 +144,8 @@ export default function Kontakt() {
             <h2 className="text-lg font-semibold text-foreground mb-3">Sekretariat</h2>
             <p>
               IG Luzerner Herbstmesse und Märkte (IG LHMM)<br />
-              Franziskanerplatz<br />
-              6003 Luzern
+              Schachenstrasse 10<br />
+              6020 Emmenbrücke
             </p>
             <p className="mt-4">
               E-Mail:{" "}
@@ -133,11 +158,7 @@ export default function Kontakt() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">Werbung &amp; Kommunikation</h2>
             <p>
-              Roger Givel<br />
-              E-Mail:{" "}
-              <a href="mailto:roger@weihnachtsmarktluzern.com" className="text-burgundy underline decoration-burgundy/30 hover:decoration-burgundy/60">
-                roger@weihnachtsmarktluzern.com
-              </a>
+              Roger Givel
             </p>
           </section>
 
