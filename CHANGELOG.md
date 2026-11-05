@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.2.0
+- Kontakt- und Anmeldeformular: mailto durch Brevo API ersetzt
+- Tasse 2026 Foto hinzugefügt
+- "täglichen" aus Datum-und-Zeit entfernt
+- Alle Künstlerfotos im Rahmenprogramm ergänzt (10 neue Performer)
+- Tubas de Noël: korrektes Foto zugewiesen
+- Dockerfile, docker-compose.yml und deploy.sh für Server-Deployment
+- .env.example für Brevo API Key
+
 ## v2.1.0
 - Alle Unterseiten 1:1 wie alte Website nachgebaut
 - Anmeldung: 2-Schritt-Formular mit mailto-Versand

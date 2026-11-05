@@ -1,0 +1,9 @@
+services:
+  weihnachtsmarkt-luzern:
+    build: .
+    container_name: weihnachtsmarkt-luzern
+    restart: always
+    ports:
+      - "127.0.0.1:3081:3000"
+    env_file:
+      - .env.production
