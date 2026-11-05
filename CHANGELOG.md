@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.3.2
+- Original Lozärner Schäller & Trychler: falsches Foto ersetzt (zeigte Blasorchester statt Schäller & Trychler vor Kapellbrücke)
+
 ## v2.3.1
 - Samichlaus zu Besuch in der Franziskanerkirche (17:15): Foto entfernt, es zeigte einen anderen Samichlaus
   (das Bild bleibt bei der Lozärner Samichlausgesellschaft)
