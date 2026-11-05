@@ -37,7 +37,6 @@ const KUENSTLER_BILDER: Record<string, string> = {
   "Duo PanTastico": "/images/kuenstler-pantastico.jpg",
   "Original Lozärner Schäller & Trychler": "/images/kuenstler-schaeller.jpg",
   "Lozärner Samichlausgesellschaft": "/images/kuenstler-samichlaus.jpg",
-  "Samichlaus zu Besuch in der Franziskanerkirche": "/images/kuenstler-samichlaus.jpg",
   "Männerchor Quartett-Vereinigung Luzern": "/images/kuenstler-quartett.png",
   "Lara Zoe": "/images/kuenstler-lara-zoe.png",
   "Serenade Avenue (Harfe)": "/images/kuenstler-serenade.jpg",
@@ -55,6 +54,9 @@ const KUENSTLER_BILDER: Record<string, string> = {
   "Tubas de Noël": "/images/kuenstler-tubas.jpg",
   "Chörli": "/images/kuenstler-choerli.jpg",
   "Gingerbreads Christmas Brassband": "/images/kuenstler-gingerbreads.png",
+  "Brass and Pipes": "/images/kuenstler-brass-pipes.jpg",
+  "Line Dance": "/images/kuenstler-line-dance.jpg",
+  "Marc Pircher": "/images/kuenstler-marc-pircher.jpg",
   "Hornschüler": "/images/kuenstler-hornschueler.jpg",
   "Jodlerfründe Ruopige": "/images/kuenstler-jodlerfruende.jpg",
   "Kinder-/Jugendchor Anton-Michael": "/images/kuenstler-jugendchor-anton.jpg",
@@ -1110,7 +1112,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <p className="text-center text-white/25 text-[10px] mt-8">v2.3.0</p>
+          <p className="text-center text-white/25 text-[10px] mt-8">v2.3.1</p>
         </div>
       </footer>
     </div>

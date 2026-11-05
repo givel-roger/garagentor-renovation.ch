@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.3.1
+- Samichlaus zu Besuch in der Franziskanerkirche (17:15): Foto entfernt, es zeigte einen anderen Samichlaus
+  (das Bild bleibt bei der Lozärner Samichlausgesellschaft)
+- Brass and Pipes (19:00): Foto aus dem Quellordner hinzugefügt
+- Line Dance (20:15): Gruppenfoto der Red Lake Dancers hinzugefügt
+- Marc Pircher (18:00): Foto hinzugefügt, leere Seitenränder weggeschnitten
+
 ## v2.3.0
 - Tubas de Noël: falsches Foto korrigiert (zeigte Sixtett statt Tubas)
 - Luca Di Felice: Foto aus Quellordner hinzugefügt
