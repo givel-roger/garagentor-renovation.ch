@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.1.0
+- Alle Unterseiten 1:1 wie alte Website nachgebaut
+- Anmeldung: 2-Schritt-Formular mit mailto-Versand
+- Kontakt: Kontaktformular mit mailto-Versand
+- Teilnehmer: Vollständige Liste mit Weblinks, IG LHMM Einträge ergänzt
+- Weihnachtstassen: Fotogalerie aller Tassen (2006–2025)
+- Häuschenmasse: Technische Zeichnungen (Standmasse, Einfaches Haus, Doppelhaus)
+- Künstlerfotos auf Hauptseite und Rahmenprogramm bei jedem Auftritt
+- Bilder ohne Zuschnitt (native img statt object-cover)
+- Responsive: Mobile, Tablet und Desktop getestet
+
 ## v2.0.0
 - Komplettes Redesign: von Sushi-Catering zu Lozärner Wiehnachtsmärt
 - Vollbild-Hero mit Playfair Display Typografie
