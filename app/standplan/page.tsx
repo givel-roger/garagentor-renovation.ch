@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+
 
 export default function Standplan() {
   return (
@@ -21,12 +21,11 @@ export default function Standplan() {
           Übersicht der Standplätze auf dem Franziskanerplatz — Lozärner Wiehnachtsmärt
         </p>
 
-        <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-foreground/[0.03] border border-foreground/10 mb-12">
-          <Image
-            src="/images/anfahrt-plan.jpg"
+        <div className="rounded-xl overflow-hidden bg-foreground/[0.03] border border-foreground/10 mb-12">
+          <img
+            src="/images/standplan.jpg"
             alt="Stand-Plan Franziskanerplatz"
-            fill
-            className="object-contain"
+            className="w-full h-auto"
           />
         </div>
 

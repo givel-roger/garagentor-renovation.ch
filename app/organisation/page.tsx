@@ -26,6 +26,10 @@ export default function Organisation() {
               Der Lozärner Wiehnachtsmärt wird von der Interessengemeinschaft Luzerner
               Herbstmesse und Märkte (IG LHMM) organisiert.
             </p>
+            <p className="mt-3 font-semibold text-foreground/80">
+              Ausblick: Der Lozärner Wiehnachtsmärt 2026 dauert vom 3. – 21. Dezember 2026
+              und ist täglich von 11 Uhr bis 20 Uhr (Verpflegungsstände bis 21 Uhr) geöffnet.
+            </p>
             <p className="mt-3">
               Gemäss den Vereinsstatuten bezweckt die IG LHMM seit 1972 die Förderung des
               Marktwesens in der Stadt Luzern sowie die effiziente Zusammenarbeit zwischen

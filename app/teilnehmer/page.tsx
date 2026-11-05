@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const TEILNEHMER = [
-  { nr: "", name: "IG LHMM / Weihnachtskarussell", ort: "6003 Luzern", angebot: "Weihnachtskarussell" },
+  { nr: "", name: "IG LHMM / Weihnachtskarussell", ort: "6020 Emmenbrücke", angebot: "Weihnachtskarussell" },
   { nr: "1/2", name: "Pamis – Peyman Mazloomi", ort: "4513 Langendorf", angebot: "Hüte, Hemden, Handschuhe" },
   { nr: "3/4", name: "Gewürzegge – Ives Waltzer", ort: "4147 Aesch", angebot: "Gewürze, Tee, Saucen, Zubehör", web: "www.gwürzegge.ch" },
   { nr: "5/6", name: "Confiserie Haegeli – Lukas Haegeli", ort: "6032 Emmen", angebot: "Confiserie, Weihnachtsgebäck", web: "www.haegeli.ch" },

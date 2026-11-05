@@ -45,6 +45,11 @@ export default function DatumUndZeit() {
               gehören. Der Markt auf dem Luzerner Franziskanerplatz wurde vom Magazin «Time Out» als einer
               der schönsten Europas ausgezeichnet – dank Stimmung, Glühwein und Handwerkskunst.
             </p>
+            <p className="mt-3">
+              <a href="https://www.20min.ch/story/das-sind-die-schoensten-weihnachtsmaerkte-europas-103438353" target="_blank" rel="noopener noreferrer" className="text-burgundy underline decoration-burgundy/30 hover:decoration-burgundy/60">
+                Hier gelangen Sie zum Artikel
+              </a>
+            </p>
           </section>
 
           <section>
@@ -80,7 +85,8 @@ export default function DatumUndZeit() {
             <p className="mt-3">
               Die Pfarrei St. Maria zu Franziskanern wartet in der historischen Franziskanerkirche mit
               einer ganzen Palette von Anlässen zum Advent auf, von der täglichen Eucharistiefeier über
-              Adventskonzerte bis zum byzantinischen Gottesdienst am 4. Adventssonntag.
+              Adventskonzerte bis zum byzantinischen Gottesdienst am 4. Adventssonntag. Neu finden auch
+              jeweils am Samstag und Sonntag um 13.15 bis 13.45 Orgelkonzerte in der Kirche statt.
             </p>
             <p className="mt-3">
               Der «Lozärner Wiehnachtsmärt» auf dem Franziskanerplatz bietet Gross und Klein ein
