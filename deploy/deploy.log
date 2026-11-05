@@ -2,3 +2,13 @@
 2026-11-05 19:30:00 | v2.3.0 | weihnachtsmarkt-luzern.com | Server 8 (65.108.4.141) | Docker OK, Health Check 200, Künstlerfotos korrigiert + Luca Di Felice
 2026-11-05 19:35:23 | v2.3.1 | weihnachtsmarkt-luzern.com | Server 8 (65.108.4.141) | Docker OK, Health Check 200, Samichlaus-Foto Franziskanerkirche entfernt, Fotos Brass and Pipes, Line Dance, Marc Pircher
 2026-11-05 20:15:00 | v2.3.2 | weihnachtsmarkt-luzern.com | Server 8 (65.108.4.141) | Docker OK, Health Check 200, Schäller & Trychler Foto korrigiert
+2026-11-05 20:35:00 | v2.3.4 | weihnachtsmarkt-luzern.com | Server 8 (65.108.4.141) | Docker OK, Health Check 200, Formular-Kontrast fix, E-Mails an beide Empfänger
+2026-11-05 21:08 | v2.3.5 | weihnachtsmarkt-luzern.com | Server 1 (65.108.4.141) | Docker OK, Health Check 200
+  robots.txt und app/sitemap.ts zeigten auf sushi-catering.ch (aus einem anderen Projekt uebernommen).
+  Jetzt www.weihnachtsmarkt-luzern.com, Seitenkarte mit allen 13 Seiten statt 3 falschen.
+  Von aussen nachgemessen: 13 Adressen, 0 sushi-Treffer, alle 13 Seiten antworten 200.
+  Commit 6c5133a, auf GitHub im Zweig claude/weihnachtsmarkt-luzern-redesign-f24dc9.
+  Sicherheitsfund desselben Durchgangs: in .claude/settings.local.json lag 10x ein Brevo-Schluessel
+  im Klartext (Freigaben mit curl -H "api-key: ..."). Ordner .claude vom Server entfernt (gesichert
+  unter /opt/backups/weihnachtsmarkt-claude-ordner-*.tgz), Schluessel "Garagen" in Brevo deaktiviert.
+  OFFEN: nginx-Sicherheits-Kopfzeilen fehlen noch (Skript liegt bereit, Freigabe fehlt).
