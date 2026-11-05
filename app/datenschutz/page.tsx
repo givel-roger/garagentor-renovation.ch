@@ -1,15 +1,14 @@
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Datenschutz() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <nav className="border-b border-border">
-        <div className="max-w-[1400px] mx-auto px-5 sm:px-10 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <Image src="/images/logo-black.png" alt="Kaiten by Yorokobi" width={200} height={44} className="h-8 w-auto" />
+    <div className="min-h-screen bg-wine text-foreground">
+      <nav className="bg-burgundy">
+        <div className="max-w-[1400px] mx-auto px-5 sm:px-10 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <img src="/images/logo-weihnachtsmaert.png" alt="Lozärner Wiehnachtsmärt" className="h-10 w-auto" />
           </Link>
-          <Link href="/" className="text-sm text-muted hover:text-foreground transition-colors">
+          <Link href="/" className="text-sm text-white/70 hover:text-white transition-colors">
             Zurück zur Startseite
           </Link>
         </div>
@@ -18,14 +17,17 @@ export default function Datenschutz() {
       <main className="max-w-[700px] mx-auto px-5 sm:px-10 py-20">
         <h1 className="font-display text-4xl sm:text-5xl text-foreground mb-12">Datenschutzerklärung</h1>
 
-        <div className="space-y-8 text-base text-muted leading-relaxed">
+        <div className="space-y-8 text-base text-foreground/60 leading-relaxed">
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">Verantwortliche Stelle</h2>
             <p>
-              Yorokobi AG<br />
-              Habsburgerstrasse 48<br />
+              IG Luzerner Herbstmesse und Märkte (IG LHMM)<br />
+              Franziskanerplatz<br />
               6003 Luzern<br />
-              E-Mail: <a href="mailto:info@yorokobi.ch" className="text-foreground underline">info@yorokobi.ch</a>
+              E-Mail:{" "}
+              <a href="mailto:sekretariat@weihnachtsmarktluzern.com" className="text-burgundy underline decoration-burgundy/30 hover:decoration-burgundy/60">
+                sekretariat@weihnachtsmarktluzern.com
+              </a>
             </p>
           </section>
 
@@ -33,9 +35,8 @@ export default function Datenschutz() {
             <h2 className="text-lg font-semibold text-foreground mb-3">Erhebung und Verwendung von Daten</h2>
             <p>
               Wenn Sie unser Kontaktformular nutzen, erheben wir die von Ihnen angegebenen Daten
-              (Name, E-Mail-Adresse, Telefonnummer, Eventdatum, Anzahl Gäste, gewünschtes Paket
-              und Nachricht). Diese Daten verwenden wir ausschliesslich zur Bearbeitung Ihrer
-              Anfrage und zur Erstellung eines Angebots.
+              (Name, E-Mail-Adresse, Nachricht). Diese Daten verwenden wir ausschliesslich zur
+              Bearbeitung Ihrer Anfrage.
             </p>
           </section>
 
@@ -71,7 +72,9 @@ export default function Datenschutz() {
               Sie haben jederzeit das Recht auf Auskunft, Berichtigung, Löschung und
               Einschränkung der Verarbeitung Ihrer personenbezogenen Daten. Kontaktieren
               Sie uns dazu unter{" "}
-              <a href="mailto:info@sushi-catering.ch" className="text-foreground underline">info@sushi-catering.ch</a>.
+              <a href="mailto:sekretariat@weihnachtsmarktluzern.com" className="text-burgundy underline decoration-burgundy/30 hover:decoration-burgundy/60">
+                sekretariat@weihnachtsmarktluzern.com
+              </a>.
             </p>
           </section>
 
@@ -94,12 +97,12 @@ export default function Datenschutz() {
         </div>
       </main>
 
-      <footer className="border-t border-border py-10">
-        <div className="max-w-[1400px] mx-auto px-5 sm:px-10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-muted/50">
-          <p>© {new Date().getFullYear()} Yorokobi AG</p>
+      <footer className="border-t border-foreground/10 py-10">
+        <div className="max-w-[1400px] mx-auto px-5 sm:px-10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-foreground/20">
+          <p>&copy; {new Date().getFullYear()} IG Luzerner Herbstmesse und Märkte</p>
           <div className="flex gap-6">
-            <Link href="/impressum" className="hover:text-foreground transition-colors">Impressum</Link>
-            <Link href="/datenschutz" className="text-foreground">Datenschutz</Link>
+            <Link href="/impressum" className="hover:text-foreground/50 transition-colors">Impressum</Link>
+            <Link href="/datenschutz" className="text-foreground/50">Datenschutz</Link>
           </div>
         </div>
       </footer>

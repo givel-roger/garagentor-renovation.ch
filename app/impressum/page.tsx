@@ -1,15 +1,14 @@
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Impressum() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <nav className="border-b border-border">
-        <div className="max-w-[1400px] mx-auto px-5 sm:px-10 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <Image src="/images/logo-black.png" alt="Kaiten by Yorokobi" width={200} height={44} className="h-8 w-auto" />
+    <div className="min-h-screen bg-wine text-foreground">
+      <nav className="bg-burgundy">
+        <div className="max-w-[1400px] mx-auto px-5 sm:px-10 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <img src="/images/logo-weihnachtsmaert.png" alt="Lozärner Wiehnachtsmärt" className="h-10 w-auto" />
           </Link>
-          <Link href="/" className="text-sm text-muted hover:text-foreground transition-colors">
+          <Link href="/" className="text-sm text-white/70 hover:text-white transition-colors">
             Zurück zur Startseite
           </Link>
         </div>
@@ -18,44 +17,40 @@ export default function Impressum() {
       <main className="max-w-[700px] mx-auto px-5 sm:px-10 py-20">
         <h1 className="font-display text-4xl sm:text-5xl text-foreground mb-12">Impressum</h1>
 
-        <div className="space-y-8 text-base text-muted leading-relaxed">
+        <div className="space-y-8 text-base text-foreground/60 leading-relaxed">
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">Kontaktadresse</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">Veranstalter</h2>
             <p>
-              Yorokobi AG<br />
-              Habsburgerstrasse 48<br />
+              IG Luzerner Herbstmesse und Märkte (IG LHMM)<br />
+              Franziskanerplatz<br />
               6003 Luzern
             </p>
             <p className="mt-3">
-              Telefon: <a href="tel:+41412449999" className="text-foreground underline">041 244 99 99</a><br />
-              E-Mail: <a href="mailto:info@yorokobi.ch" className="text-foreground underline">info@yorokobi.ch</a><br />
-              Web: <a href="https://www.kaiten.ch" target="_blank" rel="noopener noreferrer" className="text-foreground underline">www.kaiten.ch</a>
+              E-Mail:{" "}
+              <a href="mailto:sekretariat@weihnachtsmarktluzern.com" className="text-burgundy underline decoration-burgundy/30 hover:decoration-burgundy/60">
+                sekretariat@weihnachtsmarktluzern.com
+              </a>
+              <br />
+              Web:{" "}
+              <a href="https://www.weihnachtsmarkt-luzern.com" className="text-burgundy underline decoration-burgundy/30 hover:decoration-burgundy/60">
+                www.weihnachtsmarkt-luzern.com
+              </a>
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">Handelsregister und Mehrwertsteuer</h2>
-            <p>
-              Yorokobi AG, Aktiengesellschaft mit Sitz in Luzern<br />
-              UID und MWST-Nummer: CHE-348.228.951 MWST<br />
-              CH-ID: CH-100.3824140-2
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">Betriebe</h2>
-            <p>
-              Der Japaner by Yorokobi<br />
-              Luzernerstrasse 73, 6010 Kriens, 041 244 99 10
-            </p>
-            <p className="mt-3">
-              Kaiten Sushibar Luzern<br />
-              Kauffmannweg 16, 6003 Luzern, 041 244 99 20
-            </p>
-            <p className="mt-3">
-              Kaiten Sushibar Sursee<br />
-              Mühleplatz 6, 6210 Sursee, 041 244 99 40
-            </p>
+            <h2 className="text-lg font-semibold text-foreground mb-3">Organisationskomitee</h2>
+            <ul className="space-y-1">
+              <li><strong className="text-foreground/80">Präsident:</strong> Pius Suter</li>
+              <li><strong className="text-foreground/80">Finanzen:</strong> Andreas Krause</li>
+              <li><strong className="text-foreground/80">Werbung &amp; Kommunikation:</strong> Roger Givel</li>
+              <li><strong className="text-foreground/80">Kulturprogramm:</strong> Rico de Bona</li>
+              <li><strong className="text-foreground/80">Sekretariat:</strong> Alexi Dubach</li>
+              <li><strong className="text-foreground/80">Platzmeister / Infrastruktur:</strong> Roger Dreyer</li>
+              <li><strong className="text-foreground/80">Platzmeister Stv:</strong> Tommy Suter</li>
+              <li><strong className="text-foreground/80">Platzgestaltung:</strong> Helmuth Ackermann</li>
+              <li><strong className="text-foreground/80">Strom / Wasser:</strong> Herbert Schwarz</li>
+            </ul>
           </section>
 
           <section>
@@ -76,20 +71,21 @@ export default function Impressum() {
             <h2 className="text-lg font-semibold text-foreground mb-3">Urheberrechte</h2>
             <p>
               Die Urheber- und alle anderen Rechte an Inhalten, Bildern, Fotos oder anderen
-              Dateien auf dieser Website gehören ausschliesslich der Yorokobi AG oder den
-              speziell genannten Rechteinhabern. Für die Reproduktion jeglicher Elemente ist
-              die schriftliche Zustimmung der Urheberrechtsträger im Voraus einzuholen.
+              Dateien auf dieser Website gehören ausschliesslich der IG Luzerner Herbstmesse
+              und Märkte oder den speziell genannten Rechteinhabern. Für die Reproduktion
+              jeglicher Elemente ist die schriftliche Zustimmung der Urheberrechtsträger
+              im Voraus einzuholen.
             </p>
           </section>
         </div>
       </main>
 
-      <footer className="border-t border-border py-10">
-        <div className="max-w-[1400px] mx-auto px-5 sm:px-10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-muted/50">
-          <p>© {new Date().getFullYear()} Yorokobi AG</p>
+      <footer className="border-t border-foreground/10 py-10">
+        <div className="max-w-[1400px] mx-auto px-5 sm:px-10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-foreground/20">
+          <p>&copy; {new Date().getFullYear()} IG Luzerner Herbstmesse und Märkte</p>
           <div className="flex gap-6">
-            <Link href="/impressum" className="text-foreground">Impressum</Link>
-            <Link href="/datenschutz" className="hover:text-foreground transition-colors">Datenschutz</Link>
+            <Link href="/impressum" className="text-foreground/50">Impressum</Link>
+            <Link href="/datenschutz" className="hover:text-foreground/50 transition-colors">Datenschutz</Link>
           </div>
         </div>
       </footer>
