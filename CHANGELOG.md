@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.3.3
+- Kontakt- und Anmeldeformular: Kontrast verbessert (Eingabefelder weiss, Fehler-/Erfolgsmeldungen dunkel auf hell)
+
 ## v2.3.2
 - Original Lozärner Schäller & Trychler: falsches Foto ersetzt (zeigte Blasorchester statt Schäller & Trychler vor Kapellbrücke)
 

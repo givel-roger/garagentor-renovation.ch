@@ -1,3 +1,4 @@
 2026-11-05 18:53:25 | v2.2.0 | weihnachtsmarkt-luzern.com | Server 8 (65.108.4.141) | Docker OK, Port 3082, Nginx OK, SSL pending (Nameserver+Certbot manuell)
 2026-11-05 19:30:00 | v2.3.0 | weihnachtsmarkt-luzern.com | Server 8 (65.108.4.141) | Docker OK, Health Check 200, Künstlerfotos korrigiert + Luca Di Felice
 2026-11-05 19:35:23 | v2.3.1 | weihnachtsmarkt-luzern.com | Server 8 (65.108.4.141) | Docker OK, Health Check 200, Samichlaus-Foto Franziskanerkirche entfernt, Fotos Brass and Pipes, Line Dance, Marc Pircher
+2026-11-05 20:15:00 | v2.3.2 | weihnachtsmarkt-luzern.com | Server 8 (65.108.4.141) | Docker OK, Health Check 200, Schäller & Trychler Foto korrigiert

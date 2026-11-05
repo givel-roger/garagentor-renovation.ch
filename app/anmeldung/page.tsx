@@ -53,7 +53,7 @@ export default function Anmeldung() {
     }
   };
 
-  const inputClass = "w-full bg-white/5 border border-foreground/15 rounded-lg px-4 py-3 text-foreground/80 text-sm placeholder:text-foreground/25 focus:outline-none focus:border-burgundy/50 focus:ring-1 focus:ring-burgundy/30 transition-colors";
+  const inputClass = "w-full bg-white border border-foreground/20 rounded-lg px-4 py-3 text-foreground text-sm placeholder:text-foreground/40 focus:outline-none focus:border-burgundy/50 focus:ring-1 focus:ring-burgundy/30 transition-colors";
   const labelClass = "block text-sm font-medium text-foreground/60 mb-1.5";
 
   return (
@@ -210,13 +210,13 @@ export default function Anmeldung() {
               </div>
 
               {status === "success" && (
-                <div className="bg-green-900/30 border border-green-500/30 rounded-lg p-4 text-green-300 text-sm">
+                <div className="bg-green-50 border border-green-600/30 rounded-lg p-4 text-green-800 text-sm">
                   Vielen Dank! Ihre Anmeldung wurde erfolgreich gesendet. Wir melden uns bei Ihnen.
                 </div>
               )}
 
               {status === "error" && (
-                <div className="bg-red-900/30 border border-red-500/30 rounded-lg p-4 text-red-300 text-sm">
+                <div className="bg-red-50 border border-red-600/30 rounded-lg p-4 text-red-800 text-sm">
                   {errorMsg || "Fehler beim Senden. Bitte versuchen Sie es erneut."}
                 </div>
               )}
