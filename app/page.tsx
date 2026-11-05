@@ -477,7 +477,7 @@ export default function Home() {
           <a href="#" className="flex items-center gap-2">
             <img src="/images/logo-weihnachtsmaert.png" alt="Lozärner Wiehnachtsmärt" className="h-10 sm:h-12 w-auto" />
           </a>
-          <div className="hidden md:flex gap-6 text-sm font-medium text-white/80">
+          <div className="hidden md:flex gap-6 text-sm font-medium text-white/80 items-center">
             {NAV.map(([l, id]) => (
               <a key={id} href={`#${id}`} className="hover:text-gold-bright transition-colors drop-shadow-sm">
                 {l}
@@ -489,6 +489,21 @@ export default function Home() {
                 {l}
               </Link>
             ))}
+            <div className="relative group">
+              <button className="hover:text-gold-bright transition-colors drop-shadow-sm cursor-pointer flex items-center gap-1">
+                Mehr
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 1l4 4 4-4"/></svg>
+              </button>
+              <div className="absolute right-0 top-full pt-2 hidden group-hover:block">
+                <div className="bg-burgundy/95 backdrop-blur-md rounded-lg shadow-xl py-2 min-w-[200px] border border-white/10">
+                  {PAGES.slice(4).map(([l, href]) => (
+                    <Link key={href} href={href} className="block px-4 py-2 text-white/70 hover:text-gold-bright hover:bg-white/5 transition-colors">
+                      {l}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
