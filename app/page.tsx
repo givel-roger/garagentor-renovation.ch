@@ -505,10 +505,10 @@ export default function Home() {
       </nav>
 
       {menuOpen && (
-        <div className="fixed inset-0 z-40 bg-burgundy flex flex-col items-center justify-center gap-8">
+        <div className="fixed inset-0 z-40 bg-burgundy flex flex-col items-center overflow-y-auto py-20 gap-6">
           <button
             onClick={() => setMenuOpen(false)}
-            className="absolute top-5 right-5 text-3xl text-white/60 cursor-pointer"
+            className="fixed top-5 right-5 z-50 text-3xl text-white/60 cursor-pointer"
           >
             &times;
           </button>
@@ -517,7 +517,7 @@ export default function Home() {
               key={id}
               href={`#${id}`}
               onClick={() => setMenuOpen(false)}
-              className="font-display font-bold text-3xl text-white hover:text-gold-bright transition-colors"
+              className="font-display font-bold text-2xl text-white hover:text-gold-bright transition-colors"
             >
               {l}
             </a>
@@ -528,7 +528,7 @@ export default function Home() {
               key={href}
               href={href}
               onClick={() => setMenuOpen(false)}
-              className="font-display font-semibold text-xl text-white/70 hover:text-gold-bright transition-colors"
+              className="font-display font-semibold text-lg text-white/70 hover:text-gold-bright transition-colors"
             >
               {l}
             </Link>
@@ -1066,6 +1066,14 @@ export default function Home() {
             <span>IG Luzerner Herbstmesse und Märkte</span>
             <span className="hidden sm:inline">&middot;</span>
             <span>ewl &middot; Stadt Luzern &middot; Kulturförderung</span>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-white/50 text-xs mb-6">
+            {PAGES.map(([l, href]) => (
+              <Link key={href} href={href} className="hover:text-white transition-colors">
+                {l}
+              </Link>
+            ))}
           </div>
 
           <div className="flex justify-center gap-6 text-white/60 text-sm">
