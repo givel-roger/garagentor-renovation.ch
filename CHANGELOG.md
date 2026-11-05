@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.3.0
+- Tubas de Noël: falsches Foto korrigiert (zeigte Sixtett statt Tubas)
+- Luca Di Felice: Foto aus Quellordner hinzugefügt
+- Hauptseite: 11 fehlende Künstler-Fotos in KUENSTLER_BILDER ergänzt
+
 ## v2.2.0
 - Kontakt- und Anmeldeformular: mailto durch Brevo API ersetzt
 - Tasse 2026 Foto hinzugefügt

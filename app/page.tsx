@@ -52,7 +52,17 @@ const KUENSTLER_BILDER: Record<string, string> = {
   "Jugendblasorchester Kriens": "/images/kuenstler-jbo-kriens.png",
   "MG Aesch-Mosen": "/images/kuenstler-mg-aesch.jpg",
   "Fantasie-Chörli Luzern": "/images/kuenstler-fantasie-choerli.jpg",
-  "Tubas de Noël": "/images/kuenstler-sixtett.jpg",
+  "Tubas de Noël": "/images/kuenstler-tubas.jpg",
+  "Chörli": "/images/kuenstler-choerli.jpg",
+  "Gingerbreads Christmas Brassband": "/images/kuenstler-gingerbreads.png",
+  "Hornschüler": "/images/kuenstler-hornschueler.jpg",
+  "Jodlerfründe Ruopige": "/images/kuenstler-jodlerfruende.jpg",
+  "Kinder-/Jugendchor Anton-Michael": "/images/kuenstler-jugendchor-anton.jpg",
+  "Kinderchor Mailino": "/images/kuenstler-mailino.jpg",
+  "Musikverein Rotkreuz": "/images/kuenstler-mg-rotkreuz.jpg",
+  "Musikschule Bigband Luzern": "/images/kuenstler-bigband.jpg",
+  "christmasBand Schwyz": "/images/kuenstler-christmasband.jpg",
+  "Luca Di Felice": "/images/kuenstler-luca-di-felice.jpg",
 };
 
 /* ── Programmdaten ── */
@@ -1100,7 +1110,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <p className="text-center text-white/25 text-[10px] mt-8">v2.2.0</p>
+          <p className="text-center text-white/25 text-[10px] mt-8">v2.3.0</p>
         </div>
       </footer>
     </div>

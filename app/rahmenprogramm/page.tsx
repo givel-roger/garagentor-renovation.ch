@@ -29,6 +29,7 @@ const KUENSTLER_BILDER: Record<string, string> = {
   "Musikverein Rotkreuz": "/images/kuenstler-mg-rotkreuz.jpg",
   "Musikschule Bigband Luzern": "/images/kuenstler-bigband.jpg",
   "christmasBand Schwyz": "/images/kuenstler-christmasband.jpg",
+  "Luca Di Felice": "/images/kuenstler-luca-di-felice.jpg",
 };
 
 const PROGRAMM = [
