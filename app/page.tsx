@@ -1112,7 +1112,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <p className="text-center text-white/25 text-[10px] mt-8">v2.3.3</p>
+          <p className="text-center text-white/25 text-[10px] mt-8">v2.3.4</p>
         </div>
       </footer>
     </div>

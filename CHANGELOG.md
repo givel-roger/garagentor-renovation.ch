@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.3.4
+- Kontakt- und Anmeldeformular: E-Mails gehen jetzt an sekretariat@ UND givel@marktindex.ch
+
 ## v2.3.3
 - Kontakt- und Anmeldeformular: Kontrast verbessert (Eingabefelder weiss, Fehler-/Erfolgsmeldungen dunkel auf hell)
 
