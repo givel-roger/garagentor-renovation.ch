@@ -1,6 +1,7 @@
 import getDb from "./db";
 import { sendLeadNotification } from "./email";
-import { findRecentLeadByPhone, normalizePhone } from "./leads";
+import { findRecentLeadByPhone, isOwnNumber, normalizePhone } from "./leads";
+import { findPortalCalls } from "./portal-calls";
 
 const TCX_URL = process.env.TCX_URL || "";
 const TCX_CLIENT_ID = process.env.TCX_CLIENT_ID || "";
@@ -68,14 +69,9 @@ async function getRecentCalls(sinceMinutes: number): Promise<any[]> {
     + `,periodTo=${encodeURIComponent(bis)}`
     + ",sourceType=0,sourceFilter='',destinationType=0,destinationFilter=''"
     + ",callsType=0,callTimeFilterType=0,callTimeFilterFrom='0:00:0'"
-    + `,callTimeFilterTo='0:00:0',hidePcalls=true)?$top=100&$skip=0`;
+    + `,callTimeFilterTo='0:00:0',hidePcalls=true)?$top=200&$skip=0`;
   const data = await xapiFetch(pfad);
   return data.value || [];
-}
-
-function istEingehend(call: any): boolean {
-  const typ = String(call.CallType ?? "").toLowerCase();
-  return typ.includes("inbound") || typ.includes("eingehend") || typ === "1" || typ === "";
 }
 
 function istVoicemail(call: any): boolean {
@@ -111,40 +107,34 @@ export async function syncVoicemails(): Promise<{ processed: number; errors: str
   try {
     console.log("[CallSync] Starting sync...");
 
-    const calls = await getRecentCalls(10);
-    console.log(`[CallSync] Found ${calls.length} calls total`);
+    // Der Webhook legt keine Leads mehr an, deshalb auch lange Gespräche erfassen.
+    const calls = await getRecentCalls(180);
+    const portalCalls = findPortalCalls(calls);
+    console.log(`[CallSync] ${calls.length} calls total, ${portalCalls.length} on portal number`);
 
-    // Alle eingehenden Anrufe verarbeiten (nicht nur Voicemails)
-    const eingehend = calls.filter((c) => {
-      const callerNumber = normalizePhone(c.SourceCallerId || c.SourceDn || "");
-      return callerNumber.length >= 5;
-    });
-    console.log(`[CallSync] ${eingehend.length} incoming calls with caller number`);
-
-    if (eingehend.length === 0) {
+    if (portalCalls.length === 0) {
       console.log("[CallSync] No calls to process, done.");
       syncRunning = false;
       return { processed: 0, errors: [] };
     }
 
     const db = ensureProcessedTable();
-    const gesehen = new Set<string>();
 
-    for (const call of eingehend) {
+    for (const { id: callId, legs } of portalCalls) {
       try {
-        const mainId = String(call.MainCallHistoryId ?? call.CallHistoryId ?? "");
-        if (mainId && gesehen.has(mainId)) continue;
-        if (mainId) gesehen.add(mainId);
-
-        const callId = mainId || String(call.Id ?? Date.now());
         const existing = db.prepare("SELECT id FROM voicemail_processed WHERE call_id = ?").get(callId);
         if (existing) continue;
 
+        const voicemailLeg = legs.find(istVoicemail);
+        const call = voicemailLeg ?? legs.find((leg) => leg.Answered) ?? legs[0];
         const callerNumber = normalizePhone(call.SourceCallerId || call.SourceDn || "");
-        if (!callerNumber) continue;
+        if (callerNumber.length < 5 || isOwnNumber(callerNumber)) {
+          db.prepare("INSERT OR IGNORE INTO voicemail_processed (call_id) VALUES (?)").run(callId);
+          continue;
+        }
 
         const callerName = String(call.SourceDisplayName || "");
-        const isVoicemail = istVoicemail(call);
+        const isVoicemail = Boolean(voicemailLeg);
         const callLabel = isVoicemail ? "Voicemail" : "Anruf";
         console.log(`[CallSync] Processing ${callLabel} ${callId} from ${callerName || callerNumber}`);
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.15.1 - 06.11.2026
+
+### Nur noch Anrufe auf die Portal-Nummer werden Leads
+
+- Die 3CX-Anlage ist geteilt und meldete auch Anrufe anderer Nummern (z.B. Stellenportale) sowie ausgehende Anrufe als Garagentor-Lead
+- Der Anruf-Poller legt nur noch Leads an, wenn der Anruf über die Gruppe 810 (044 442 99 90) lief; einstellbar via PORTAL_DN
+- Der 3CX-Webhook kennt die gewählte Nummer nicht und legt deshalb keine Leads mehr an
+- Neue Anrufe erscheinen bis zu 2 Minuten nach Gesprächsende im Admin
+
 ## v2.15.0 - 04.11.2026
 
 ### Vier Sicherheitsluecken geschlossen
