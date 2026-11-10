@@ -21,6 +21,7 @@ export async function sendLeadNotification(lead: {
   const zeit = new Date().toLocaleString("de-CH", { timeZone: "Europe/Zurich" });
 
   const details = [
+    `<tr><td style="padding:4px 12px 4px 0;color:#666;">Portal</td><td style="padding:4px 0;"><strong>Garagentor-Renovation</strong> (garagentor-renovation.ch)</td></tr>`,
     `<tr><td style="padding:4px 12px 4px 0;color:#666;">Quelle</td><td style="padding:4px 0;"><strong>${quelle}</strong></td></tr>`,
     `<tr><td style="padding:4px 12px 4px 0;color:#666;">Name</td><td style="padding:4px 0;">${lead.name}</td></tr>`,
     lead.phone ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">Telefon</td><td style="padding:4px 0;"><a href="tel:${lead.phone}">${lead.phone}</a></td></tr>` : "",
@@ -42,10 +43,11 @@ export async function sendLeadNotification(lead: {
       body: JSON.stringify({
         sender: { name: "Garagentor Renovation", email: "givel@marktindex.ch" },
         to: [{ email: NOTIFICATION_EMAIL, name: "Roger Givel" }],
-        subject: `Neuer Lead: ${lead.name} (${quelle})`,
+        subject: `Garagentor-Renovation: Neuer Lead – ${lead.name} (${quelle})`,
         htmlContent: `
           <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:20px;">
-            <h2 style="color:#003A7D;margin-bottom:4px;">Neuer Lead eingegangen</h2>
+            <p style="display:inline-block;margin:0 0 8px;padding:4px 10px;background:#F9AD09;color:#003A7D;font-weight:bold;border-radius:4px;">Garagentor-Renovation</p>
+            <h2 style="color:#003A7D;margin-bottom:4px;">Neuer Lead für garagentor-renovation.ch</h2>
             <table style="border-collapse:collapse;width:100%;margin-top:12px;">${details}</table>
             <p style="margin-top:20px;">
               <a href="https://garagentor-renovation.ch/admin" style="background:#003A7D;color:#fff;padding:10px 20px;text-decoration:none;border-radius:6px;">Im Admin öffnen</a>

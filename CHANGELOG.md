@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.15.2 - 10.11.2026
+
+### Lead-Mail zeigt das Portal
+
+- Betreff beginnt mit „Garagentor-Renovation:“, damit Leads aus mehreren Portalen unterscheidbar sind
+- In der Mail stehen ein Portal-Hinweis oben und eine Zeile „Portal: Garagentor-Renovation (garagentor-renovation.ch)“
+
 ## v2.15.1 - 06.11.2026
 
 ### Nur noch Anrufe auf die Portal-Nummer werden Leads
