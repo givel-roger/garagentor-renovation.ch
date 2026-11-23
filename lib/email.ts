@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+
 const NOTIFICATION_EMAIL = "givel@marktindex.ch";
 
 export async function sendLeadNotification(lead: {
@@ -9,6 +12,10 @@ export async function sendLeadNotification(lead: {
   source: string;
   nachricht?: string;
   transkription?: string;
+  torTyp?: string;
+  breite?: string;
+  hoehe?: string;
+  fotos?: string[];
 }) {
   const apiKey = process.env.BREVO_SMTP_KEY;
   if (!apiKey) return;
@@ -27,13 +34,26 @@ export async function sendLeadNotification(lead: {
     lead.phone ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">Telefon</td><td style="padding:4px 0;"><a href="tel:${lead.phone}">${lead.phone}</a></td></tr>` : "",
     lead.email ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">E-Mail</td><td style="padding:4px 0;">${lead.email}</td></tr>` : "",
     lead.plz || lead.ort ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">Ort</td><td style="padding:4px 0;">${lead.plz} ${lead.ort}</td></tr>` : "",
+    lead.torTyp ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">Tor-Typ</td><td style="padding:4px 0;">${lead.torTyp}</td></tr>` : "",
+    lead.breite || lead.hoehe ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">Masse</td><td style="padding:4px 0;">${lead.breite || "?"} × ${lead.hoehe || "?"}</td></tr>` : "",
     lead.nachricht ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">Nachricht</td><td style="padding:4px 0;">${lead.nachricht}</td></tr>` : "",
     lead.transkription ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">Transkription</td><td style="padding:4px 0;"><em>${lead.transkription}</em></td></tr>` : "",
+    lead.fotos?.length ? `<tr><td style="padding:4px 12px 4px 0;color:#666;">Fotos</td><td style="padding:4px 0;">${lead.fotos.length} im Anhang</td></tr>` : "",
     `<tr><td style="padding:4px 12px 4px 0;color:#666;">Zeit</td><td style="padding:4px 0;">${zeit}</td></tr>`,
   ].filter(Boolean).join("");
 
+  // Fotos als Anhang: Outlook zeigt sie sofort, ohne externe Bilder freizugeben.
+  const attachment = (lead.fotos ?? []).flatMap((url) => {
+    try {
+      const datei = path.join(process.cwd(), "public", url);
+      return [{ name: path.basename(datei), content: fs.readFileSync(datei).toString("base64") }];
+    } catch {
+      return [];
+    }
+  });
+
   try {
-    await fetch("https://api.brevo.com/v3/smtp/email", {
+    const res = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
         accept: "application/json",
@@ -44,6 +64,7 @@ export async function sendLeadNotification(lead: {
         sender: { name: "Garagentor Renovation", email: "givel@marktindex.ch" },
         to: [{ email: NOTIFICATION_EMAIL, name: "Roger Givel" }],
         subject: `Garagentor-Renovation: Neuer Lead – ${lead.name} (${quelle})`,
+        ...(attachment.length ? { attachment } : {}),
         htmlContent: `
           <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:20px;">
             <p style="display:inline-block;margin:0 0 8px;padding:4px 10px;background:#F9AD09;color:#003A7D;font-weight:bold;border-radius:4px;">Garagentor-Renovation</p>
@@ -56,6 +77,7 @@ export async function sendLeadNotification(lead: {
         `,
       }),
     });
+    if (!res.ok) console.error("[Email] Brevo-Fehler", res.status, (await res.text()).slice(0, 300));
   } catch (err) {
     console.error("[Email] Benachrichtigung fehlgeschlagen:", err);
   }

@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     `);
     stmt.run(name, email, phone, plz, ort, torTyp, breite, hoehe, nachricht, JSON.stringify(fotoPaths), partnerId);
 
-    sendLeadNotification({ name, phone, email, plz, ort, source: "web", nachricht });
+    sendLeadNotification({ name, phone, email, plz, ort, source: "web", nachricht, torTyp, breite, hoehe, fotos: fotoPaths });
 
     return NextResponse.json({ success: true });
   } catch (err) {

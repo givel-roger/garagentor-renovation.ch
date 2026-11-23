@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.16.0 - 23.11.2026
+
+### Fotos direkt in der Lead-Mail
+
+- Hochgeladene Fotos aus dem Offertformular hängen als Anhang an der Benachrichtigung (in Outlook sofort sichtbar)
+- Die Mail zeigt zusätzlich Tor-Typ, Masse und die Anzahl Fotos
+- Fehler beim Mailversand über Brevo werden jetzt im Log festgehalten
+
 ## v2.15.3 - 23.11.2026
 
 ### Foto-Upload im Offertformular repariert
