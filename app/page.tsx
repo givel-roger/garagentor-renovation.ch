@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { fotosFuerUpload } from "@/lib/compress-images";
 import { trackEvent } from "@/lib/tracking";
 
 function IconShield() {
@@ -99,8 +100,13 @@ export default function Home() {
     try {
       const fd = new FormData();
       Object.entries(formData).forEach(([key, val]) => fd.append(key, val));
-      fotos.forEach((f) => fd.append("fotos", f));
+      const uploadFotos = await fotosFuerUpload(fotos);
+      uploadFotos.forEach((f) => fd.append("fotos", f));
       const res = await fetch("/api/leads", { method: "POST", body: fd });
+      if (res.status === 413) {
+        setError("Die Fotos sind zu gross. Bitte weniger Fotos wählen oder ohne Fotos senden – Sie können sie uns danach per WhatsApp oder E-Mail schicken.");
+        return;
+      }
       if (!res.ok) throw new Error("Fehler");
       setSent(true);
       trackEvent("lead_form_submit", { tor_typ: formData.torTyp || "", plz: formData.plz || "" });

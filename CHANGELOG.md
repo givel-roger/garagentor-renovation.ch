@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.15.3 - 23.11.2026
+
+### Foto-Upload im Offertformular repariert
+
+- Handyfotos (mehrere MB) wurden vom Webserver mit „413 zu gross“ abgelehnt (Limit 1 MB) – ein Kunde aus Google Ads scheiterte 12 Mal
+- Fotos werden jetzt im Browser auf max. 1600 px verkleinert und als JPEG gespeichert, bis alle zusammen unter 900 KB liegen
+- Falls es trotzdem zu gross ist, sieht der Kunde eine klare Meldung statt „Es gab einen Fehler“
+
 ## v2.15.2 - 10.11.2026
 
 ### Lead-Mail zeigt das Portal
