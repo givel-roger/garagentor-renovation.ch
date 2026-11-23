@@ -49,3 +49,4 @@
 [2026-11-06 20:06] v2.15.1 deployed - Nur Anrufe ueber Gruppe 810 (044 442 99 90) werden Leads, Webhook legt keine Leads mehr an - Health 200 OK, DB-Backup leads-pre-v2.15.1.db, Filtertest ok
 [2026-11-10 16:45] v2.15.2 deployed - Lead-Mail mit Portal-Name Garagentor-Renovation in Betreff und Inhalt - Health 200 OK, DB-Backup leads-pre-v2.15.2.db
 [2026-11-23 13:49] v2.15.3 deployed - Fotos im Offertformular werden im Browser verkleinert (413 bei Handyfotos behoben); Server-package-lock (identisch mit 648f2b5) gesichert und zurueckgesetzt - Health 200 OK, DB-Backup leads-pre-v2.15.3.db
+[2026-11-23 15:41] v2.16.0 deployed - Fotos als Anhang in Lead-Mail, Tor-Typ/Masse in Mail, Brevo-Fehler im Log - Health 200 OK, DB-Backup leads-pre-v2.16.0.db
